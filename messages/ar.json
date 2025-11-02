@@ -1,0 +1,10 @@
+{
+    "title":"عنوان",
+    "common":{
+        "backToHome":"Back to home",
+        "backToPrevious":"Back to previous",
+
+        "tryAgain":"Try Again",
+        "someThingWentWrong":"Something Went wrong!"
+    }
+}
