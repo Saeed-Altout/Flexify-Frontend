@@ -1,4 +1,5 @@
 import { headers, cookies } from 'next/headers';
+import { getLocale } from 'next-intl/server';
 import type {
   ApiResponse,
   AuthUser,
@@ -36,12 +37,16 @@ export async function getSession(): Promise<SessionData | null> {
   }
 
   try {
+    // Get current locale for Accept-Language header
+    const locale = await getLocale();
+    
     // Verify session with backend
     const response = await fetch(`${BACKEND_URL}/api/auth/me`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${sessionToken}`,
         'Cookie': cookieStore.toString(),
+        'Accept-Language': locale,
       },
       credentials: 'include',
       cache: 'no-store',

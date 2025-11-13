@@ -2,6 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
   signIn,
@@ -25,6 +26,7 @@ import type {
 
 export function useSignInMutation() {
   const router = useRouter();
+  const t = useTranslations("auth.messages");
 
   return useMutation<MutationResult<LoginResponse>, Error, SignInVariables>({
     mutationFn: async (variables: SignInVariables) => {
@@ -32,19 +34,18 @@ export function useSignInMutation() {
     },
     onSuccess: (result) => {
       if (result.error) {
-        toast.error(result.error);
+        // Use backend message if available, otherwise use frontend translation
+        toast.error(result.error || t("loginError"));
       } else {
         console.log(result);
-        toast.success("Login successful");
+        toast.success(t("loginSuccess"));
         router.push("/dashboard");
         router.refresh();
       }
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred during login"
+        error instanceof Error ? error.message : t("errorOccurred")
       );
     },
   });
@@ -52,6 +53,7 @@ export function useSignInMutation() {
 
 export function useSignUpMutation() {
   const router = useRouter();
+  const t = useTranslations("auth.messages");
 
   return useMutation<MutationResult<LoginResponse>, Error, SignUpVariables>({
     mutationFn: async (variables: SignUpVariables) => {
@@ -64,18 +66,16 @@ export function useSignUpMutation() {
     },
     onSuccess: (result) => {
       if (result.error) {
-        toast.error(result.error);
+        toast.error(result.error || t("registerError"));
       } else {
-        toast.success("Registration successful");
+        toast.success(t("registerSuccess"));
         router.push("/dashboard");
         router.refresh();
       }
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred during registration"
+        error instanceof Error ? error.message : t("errorOccurred")
       );
     },
   });
@@ -83,21 +83,20 @@ export function useSignUpMutation() {
 
 export function useSignOutMutation() {
   const router = useRouter();
+  const t = useTranslations("auth.messages");
 
   return useMutation<void, Error, void>({
     mutationFn: async () => {
       return await signOut();
     },
     onSuccess: () => {
-      toast.success("Logged out successfully");
+      toast.success(t("logoutSuccess"));
       router.push("/auth/login");
       router.refresh();
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred during logout"
+        error instanceof Error ? error.message : t("logoutError")
       );
       // Still redirect on error
       router.push("/auth/login");
@@ -106,22 +105,22 @@ export function useSignOutMutation() {
 }
 
 export function useForgotPasswordMutation() {
+  const t = useTranslations("auth.messages");
+
   return useMutation<MutationResult, Error, ForgotPasswordVariables>({
     mutationFn: async (variables: ForgotPasswordVariables) => {
       return await forgotPassword(variables.email);
     },
     onSuccess: (result) => {
       if (result.error) {
-        toast.error(result.error);
+        toast.error(result.error || t("forgetPasswordError"));
       } else {
-        toast.success("Password reset email sent. Please check your inbox.");
+        toast.success(t("forgetPasswordSuccess"));
       }
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred while sending reset email"
+        error instanceof Error ? error.message : t("errorOccurred")
       );
     },
   });
@@ -129,6 +128,7 @@ export function useForgotPasswordMutation() {
 
 export function useResetPasswordMutation() {
   const router = useRouter();
+  const t = useTranslations("auth.messages");
 
   return useMutation<MutationResult, Error, ResetPasswordVariables>({
     mutationFn: async (variables: ResetPasswordVariables) => {
@@ -136,17 +136,15 @@ export function useResetPasswordMutation() {
     },
     onSuccess: (result) => {
       if (result.error) {
-        toast.error(result.error);
+        toast.error(result.error || t("resetPasswordError"));
       } else {
-        toast.success("Password reset successful. You can now login.");
+        toast.success(t("resetPasswordSuccess"));
         router.push("/auth/login");
       }
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred while resetting password"
+        error instanceof Error ? error.message : t("errorOccurred")
       );
     },
   });
@@ -154,6 +152,7 @@ export function useResetPasswordMutation() {
 
 export function useVerifyAccountMutation() {
   const router = useRouter();
+  const t = useTranslations("auth.messages");
 
   return useMutation<MutationResult, Error, VerifyAccountVariables>({
     mutationFn: async (variables: VerifyAccountVariables) => {
@@ -161,40 +160,38 @@ export function useVerifyAccountMutation() {
     },
     onSuccess: (result) => {
       if (result.error) {
-        toast.error(result.error);
+        toast.error(result.error || t("verifyAccountError"));
       } else {
-        toast.success("Account verified successfully");
+        toast.success(t("verifyAccountSuccess"));
         router.push("/dashboard");
         router.refresh();
       }
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred during verification"
+        error instanceof Error ? error.message : t("errorOccurred")
       );
     },
   });
 }
 
 export function useSendVerificationCodeMutation() {
+  const t = useTranslations("auth.messages");
+
   return useMutation<MutationResult, Error, SendVerificationCodeVariables>({
     mutationFn: async (variables: SendVerificationCodeVariables) => {
       return await sendVerificationCode(variables.email);
     },
     onSuccess: (result) => {
       if (result.error) {
-        toast.error(result.error);
+        toast.error(result.error || t("sendVerificationCodeError"));
       } else {
-        toast.success("Verification code sent. Please check your email.");
+        toast.success(t("sendVerificationCodeSuccess"));
       }
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "An error occurred while sending verification code"
+        error instanceof Error ? error.message : t("errorOccurred")
       );
     },
   });

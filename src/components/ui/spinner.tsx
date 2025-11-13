@@ -1,5 +1,5 @@
-import { LoaderIcon } from "lucide-react";
-import { cva } from "class-variance-authority";
+import { Loader2Icon, type LucideProps } from "lucide-react";
+import { cva, VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
@@ -21,9 +21,11 @@ function Spinner({
   className,
   size,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof spinnerVariants>) {
+}: React.ComponentProps<"div"> &
+  VariantProps<typeof spinnerVariants> &
+  LucideProps) {
   return (
-    <LoaderIcon
+    <Loader2Icon
       role="status"
       aria-label="Loading"
       className={cn(spinnerVariants({ size, className }))}

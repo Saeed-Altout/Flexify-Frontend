@@ -98,6 +98,11 @@ export type AuthUser = {
   last_name: string | null;
   role: UserRole;
   email_verified: boolean;
+  phone_verified?: boolean;
+  avatar_url?: string | null;
+  language?: string;
+  timezone?: string | null;
+  created_at?: Date;
 };
 
 /**

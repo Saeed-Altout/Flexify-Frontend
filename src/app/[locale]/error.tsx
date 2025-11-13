@@ -30,7 +30,9 @@ export default function Error({
             <AlertTriangleIcon className="text-destructive" />
           </EmptyMedia>
           <EmptyTitle>{t("someThingWentWrong")}</EmptyTitle>
-          <EmptyDescription>{error}</EmptyDescription>
+          <EmptyDescription>
+            {error.message || t("someThingWentWrong")}
+          </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">

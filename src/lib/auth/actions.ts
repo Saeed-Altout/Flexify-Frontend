@@ -3,25 +3,39 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import type {
-  ServerActionResult,
-  LoginResponse,
-  ApiResponse,
-  LoginDto,
-} from "@/types";
-import { SESSION_TOKEN_COOKIE_NAME, SESSION_EXPIRATION_MS } from "@/constants/auth.constants";
+import { getLocale } from "next-intl/server";
+import type { ServerActionResult, LoginResponse, ApiResponse } from "@/types";
+import {
+  SESSION_TOKEN_COOKIE_NAME,
+  SESSION_EXPIRATION_MS,
+} from "@/constants/auth.constants";
 
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+
+/**
+ * Get the current locale and return it as Accept-Language header value
+ */
+async function getAcceptLanguageHeader(): Promise<string> {
+  try {
+    const locale = await getLocale();
+    return locale; // Returns 'en' or 'ar'
+  } catch {
+    // Fallback if locale cannot be determined
+    return "en";
+  }
+}
 
 export async function signIn(
   email: string,
   password: string
 ): Promise<ServerActionResult<LoginResponse>> {
   try {
+    const acceptLanguage = await getAcceptLanguageHeader();
     const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept-Language": acceptLanguage,
       },
       body: JSON.stringify({ email, password }),
       credentials: "include",
@@ -68,9 +82,16 @@ export async function signIn(
     }
 
     revalidatePath("/", "layout");
+    if (!result.data) {
+      return {
+        success: false,
+        error: "Login failed: No data received",
+      };
+    }
     return { success: true, data: result.data };
   } catch (error) {
     return {
+      success: false,
       error: error instanceof Error ? error.message : "An error occurred",
     };
   }
@@ -83,10 +104,12 @@ export async function signUp(
   lastName?: string
 ): Promise<ServerActionResult<LoginResponse>> {
   try {
+    const acceptLanguage = await getAcceptLanguageHeader();
     const response = await fetch(`${BACKEND_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept-Language": acceptLanguage,
       },
       body: JSON.stringify({
         email,
@@ -149,12 +172,14 @@ export async function signOut(): Promise<never> {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get(SESSION_TOKEN_COOKIE_NAME)?.value;
+    const acceptLanguage = await getAcceptLanguageHeader();
 
     if (sessionToken) {
       await fetch(`${BACKEND_URL}/api/auth/logout`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${sessionToken}`,
+          "Accept-Language": acceptLanguage,
         },
         credentials: "include",
       });
@@ -172,10 +197,12 @@ export async function forgotPassword(
   email: string
 ): Promise<ServerActionResult> {
   try {
+    const acceptLanguage = await getAcceptLanguageHeader();
     const response = await fetch(`${BACKEND_URL}/api/auth/forget-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept-Language": acceptLanguage,
       },
       body: JSON.stringify({ email }),
     });
@@ -188,7 +215,7 @@ export async function forgotPassword(
       };
     }
 
-    return { success: true };
+    return { success: true, data: null };
   } catch (err) {
     return {
       success: false,
@@ -202,10 +229,12 @@ export async function resetPassword(
   password: string
 ): Promise<ServerActionResult> {
   try {
+    const acceptLanguage = await getAcceptLanguageHeader();
     const response = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept-Language": acceptLanguage,
       },
       body: JSON.stringify({ token, password }),
     });
@@ -218,7 +247,7 @@ export async function resetPassword(
       };
     }
 
-    return { success: true };
+    return { success: true, data: null };
   } catch (error) {
     return {
       success: false,
@@ -232,10 +261,12 @@ export async function verifyAccount(
   code: string
 ): Promise<ServerActionResult> {
   try {
+    const acceptLanguage = await getAcceptLanguageHeader();
     const response = await fetch(`${BACKEND_URL}/api/auth/verify-account`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Accept-Language": acceptLanguage,
       },
       body: JSON.stringify({ email, code }),
     });
@@ -249,7 +280,7 @@ export async function verifyAccount(
     }
 
     revalidatePath("/", "layout");
-    return { success: true };
+    return { success: true, data: null };
   } catch (error) {
     return {
       success: false,
@@ -262,12 +293,14 @@ export async function sendVerificationCode(
   email: string
 ): Promise<ServerActionResult> {
   try {
+    const acceptLanguage = await getAcceptLanguageHeader();
     const response = await fetch(
       `${BACKEND_URL}/api/auth/send-verification-code`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept-Language": acceptLanguage,
         },
         body: JSON.stringify({ email }),
       }
@@ -281,7 +314,7 @@ export async function sendVerificationCode(
       };
     }
 
-    return { success: true };
+    return { success: true, data: null };
   } catch (error) {
     return {
       success: false,

@@ -7,7 +7,10 @@ declare const messages: {
         "backToHome":"Back to home",
         "backToPrevious":"Back to previous",
         "tryAgain":"Try Again",
-        "someThingWentWrong":"Something Went wrong!"
+        "someThingWentWrong":"Something Went wrong!",
+        "success":"Operation completed successfully",
+        "error":"An error occurred",
+        "unauthorized":"Unauthorized access"
     },
     "validation":{
         "email":{
@@ -97,6 +100,23 @@ declare const messages: {
                 "title":"Set New Password - Flexify Account Security",
                 "description":"Create a new secure password for your Flexify account. Choose a strong password with at least 8 characters to protect your account and data."
             }
+        },
+        "messages":{
+            "loginSuccess":"Login successful",
+            "loginError":"Invalid email or password",
+            "registerSuccess":"Registration successful",
+            "registerError":"Registration failed",
+            "logoutSuccess":"Logged out successfully",
+            "logoutError":"Failed to logout",
+            "forgetPasswordSuccess":"Password reset email sent. Please check your inbox.",
+            "forgetPasswordError":"Failed to send reset email",
+            "resetPasswordSuccess":"Password reset successful. You can now login.",
+            "resetPasswordError":"Failed to reset password",
+            "verifyAccountSuccess":"Account verified successfully",
+            "verifyAccountError":"Invalid verification code",
+            "sendVerificationCodeSuccess":"Verification code sent. Please check your email.",
+            "sendVerificationCodeError":"Failed to send verification code",
+            "errorOccurred":"An error occurred"
         }
     }
 };

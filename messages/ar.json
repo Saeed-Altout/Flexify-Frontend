@@ -4,7 +4,10 @@
         "backToHome":"العودة إلى الرئيسية",
         "backToPrevious":"العودة إلى الصفحة السابقة",
         "tryAgain":"حاول مرة أخرى",
-        "someThingWentWrong":"حدث خطأ ما!"
+        "someThingWentWrong":"حدث خطأ ما!",
+        "success":"تمت العملية بنجاح",
+        "error":"حدث خطأ",
+        "unauthorized":"وصول غير مصرح به"
     },
     "validation":{
         "email":{
@@ -94,6 +97,23 @@
                 "title":"تعيين كلمة مرور جديدة - أمان حساب Flexify",
                 "description":"قم بإنشاء كلمة مرور آمنة جديدة لحساب Flexify الخاص بك. اختر كلمة مرور قوية تحتوي على 8 أحرف على الأقل لحماية حسابك وبياناتك."
             }
+        },
+        "messages":{
+            "loginSuccess":"تم تسجيل الدخول بنجاح",
+            "loginError":"البريد الإلكتروني أو كلمة المرور غير صحيحة",
+            "registerSuccess":"تم التسجيل بنجاح",
+            "registerError":"فشل التسجيل",
+            "logoutSuccess":"تم تسجيل الخروج بنجاح",
+            "logoutError":"فشل تسجيل الخروج",
+            "forgetPasswordSuccess":"تم إرسال رابط إعادة تعيين كلمة المرور. يرجى التحقق من بريدك الإلكتروني.",
+            "forgetPasswordError":"فشل إرسال رابط إعادة التعيين",
+            "resetPasswordSuccess":"تم إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.",
+            "resetPasswordError":"فشل إعادة تعيين كلمة المرور",
+            "verifyAccountSuccess":"تم التحقق من الحساب بنجاح",
+            "verifyAccountError":"رمز التحقق غير صحيح",
+            "sendVerificationCodeSuccess":"تم إرسال رمز التحقق. يرجى التحقق من بريدك الإلكتروني.",
+            "sendVerificationCodeError":"فشل إرسال رمز التحقق",
+            "errorOccurred":"حدث خطأ"
         }
     }
 }
