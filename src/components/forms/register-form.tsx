@@ -29,17 +29,18 @@ import { LinkButton } from "@/components/buttons/link-button";
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { Routes } from "@/constants/routes";
 
-export function LoginForm() {
-  const t = useTranslations("auth.login");
-  const { loginSchema } = useValidationsSchema();
+export function RegisterForm() {
+  const t = useTranslations("auth.register");
+  const { registerSchema } = useValidationsSchema();
 
-  const formSchema = loginSchema();
+  const formSchema = registerSchema();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -69,40 +70,43 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <div className="space-y-1">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("passwordLabel")}</FormLabel>
-                    <FormControl>
-                      <PasswordInput {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <LinkButton
-                label={t("forgetPassword")}
-                href={Routes.forgetPassword}
-                className="ps-0"
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("passwordLabel")}</FormLabel>
+                  <FormControl>
+                    <PasswordInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
+                  <FormControl>
+                    <PasswordInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button type="submit" className="w-full">
               {t("submit")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("noAccount")}</p>
-            <LinkButton
-              label={t("signUp")}
-              href={Routes.register}
-              className="ps-1"
-            />
+            <p className="text-muted-foreground">{t("hasAccount")}</p>
+            <LinkButton label={t("signIn")} href={Routes.login} className="ps-1" />
           </CardFooter>
         </Card>
       </form>
     </Form>
   );
 }
+

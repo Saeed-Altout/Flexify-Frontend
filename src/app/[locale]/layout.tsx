@@ -11,6 +11,7 @@ import { routing } from "@/i18n/routing";
 import { ReactQueryProviders } from "@/providers/react-query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { cn } from "@/lib/utils";
+import { getDir } from "@/utils/get-dir";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -39,7 +40,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} dir={getDir(locale)} suppressHydrationWarning>
       <body className={cn("antialiased isolate", poppins.className)}>
         <ReactQueryProviders>
           <NextIntlClientProvider>

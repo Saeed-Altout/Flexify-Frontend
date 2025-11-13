@@ -22,24 +22,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/components/inputs/password-input";
 import { EmailInput } from "@/components/inputs/email-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { Routes } from "@/constants/routes";
 
-export function LoginForm() {
-  const t = useTranslations("auth.login");
-  const { loginSchema } = useValidationsSchema();
+export function ForgetPasswordForm() {
+  const t = useTranslations("auth.forgetPassword");
+  const { forgetPasswordSchema } = useValidationsSchema();
 
-  const formSchema = loginSchema();
+  const formSchema = forgetPasswordSchema();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
@@ -69,40 +67,17 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
-            <div className="space-y-1">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("passwordLabel")}</FormLabel>
-                    <FormControl>
-                      <PasswordInput {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <LinkButton
-                label={t("forgetPassword")}
-                href={Routes.forgetPassword}
-                className="ps-0"
-              />
-            </div>
             <Button type="submit" className="w-full">
               {t("submit")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("noAccount")}</p>
-            <LinkButton
-              label={t("signUp")}
-              href={Routes.register}
-              className="ps-1"
-            />
+            <p className="text-muted-foreground">{t("rememberPassword")}</p>
+            <LinkButton label={t("signIn")} href={Routes.login} className="ps-1" />
           </CardFooter>
         </Card>
       </form>
     </Form>
   );
 }
+

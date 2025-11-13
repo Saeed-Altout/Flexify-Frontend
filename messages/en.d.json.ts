@@ -18,6 +18,76 @@ declare const messages: {
             "error":"Password is required",
             "message":"Password must be at least {min} characters"
         }
+    },
+    "auth":{
+        "login":{
+            "title":"Login",
+            "description":"Login to your Flexify account",
+            "emailLabel":"Email",
+            "passwordLabel":"Password",
+            "forgetPassword":"Forget password?",
+            "submit":"Submit",
+            "noAccount":"Don't have an account?",
+            "signUp":"Sign up",
+            "metadata":{
+                "title":"Login to Flexify - Secure Account Access",
+                "description":"Sign in to your Flexify account to access your dashboard, manage your projects, and enjoy seamless collaboration. Secure login with email and password authentication."
+            }
+        },
+        "register":{
+            "title":"Register",
+            "description":"Create a new Flexify account",
+            "emailLabel":"Email",
+            "passwordLabel":"Password",
+            "confirmPasswordLabel":"Confirm Password",
+            "confirmPasswordError":"Passwords do not match",
+            "submit":"Submit",
+            "hasAccount":"Already have an account?",
+            "signIn":"Sign in",
+            "metadata":{
+                "title":"Create Your Flexify Account - Start Your Journey",
+                "description":"Join Flexify today and unlock powerful project management tools. Create your free account in seconds and start collaborating with your team. Secure registration with email verification."
+            }
+        },
+        "verifyAccount":{
+            "title":"Verify Account",
+            "description":"Enter the verification code sent to your email",
+            "otpLabel":"Verification Code",
+            "otpError":"Verification code must be 6 digits",
+            "submit":"Verify",
+            "noCode":"Didn't receive the code?",
+            "resendCode":"Resend code",
+            "metadata":{
+                "title":"Verify Your Flexify Account - Email Verification",
+                "description":"Complete your account verification by entering the 6-digit code sent to your email address. Secure your Flexify account and start using all features."
+            }
+        },
+        "forgetPassword":{
+            "title":"Forget Password",
+            "description":"Enter your email to receive a password reset link",
+            "emailLabel":"Email",
+            "submit":"Send Reset Link",
+            "rememberPassword":"Remember your password?",
+            "signIn":"Sign in",
+            "metadata":{
+                "title":"Reset Your Flexify Password - Recover Account Access",
+                "description":"Forgot your password? Enter your email address and we'll send you a secure link to reset your Flexify account password. Quick and secure password recovery."
+            }
+        },
+        "resetPassword":{
+            "title":"Reset Password",
+            "description":"Enter your new password",
+            "passwordLabel":"New Password",
+            "confirmPasswordLabel":"Confirm New Password",
+            "confirmPasswordError":"Passwords do not match",
+            "submit":"Reset Password",
+            "rememberPassword":"Remember your password?",
+            "signIn":"Sign in",
+            "metadata":{
+                "title":"Set New Password - Flexify Account Security",
+                "description":"Create a new secure password for your Flexify account. Choose a strong password with at least 8 characters to protect your account and data."
+            }
+        }
     }
 };
 export default messages;
