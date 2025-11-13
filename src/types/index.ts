@@ -414,6 +414,137 @@ export type PaginationParams = {
   offset?: number;
 };
 
+// ============================================================================
+// Project Types
+// ============================================================================
+
+/**
+ * Project entity
+ */
+export interface Project {
+  id: string;
+  user_id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  description: string;
+  tech_stack: string[];
+  role: string;
+  responsibilities: string[];
+  architecture: string | null;
+  features: string[];
+  challenges: string[];
+  solutions: string[];
+  lessons: string[];
+  github_url: string | null;
+  github_backend_url: string | null;
+  live_demo_url: string | null;
+  video_demo_url: string | null;
+  main_image: string | null;
+  images: string[];
+  average_rating: number;
+  total_ratings: number;
+  total_likes: number;
+  is_published: boolean;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at: Date | null;
+  user_liked?: boolean;
+  user_rating?: number | null;
+  translations?: ProjectTranslation[];
+  user?: PublicUser;
+}
+
+/**
+ * Project translation
+ */
+export interface ProjectTranslation {
+  id: string;
+  project_id: string;
+  language: string;
+  title: string;
+  summary: string;
+  description: string;
+  architecture: string | null;
+  created_at: Date;
+  updated_at: Date;
+}
+
+/**
+ * Create project DTO
+ */
+export interface CreateProjectDto {
+  title: string;
+  slug: string;
+  summary: string;
+  description: string;
+  tech_stack: string[];
+  role: string;
+  responsibilities?: string[];
+  architecture?: string;
+  features?: string[];
+  challenges?: string[];
+  solutions?: string[];
+  lessons?: string[];
+  github_url?: string;
+  github_backend_url?: string;
+  live_demo_url?: string;
+  video_demo_url?: string;
+  main_image?: string;
+  images?: string[];
+  is_published?: boolean;
+  translations?: ProjectTranslationDto[];
+}
+
+/**
+ * Project translation DTO
+ */
+export interface ProjectTranslationDto {
+  language: string;
+  title: string;
+  summary: string;
+  description: string;
+  architecture?: string;
+}
+
+/**
+ * Update project DTO
+ */
+export type UpdateProjectDto = Partial<CreateProjectDto>;
+
+/**
+ * Rate project DTO
+ */
+export interface RateProjectDto {
+  rating: number; // 1-5
+}
+
+/**
+ * Query projects DTO
+ */
+export interface QueryProjectsDto {
+  search?: string;
+  tech_stack?: string;
+  is_published?: boolean;
+  page?: number;
+  limit?: number;
+  sort_by?: string;
+  order?: "ASC" | "DESC";
+}
+
+/**
+ * Projects list response
+ */
+export interface ProjectsListResponse {
+  data: Project[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
 export type PaginatedResponse<T> = {
   data: T[];
   pagination: {
