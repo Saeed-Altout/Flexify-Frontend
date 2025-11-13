@@ -14,14 +14,14 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link
       className={cn(
-        "flex items-center gap-2 font-semibold rtl:flex-row-reverse",
+        "flex items-center justify-center gap-2 font-bold",
         poppins.className,
         className
       )}
       href={Routes.home}
     >
-      <ZapIcon className="size-4" />
-      <span>Flexify</span>
+      <ZapIcon className="size-6!" strokeWidth={3} />
+      <span className="text-2xl">Flexify</span>
     </Link>
   );
 }
