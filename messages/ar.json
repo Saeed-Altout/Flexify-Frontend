@@ -1,10 +1,19 @@
 {
     "title":"عنوان",
     "common":{
-        "backToHome":"Back to home",
-        "backToPrevious":"Back to previous",
-
-        "tryAgain":"Try Again",
-        "someThingWentWrong":"Something Went wrong!"
+        "backToHome":"العودة إلى الرئيسية",
+        "backToPrevious":"العودة إلى الصفحة السابقة",
+        "tryAgain":"حاول مرة أخرى",
+        "someThingWentWrong":"حدث خطأ ما!"
+    },
+    "validation":{
+        "email":{
+            "error":"البريد الإلكتروني مطلوب",
+            "message":"يرجى إدخال البريد الإلكتروني"
+        },
+        "password":{
+            "error":"كلمة المرور مطلوبة",
+            "message":"يجب أن يكون لوحظ على الأقل {min} أحرف!"
+        }
     }
 }

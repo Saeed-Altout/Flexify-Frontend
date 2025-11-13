@@ -25,10 +25,14 @@ import { PasswordInput } from "@/components/inputs/password-input";
 import { EmailInput } from "@/components/inputs/email-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
+import { useValidationsSchema } from "@/hooks/use-validations-schema";
+
 export function LoginForm() {
+  const { email, password } = useValidationsSchema();
+
   const formSchema = z.object({
-    email: z.email(),
-    password: z.string().min(8),
+    email: email(),
+    password: password(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

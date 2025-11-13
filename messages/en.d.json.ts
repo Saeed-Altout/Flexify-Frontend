@@ -6,9 +6,18 @@ declare const messages: {
     "common":{
         "backToHome":"Back to home",
         "backToPrevious":"Back to previous",
-   
         "tryAgain":"Try Again",
         "someThingWentWrong":"Something Went wrong!"
+    },
+    "validation":{
+        "email":{
+            "error":"Email is required!",
+            "message":"Please enter your email address"
+        },
+        "password":{
+            "error":"Password is required",
+            "message":"Password must be at least {min} characters"
+        }
     }
 };
 export default messages;
