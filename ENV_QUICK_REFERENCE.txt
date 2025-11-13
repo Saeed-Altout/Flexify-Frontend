@@ -1,0 +1,15 @@
+# ============================================================================
+# FRONTEND ENVIRONMENT VARIABLES - QUICK REFERENCE
+# ============================================================================
+# Copy these to your .env.local file
+
+# REQUIRED VARIABLES
+NODE_ENV=development
+NEXT_PUBLIC_APP_URL=http://localhost:3001
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:3000
+
+# OPTIONAL VARIABLES (uncomment if needed)
+# BETTER_AUTH_SECRET=your_better_auth_secret_key
+# BETTER_AUTH_URL=http://localhost:3001
+

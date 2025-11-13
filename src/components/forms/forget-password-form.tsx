@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { useValidationsSchema } from "@/hooks/use-validations-schema";
+import { useForgotPasswordMutation } from "@/hooks/use-auth-mutations";
+import { Routes } from "@/constants/routes";
+
 import {
   Form,
   FormControl,
@@ -25,14 +29,13 @@ import { Button } from "@/components/ui/button";
 import { EmailInput } from "@/components/inputs/email-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { Routes } from "@/constants/routes";
-
 export function ForgetPasswordForm() {
   const t = useTranslations("auth.forgetPassword");
-  const { forgetPasswordSchema } = useValidationsSchema();
 
+  const { forgetPasswordSchema } = useValidationsSchema();
   const formSchema = forgetPasswordSchema();
+
+  const { mutate: forgotPassword, isPending } = useForgotPasswordMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,7 +45,7 @@ export function ForgetPasswordForm() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    forgotPassword(values);
   };
 
   return (
@@ -64,13 +67,19 @@ export function ForgetPasswordForm() {
                     <EmailInput
                       {...field}
                       placeholder={t("emailPlaceholder")}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+              loading={isPending}
+            >
               {t("submit")}
             </Button>
           </CardContent>
@@ -80,6 +89,7 @@ export function ForgetPasswordForm() {
               label={t("signIn")}
               href={Routes.login}
               className="ps-1"
+              disabled={isPending}
             />
           </CardFooter>
         </Card>

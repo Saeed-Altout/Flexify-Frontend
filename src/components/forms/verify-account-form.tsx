@@ -4,6 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+
+import { useValidationsSchema } from "@/hooks/use-validations-schema";
+import {
+  useVerifyAccountMutation,
+  useSendVerificationCodeMutation,
+} from "@/hooks/use-auth-mutations";
 
 import {
   Form,
@@ -26,16 +33,22 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { LinkButton } from "@/components/buttons/link-button";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
+interface VerifyAccountFormProps {
+  email: string;
+}
 
-export function VerifyAccountForm() {
+export function VerifyAccountForm({ email }: VerifyAccountFormProps) {
   const t = useTranslations("auth.verifyAccount");
   const { verifyAccountSchema } = useValidationsSchema();
-
   const formSchema = verifyAccountSchema();
+
+  const { mutate: verifyAccount, isPending: isVerifyAccountPending } =
+    useVerifyAccountMutation();
+  const { mutate: sendVerificationCode, isPending: isSendingVerificationCode } =
+    useSendVerificationCodeMutation();
+
+  const isPending = isVerifyAccountPending || isSendingVerificationCode;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,7 +58,14 @@ export function VerifyAccountForm() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    verifyAccount({
+      email,
+      code: values.otp,
+    });
+  };
+
+  const handleResendCode = () => {
+    sendVerificationCode({ email });
   };
 
   return (
@@ -67,6 +87,7 @@ export function VerifyAccountForm() {
                       maxLength={6}
                       pattern={REGEXP_ONLY_DIGITS}
                       {...field}
+                      disabled={isPending}
                     >
                       <InputOTPGroup className="mx-auto">
                         <InputOTPSlot index={0} />
@@ -82,13 +103,25 @@ export function VerifyAccountForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+              loading={isPending}
+            >
               {t("submit")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
             <p className="text-muted-foreground">{t("noCode")}</p>
-            <LinkButton label={t("resendCode")} href="#" className="ps-1" />
+            <button
+              type="button"
+              onClick={handleResendCode}
+              disabled={isPending}
+              className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed ps-1"
+            >
+              {isPending ? t("sendingCode") : t("resendCode")}
+            </button>
           </CardFooter>
         </Card>
       </form>

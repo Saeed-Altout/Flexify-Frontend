@@ -1,7 +1,17 @@
+import { getSession } from '@/lib/auth/server';
+import { redirect } from 'next/navigation';
+
 export default async function DashboardLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  return <div>{children}</div>;
+}) {
+  // Authentication check in Data Access Layer (server component)
+  const session = await getSession();
+
+  if (!session) {
+    redirect('/auth/login');
+  }
+
+  return <>{children}</>;
 }

@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { useValidationsSchema } from "@/hooks/use-validations-schema";
+import { useResetPasswordMutation } from "@/hooks/use-auth-mutations";
+import { Routes } from "@/constants/routes";
+
 import {
   Form,
   FormControl,
@@ -25,25 +29,30 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/inputs/password-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { Routes } from "@/constants/routes";
+interface ResetPasswordFormProps {
+  token: string;
+}
 
-export function ResetPasswordForm() {
+export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const t = useTranslations("auth.resetPassword");
-  const { resetPasswordSchema } = useValidationsSchema();
 
+  const { resetPasswordSchema } = useValidationsSchema();
   const formSchema = resetPasswordSchema();
+
+  const { mutate: resetPassword, isPending } = useResetPasswordMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: "",
-      confirmPassword: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    resetPassword({
+      token,
+      password: values.password,
+    });
   };
 
   return (
@@ -65,29 +74,19 @@ export function ResetPasswordForm() {
                     <PasswordInput
                       {...field}
                       placeholder={t("passwordPlaceholder")}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      {...field}
-                      placeholder={t("confirmPasswordPlaceholder")}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+              loading={isPending}
+            >
               {t("submit")}
             </Button>
           </CardContent>
@@ -97,6 +96,7 @@ export function ResetPasswordForm() {
               label={t("signIn")}
               href={Routes.login}
               className="ps-1"
+              disabled={isPending}
             />
           </CardFooter>
         </Card>

@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { useValidationsSchema } from "@/hooks/use-validations-schema";
+import { useSignUpMutation } from "@/hooks/use-auth-mutations";
+import { Routes } from "@/constants/routes";
+
 import {
   Form,
   FormControl,
@@ -26,14 +30,13 @@ import { PasswordInput } from "@/components/inputs/password-input";
 import { EmailInput } from "@/components/inputs/email-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { Routes } from "@/constants/routes";
-
 export function RegisterForm() {
   const t = useTranslations("auth.register");
-  const { registerSchema } = useValidationsSchema();
 
+  const { registerSchema } = useValidationsSchema();
   const formSchema = registerSchema();
+
+  const { mutate: signUp, isPending } = useSignUpMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,7 +48,7 @@ export function RegisterForm() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    signUp(values);
   };
 
   return (
@@ -67,6 +70,7 @@ export function RegisterForm() {
                     <EmailInput
                       {...field}
                       placeholder={t("emailPlaceholder")}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -83,6 +87,7 @@ export function RegisterForm() {
                     <PasswordInput
                       {...field}
                       placeholder={t("passwordPlaceholder")}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -99,13 +104,19 @@ export function RegisterForm() {
                     <PasswordInput
                       {...field}
                       placeholder={t("confirmPasswordPlaceholder")}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+              loading={isPending}
+            >
               {t("submit")}
             </Button>
           </CardContent>
@@ -115,6 +126,7 @@ export function RegisterForm() {
               label={t("signIn")}
               href={Routes.login}
               className="ps-1"
+              disabled={isPending}
             />
           </CardFooter>
         </Card>

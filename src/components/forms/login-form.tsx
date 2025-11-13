@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
+import { useValidationsSchema } from "@/hooks/use-validations-schema";
+import { useSignInMutation } from "@/hooks/use-auth-mutations";
+import { Routes } from "@/constants/routes";
+
 import {
   Form,
   FormControl,
@@ -26,14 +30,13 @@ import { PasswordInput } from "@/components/inputs/password-input";
 import { EmailInput } from "@/components/inputs/email-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { Routes } from "@/constants/routes";
-
 export function LoginForm() {
   const t = useTranslations("auth.login");
-  const { loginSchema } = useValidationsSchema();
 
+  const { loginSchema } = useValidationsSchema();
   const formSchema = loginSchema();
+
+  const { mutate: signIn, isPending } = useSignInMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,7 +47,7 @@ export function LoginForm() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    signIn(values);
   };
 
   return (
@@ -66,6 +69,7 @@ export function LoginForm() {
                     <EmailInput
                       {...field}
                       placeholder={t("emailPlaceholder")}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -83,6 +87,7 @@ export function LoginForm() {
                       <PasswordInput
                         {...field}
                         placeholder={t("passwordPlaceholder")}
+                        disabled={isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -93,9 +98,15 @@ export function LoginForm() {
                 label={t("forgetPassword")}
                 href={Routes.forgetPassword}
                 className="ps-0"
+                disabled={isPending}
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+              loading={isPending}
+            >
               {t("submit")}
             </Button>
           </CardContent>
@@ -105,6 +116,7 @@ export function LoginForm() {
               label={t("signUp")}
               href={Routes.register}
               className="ps-1"
+              disabled={isPending}
             />
           </CardFooter>
         </Card>

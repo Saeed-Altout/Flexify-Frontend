@@ -59,6 +59,7 @@
             "submit":"Verify",
             "noCode":"Didn't receive the code?",
             "resendCode":"Resend code",
+            "sendingCode":"Sending code...",
             "metadata":{
                 "title":"Verify Your Flexify Account - Email Verification",
                 "description":"Complete your account verification by entering the 6-digit code sent to your email address. Secure your Flexify account and start using all features."
