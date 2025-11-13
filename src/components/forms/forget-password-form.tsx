@@ -61,7 +61,10 @@ export function ForgetPasswordForm() {
                 <FormItem>
                   <FormLabel>{t("emailLabel")}</FormLabel>
                   <FormControl>
-                    <EmailInput {...field} />
+                    <EmailInput
+                      {...field}
+                      placeholder={t("emailPlaceholder")}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -73,11 +76,14 @@ export function ForgetPasswordForm() {
           </CardContent>
           <CardFooter className="justify-center">
             <p className="text-muted-foreground">{t("rememberPassword")}</p>
-            <LinkButton label={t("signIn")} href={Routes.login} className="ps-1" />
+            <LinkButton
+              label={t("signIn")}
+              href={Routes.login}
+              className="ps-1"
+            />
           </CardFooter>
         </Card>
       </form>
     </Form>
   );
 }
-

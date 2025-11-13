@@ -62,7 +62,10 @@ export function ResetPasswordForm() {
                 <FormItem>
                   <FormLabel>{t("passwordLabel")}</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput
+                      {...field}
+                      placeholder={t("passwordPlaceholder")}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -75,7 +78,10 @@ export function ResetPasswordForm() {
                 <FormItem>
                   <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput
+                      {...field}
+                      placeholder={t("confirmPasswordPlaceholder")}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -87,11 +93,14 @@ export function ResetPasswordForm() {
           </CardContent>
           <CardFooter className="justify-center">
             <p className="text-muted-foreground">{t("rememberPassword")}</p>
-            <LinkButton label={t("signIn")} href={Routes.login} className="ps-1" />
+            <LinkButton
+              label={t("signIn")}
+              href={Routes.login}
+              className="ps-1"
+            />
           </CardFooter>
         </Card>
       </form>
     </Form>
   );
 }
-

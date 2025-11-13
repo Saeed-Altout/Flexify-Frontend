@@ -25,7 +25,7 @@ export function PasswordInput({ ...props }: React.ComponentProps<"input">) {
 
   return (
     <InputGroup>
-      <InputGroupInput placeholder="password" type={type} {...props} />
+      <InputGroupInput type={type} {...props} />
       <InputGroupAddon>
         <KeyRoundIcon />
       </InputGroupAddon>

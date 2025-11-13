@@ -64,7 +64,10 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>{t("emailLabel")}</FormLabel>
                   <FormControl>
-                    <EmailInput {...field} />
+                    <EmailInput
+                      {...field}
+                      placeholder={t("emailPlaceholder")}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -77,7 +80,10 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>{t("passwordLabel")}</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput
+                      {...field}
+                      placeholder={t("passwordPlaceholder")}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -90,7 +96,10 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput
+                      {...field}
+                      placeholder={t("confirmPasswordPlaceholder")}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -102,11 +111,14 @@ export function RegisterForm() {
           </CardContent>
           <CardFooter className="justify-center">
             <p className="text-muted-foreground">{t("hasAccount")}</p>
-            <LinkButton label={t("signIn")} href={Routes.login} className="ps-1" />
+            <LinkButton
+              label={t("signIn")}
+              href={Routes.login}
+              className="ps-1"
+            />
           </CardFooter>
         </Card>
       </form>
     </Form>
   );
 }
-

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Cairo } from "next/font/google";
 import "../globals.css";
 
 import { Toaster } from "sonner";
@@ -16,6 +16,11 @@ import { getDir } from "@/utils/get-dir";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const cairo = Cairo({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -41,7 +46,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={getDir(locale)} suppressHydrationWarning>
-      <body className={cn("antialiased isolate", poppins.className)}>
+      <body
+        className={cn(
+          "antialiased isolate",
+          locale === "ar" ? cairo.className : poppins.className
+        )}
+      >
         <ReactQueryProviders>
           <NextIntlClientProvider>
             <ThemeProvider

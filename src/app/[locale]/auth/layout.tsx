@@ -1,9 +1,5 @@
-import { ZapIcon } from "lucide-react";
-
-import { Link } from "@/i18n/navigation";
-
-import { Routes } from "@/constants/routes";
 import { Image } from "@/components/ui/image";
+import { Logo } from "@/components/common/logo";
 
 export default async function AuthLayout({
   children,
@@ -13,14 +9,8 @@ export default async function AuthLayout({
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-center gap-2 md:justify-start">
-          <Link
-            href={Routes.home}
-            className="flex items-center gap-2 font-medium"
-          >
-            <ZapIcon className="size-4" />
-            Flexify
-          </Link>
+        <div className="flex justify-center gap-2 md:justify-start rtl:md:justify-end">
+          <Logo />
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-md">{children}</div>

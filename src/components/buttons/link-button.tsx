@@ -22,6 +22,7 @@ export function LinkButton({
   return (
     <Button
       variant="link"
+      type="button"
       className={cn(className)}
       onClick={handleRoute}
       {...props}

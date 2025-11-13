@@ -9,7 +9,7 @@ import {
 export function EmailInput({ ...props }: React.ComponentProps<"input">) {
   return (
     <InputGroup>
-      <InputGroupInput placeholder="email" type="email" {...props} />
+      <InputGroupInput type="email" {...props} />
       <InputGroupAddon>
         <MailIcon />
       </InputGroupAddon>
