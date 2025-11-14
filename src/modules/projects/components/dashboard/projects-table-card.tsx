@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { ProjectsDataTable } from "../projects-data-table";
+import { ProjectsDataTable } from "./projects-data-table";
 import type { Project } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
@@ -90,4 +90,3 @@ export function ProjectsTableCard({
     </Card>
   );
 }
-

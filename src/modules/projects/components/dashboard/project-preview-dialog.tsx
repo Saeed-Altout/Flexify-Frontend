@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTranslations, useLocale } from "next-intl";
-import { useProject } from "../hooks/use-project-queries";
+import { useProject } from "../../hooks/use-project-queries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -23,7 +23,7 @@ import {
   Globe,
   Image as ImageIcon,
 } from "lucide-react";
-import { formatDate } from "../utils/format";
+import { formatDate } from "../../utils/format";
 
 interface ProjectPreviewDialogProps {
   projectId: string | null;
@@ -43,11 +43,18 @@ export function ProjectPreviewDialog({
 
   // Get translation for current locale
   const translation = project?.translations?.find((t) => t.language === locale);
-  const projectTitle = translation?.title || project?.translations?.[0]?.title || "Untitled";
-  const projectSummary = translation?.summary || project?.translations?.[0]?.summary || "";
-  const projectDescription = translation?.description || project?.translations?.[0]?.description || "";
-  const projectArchitecture = translation?.architecture || project?.translations?.[0]?.architecture || null;
-  const projectFeatures = translation?.features || project?.translations?.[0]?.features || [];
+  const projectTitle =
+    translation?.title || project?.translations?.[0]?.title || "Untitled";
+  const projectSummary =
+    translation?.summary || project?.translations?.[0]?.summary || "";
+  const projectDescription =
+    translation?.description || project?.translations?.[0]?.description || "";
+  const projectArchitecture =
+    translation?.architecture ||
+    project?.translations?.[0]?.architecture ||
+    null;
+  const projectFeatures =
+    translation?.features || project?.translations?.[0]?.features || [];
 
   if (!open || !projectId) return null;
 
@@ -101,9 +108,7 @@ export function ProjectPreviewDialog({
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold">{projectTitle}</h2>
-                  <p className="text-muted-foreground mt-1">
-                    {projectSummary}
-                  </p>
+                  <p className="text-muted-foreground mt-1">{projectSummary}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {project.is_published ? (
@@ -275,4 +280,3 @@ export function ProjectPreviewDialog({
     </Dialog>
   );
 }
-

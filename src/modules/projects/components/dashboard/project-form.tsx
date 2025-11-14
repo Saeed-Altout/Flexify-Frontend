@@ -4,7 +4,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { projectSchema, type ProjectFormValues } from "../utils/schema";
+import { projectSchema, type ProjectFormValues } from "../../utils/schema";
 import {
   Form,
   FormControl,
@@ -23,7 +23,7 @@ import { FileUpload } from "./file-upload";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
-import { hasProjectChanges } from "../utils/diff";
+import { hasProjectChanges } from "../../utils/diff";
 import type { Project } from "@/types";
 
 interface ProjectFormProps {

@@ -12,7 +12,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ProjectForm } from "./project-form";
 import type { Project } from "@/types";
-import type { ProjectFormValues } from "../utils/schema";
+import type { ProjectFormValues } from "../../utils/schema";
 
 interface ProjectFormSheetProps {
   project?: Project;
@@ -59,9 +59,7 @@ export function ProjectFormSheet({
         side={getSheetSide()}
         className={cn(
           "w-full p-0 flex flex-col h-full",
-          isMobile
-            ? "h-[90vh] max-h-[90vh] rounded-t-2xl"
-            : "sm:max-w-4xl"
+          isMobile ? "h-[90vh] max-h-[90vh] rounded-t-2xl" : "sm:max-w-4xl"
         )}
       >
         <SheetHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-4 border-b shrink-0">
@@ -84,4 +82,3 @@ export function ProjectFormSheet({
     </Sheet>
   );
 }
-

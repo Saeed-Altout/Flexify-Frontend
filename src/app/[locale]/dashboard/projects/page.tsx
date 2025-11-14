@@ -1,6 +1,8 @@
-import { getSession } from "@/lib/auth/server";
 import { redirect } from "next/navigation";
-import { ProjectsPageClient } from "./projects-page-client";
+
+import { getSession } from "@/lib/auth/server";
+
+import { ProjectsPageClient } from "./_components/projects-page-client";
 
 export const metadata = {
   title: "Projects | Dashboard",

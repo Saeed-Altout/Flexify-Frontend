@@ -9,7 +9,6 @@ import {
   buildQueryString,
 } from "@/core/api/client";
 import type {
-  ApiResponse,
   CreateProjectDto,
   UpdateProjectDto,
   QueryProjectsDto,
@@ -25,13 +24,19 @@ export const projectsApi = {
    * Get list of projects
    */
   async getList(query?: QueryProjectsDto): Promise<ProjectsListResponse> {
-    const queryString = query ? `?${buildQueryString(query)}` : "";
-    const result = await apiFetch<ProjectsListResponse>(`/api/projects${queryString}`);
-    
+    const queryString = query
+      ? `?${buildQueryString(
+          query as Record<string, string | number | boolean | undefined>
+        )}`
+      : "";
+    const result = await apiFetch<ProjectsListResponse>(
+      `/api/projects${queryString}`
+    );
+
     if (!result.data) {
       throw new Error("No data received");
     }
-    
+
     return result.data;
   },
 
@@ -40,11 +45,11 @@ export const projectsApi = {
    */
   async getById(id: string): Promise<Project> {
     const result = await apiFetch<Project>(`/api/projects/${id}`);
-    
+
     if (!result.data) {
       throw new Error("Project not found");
     }
-    
+
     return result.data;
   },
 
@@ -56,11 +61,11 @@ export const projectsApi = {
       method: "POST",
       body: JSON.stringify(data),
     });
-    
+
     if (!result.data) {
       throw new Error("Failed to create project");
     }
-    
+
     return result.data;
   },
 
@@ -72,11 +77,11 @@ export const projectsApi = {
       method: "PATCH",
       body: JSON.stringify(data),
     });
-    
+
     if (!result.data) {
       throw new Error("Failed to update project");
     }
-    
+
     return result.data;
   },
 
@@ -93,15 +98,18 @@ export const projectsApi = {
    * Rate project
    */
   async rate(id: string, rating: number): Promise<{ rating: number }> {
-    const result = await authenticatedFetch<{ rating: number }>(`/api/projects/${id}/rate`, {
-      method: "POST",
-      body: JSON.stringify({ rating }),
-    });
-    
+    const result = await authenticatedFetch<{ rating: number }>(
+      `/api/projects/${id}/rate`,
+      {
+        method: "POST",
+        body: JSON.stringify({ rating }),
+      }
+    );
+
     if (!result.data) {
       throw new Error("Failed to rate project");
     }
-    
+
     return result.data;
   },
 
@@ -109,15 +117,17 @@ export const projectsApi = {
    * Like/Unlike project
    */
   async like(id: string): Promise<{ liked: boolean }> {
-    const result = await authenticatedFetch<{ liked: boolean }>(`/api/projects/${id}/like`, {
-      method: "POST",
-    });
-    
+    const result = await authenticatedFetch<{ liked: boolean }>(
+      `/api/projects/${id}/like`,
+      {
+        method: "POST",
+      }
+    );
+
     if (!result.data) {
       throw new Error("Failed to like project");
     }
-    
+
     return result.data;
   },
 };
-
