@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { ReactQueryProviders } from "@/providers/react-query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { cn } from "@/lib/utils";
 import { getDir } from "@/utils/get-dir";
 
@@ -53,17 +54,19 @@ export default async function LocaleLayout({
         )}
       >
         <ReactQueryProviders>
-          <NextIntlClientProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster position="top-center" />
-            </ThemeProvider>
-          </NextIntlClientProvider>
+          <NuqsAdapter>
+            <NextIntlClientProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+                <Toaster position="top-center" />
+              </ThemeProvider>
+            </NextIntlClientProvider>
+          </NuqsAdapter>
         </ReactQueryProviders>
       </body>
     </html>
