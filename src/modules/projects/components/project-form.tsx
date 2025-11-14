@@ -4,10 +4,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import {
-  projectSchema,
-  type ProjectFormValues,
-} from "@/modules/projects/utils/schema";
+import { projectSchema, type ProjectFormValues } from "../utils/schema";
 import {
   Form,
   FormControl,
@@ -26,7 +23,7 @@ import { FileUpload } from "./file-upload";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
-import { hasProjectChanges } from "@/modules/projects/utils/diff";
+import { hasProjectChanges } from "../utils/diff";
 import type { Project } from "@/types";
 
 interface ProjectFormProps {
@@ -380,6 +377,89 @@ export function ProjectForm({
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="translations.0.features"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("translationFeatures")} ({t("english")})
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            value={techInput}
+                            onChange={(e) => setTechInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                const currentFeatures = field.value || [];
+                                if (
+                                  techInput.trim() &&
+                                  !currentFeatures.includes(techInput.trim())
+                                ) {
+                                  field.onChange([
+                                    ...currentFeatures,
+                                    techInput.trim(),
+                                  ]);
+                                  setTechInput("");
+                                }
+                              }
+                            }}
+                            placeholder={t("translationFeaturesPlaceholder")}
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              const currentFeatures = field.value || [];
+                              if (
+                                techInput.trim() &&
+                                !currentFeatures.includes(techInput.trim())
+                              ) {
+                                field.onChange([
+                                  ...currentFeatures,
+                                  techInput.trim(),
+                                ]);
+                                setTechInput("");
+                              }
+                            }}
+                            variant="outline"
+                          >
+                            {t("add")}
+                          </Button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {(field.value || []).map((feature, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="gap-1"
+                            >
+                              {feature}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const currentFeatures = field.value || [];
+                                  field.onChange(
+                                    currentFeatures.filter(
+                                      (_, i) => i !== index
+                                    )
+                                  );
+                                }}
+                                className="ml-1 rounded-full hover:bg-secondary-foreground/20"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </TabsContent>
 
             <TabsContent value="ar" className="space-y-4 mt-4">
@@ -462,6 +542,91 @@ export function ProjectForm({
                     <FormDescription>
                       {t("translationArchitectureDescription")}
                     </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="translations.1.features"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t("translationFeatures")} ({t("arabic")})
+                    </FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Input
+                            value={techInput}
+                            onChange={(e) => setTechInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                const currentFeatures = field.value || [];
+                                if (
+                                  techInput.trim() &&
+                                  !currentFeatures.includes(techInput.trim())
+                                ) {
+                                  field.onChange([
+                                    ...currentFeatures,
+                                    techInput.trim(),
+                                  ]);
+                                  setTechInput("");
+                                }
+                              }
+                            }}
+                            placeholder={t("translationFeaturesPlaceholder")}
+                            dir="rtl"
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              const currentFeatures = field.value || [];
+                              if (
+                                techInput.trim() &&
+                                !currentFeatures.includes(techInput.trim())
+                              ) {
+                                field.onChange([
+                                  ...currentFeatures,
+                                  techInput.trim(),
+                                ]);
+                                setTechInput("");
+                              }
+                            }}
+                            variant="outline"
+                          >
+                            {t("add")}
+                          </Button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {(field.value || []).map((feature, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="gap-1"
+                            >
+                              {feature}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const currentFeatures = field.value || [];
+                                  field.onChange(
+                                    currentFeatures.filter(
+                                      (_, i) => i !== index
+                                    )
+                                  );
+                                }}
+                                className="ml-1 rounded-full hover:bg-secondary-foreground/20"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

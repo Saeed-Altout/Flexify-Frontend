@@ -29,6 +29,8 @@ export function DeleteProjectDialog({
   isLoading = false,
 }: DeleteProjectDialogProps) {
   const t = useTranslations("auth.projects.dashboard.deleteDialog");
+  const translation = project?.translations?.[0];
+  const projectTitle = translation?.title || "Untitled";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,7 +38,7 @@ export function DeleteProjectDialog({
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>
-            {t("description", { title: project?.title || "" })}
+            {t("description", { title: projectTitle })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
-import { useProjects } from "@/modules/projects/hooks/use-project-queries";
+import { useProjects } from "./use-project-queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import Link from "next/link";
 import type { Project } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 
-type TranslationFunction = (
+export type TranslationFunction = (
   key: string,
   values?: Record<string, unknown>
 ) => string;

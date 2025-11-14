@@ -12,7 +12,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { ProjectForm } from "./project-form";
 import type { Project } from "@/types";
-import type { ProjectFormValues } from "@/modules/projects/utils/schema";
+import type { ProjectFormValues } from "../utils/schema";
 
 interface ProjectFormSheetProps {
   project?: Project;
@@ -84,3 +84,4 @@ export function ProjectFormSheet({
     </Sheet>
   );
 }
+

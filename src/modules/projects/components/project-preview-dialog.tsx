@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTranslations, useLocale } from "next-intl";
-import { useProject } from "@/modules/projects/hooks/use-project-queries";
+import { useProject } from "../hooks/use-project-queries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -23,7 +23,7 @@ import {
   Globe,
   Image as ImageIcon,
 } from "lucide-react";
-import { formatDate } from "@/modules/projects/utils/format";
+import { formatDate } from "../utils/format";
 
 interface ProjectPreviewDialogProps {
   projectId: string | null;
@@ -190,37 +190,37 @@ export function ProjectPreviewDialog({
               </div>
             )}
 
-                {/* Images Gallery */}
-                {project.images && project.images.length > 0 && (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-semibold flex items-center gap-2">
-                      <ImageIcon className="h-4 w-4" />
-                      {t("images")}
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      {project.images.map((image, index) => (
-                        <div
-                          key={index}
-                          className="relative aspect-video rounded-lg overflow-hidden border bg-muted"
-                        >
-                          {imageErrors.has(image) ? (
-                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
-                              <ImageIcon className="h-8 w-8 mb-1 opacity-50" />
-                              <p className="text-xs">Image {index + 1}</p>
-                            </div>
-                          ) : (
-                            <img
-                              src={image}
-                              alt={`${projectTitle} - Image ${index + 1}`}
-                              className="w-full h-full object-cover"
-                              onError={() => handleImageError(image)}
-                            />
-                          )}
+            {/* Images Gallery */}
+            {project.images && project.images.length > 0 && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold flex items-center gap-2">
+                  <ImageIcon className="h-4 w-4" />
+                  {t("images")}
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {project.images.map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-video rounded-lg overflow-hidden border bg-muted"
+                    >
+                      {imageErrors.has(image) ? (
+                        <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                          <ImageIcon className="h-8 w-8 mb-1 opacity-50" />
+                          <p className="text-xs">Image {index + 1}</p>
                         </div>
-                      ))}
+                      ) : (
+                        <img
+                          src={image}
+                          alt={`${projectTitle} - Image ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={() => handleImageError(image)}
+                        />
+                      )}
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
+              </div>
+            )}
 
             <Separator />
 
@@ -275,3 +275,4 @@ export function ProjectPreviewDialog({
     </Dialog>
   );
 }
+

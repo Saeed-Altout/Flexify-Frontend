@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Upload, X, Image as ImageIcon, Video, FileImage } from "lucide-react";
+import { Upload, X, Image as ImageIcon, FileImage } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -73,12 +73,7 @@ export function FileUpload({
     }
 
     try {
-      // TODO: Implement proper file upload to server/CDN
-      // Currently using blob URLs which are temporary and won't persist
-      // In production, upload files to S3, Cloudinary, or your server and get back permanent URLs
-      
-      // For now, convert files to base64 data URLs so they can be stored in the database
-      // Note: This is not ideal for large files, but works for now
+      // Convert files to base64 data URLs so they can be stored in the database
       const filePromises = validFiles.map((file) => {
         return new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
