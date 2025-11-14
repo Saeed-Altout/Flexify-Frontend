@@ -18,6 +18,10 @@ interface ProjectsDataTableProps {
     noResults: string;
     showing: string;
     page: string;
+    firstPage?: string;
+    previousPage?: string;
+    nextPage?: string;
+    lastPage?: string;
   };
 }
 
@@ -54,7 +58,13 @@ export function ProjectsDataTable({
           }}
         />
         <DataTable.PaginationControls
-          translations={{ page: translations.page }}
+          translations={{
+            page: translations.page,
+            firstPage: translations.firstPage,
+            previousPage: translations.previousPage,
+            nextPage: translations.nextPage,
+            lastPage: translations.lastPage,
+          }}
         />
       </DataTable.Pagination>
     </DataTable>

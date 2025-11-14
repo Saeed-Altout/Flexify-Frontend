@@ -22,7 +22,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Code,
+  Filter,
+  X,
+  HelpCircle,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Project } from "@/types";
 import type { ProjectFormValues } from "@/modules/projects/utils/schema";
 import { formatDate, truncate } from "@/modules/projects/utils/format";
@@ -166,64 +179,118 @@ export function ProjectsPageClient() {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1">{t("description")}</p>
+    <TooltipProvider>
+      <div className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">{t("title")}</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1">
+              {t("description")}
+            </p>
+          </div>
+          <Button onClick={handleCreate} className="w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            {tDashboard("newProject")}
+          </Button>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          {tDashboard("newProject")}
-        </Button>
-      </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>{tDashboard("filters")}</CardTitle>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-lg">{tDashboard("filters")}</CardTitle>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">
+                  {tDashboard("filtersTooltip") || "Filter projects by search, tech stack, or status"}
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={tDashboard("searchPlaceholder")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value || null)}
-                className="pl-9"
-              />
-            </div>
-            <Input
-              placeholder={tDashboard("techStackPlaceholder")}
-              value={techStack || ""}
-              onChange={(e) => setTechStack(e.target.value || null)}
-            />
-            <Select
-              value={isPublished || "all"}
-              onValueChange={(value) =>
-                setIsPublished(value === "all" ? null : value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={tDashboard("status")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{tDashboard("allStatus")}</SelectItem>
-                <SelectItem value="true">{tDashboard("published")}</SelectItem>
-                <SelectItem value="false">{tDashboard("draft")}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSearch(null);
-                setTechStack(null);
-                setIsPublished(null);
-                setPage(1);
-              }}
-            >
-              {tDashboard("clearFilters")}
-            </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input
+                    placeholder={tDashboard("searchPlaceholder")}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value || null)}
+                    className="pl-9"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">{tDashboard("searchTooltip") || "Search by project title or description"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative">
+                  <Code className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input
+                    placeholder={tDashboard("techStackPlaceholder")}
+                    value={techStack || ""}
+                    onChange={(e) => setTechStack(e.target.value || null)}
+                    className="pl-9"
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">{tDashboard("techStackTooltip") || "Filter by technology (e.g., React, Node.js)"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Select
+                  value={isPublished || "all"}
+                  onValueChange={(value) =>
+                    setIsPublished(value === "all" ? null : value)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={tDashboard("status")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{tDashboard("allStatus")}</SelectItem>
+                    <SelectItem value="true">{tDashboard("published")}</SelectItem>
+                    <SelectItem value="false">{tDashboard("draft")}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">{tDashboard("statusTooltip") || "Filter by publication status"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearch(null);
+                    setTechStack(null);
+                    setIsPublished(null);
+                    setPage(1);
+                  }}
+                  className="w-full sm:w-auto"
+                  disabled={!search && !techStack && !isPublished}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  {tDashboard("clearFilters")}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">{tDashboard("clearFiltersTooltip") || "Reset all filters"}</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </CardContent>
       </Card>
@@ -261,6 +328,10 @@ export function ProjectsPageClient() {
                   current: String(page),
                   total: String(data?.meta?.totalPages || 1),
                 }) as string,
+                firstPage: tTable("firstPage") as string,
+                previousPage: tTable("previousPage") as string,
+                nextPage: tTable("nextPage") as string,
+                lastPage: tTable("lastPage") as string,
               }}
             />
           )}
@@ -294,6 +365,7 @@ export function ProjectsPageClient() {
         open={previewDialogOpen}
         onOpenChange={setPreviewDialogOpen}
       />
-    </div>
+      </div>
+    </TooltipProvider>
   );
 }

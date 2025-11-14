@@ -5,6 +5,12 @@ import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
 import { useProjects } from "@/modules/projects/hooks/use-project-queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Eye, Edit, Trash2, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import type { Project } from "@/types";
@@ -159,47 +165,70 @@ export function useProjectsTable({
         cell: ({ row }) => {
           const project = row.original;
           return (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => onPreview(project)}
-                title={translations.dashboard("previewButton")}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
-              {project.live_demo_url && (
-                <Link
-                  href={project.live_demo_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    title={translations.dashboard("viewLive")}
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </Link>
-              )}
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => onEdit(project)}
-                title={translations.dashboard("edit")}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => onDelete(project)}
-                title={translations.dashboard("delete")}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
+            <TooltipProvider>
+              <div className="flex items-center gap-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => onPreview(project)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">{translations.dashboard("previewTooltip")}</p>
+                  </TooltipContent>
+                </Tooltip>
+                {project.live_demo_url && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={project.live_demo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="ghost" size="icon-sm">
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">{translations.dashboard("viewLiveTooltip")}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => onEdit(project)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">{translations.dashboard("editTooltip")}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => onDelete(project)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs">{translations.dashboard("deleteTooltip")}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           );
         },
       },

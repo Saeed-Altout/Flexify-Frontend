@@ -152,6 +152,19 @@
                 "published":"منشور",
                 "draft":"مسودة",
                 "clearFilters":"مسح المرشحات",
+                "previewButton":"معاينة",
+                "previewTooltip":"معاينة تفاصيل المشروع",
+                "viewLive":"عرض مباشر",
+                "viewLiveTooltip":"فتح العرض المباشر في تبويب جديد",
+                "edit":"تعديل",
+                "editTooltip":"تعديل المشروع",
+                "delete":"حذف",
+                "deleteTooltip":"حذف المشروع",
+                "filtersTooltip":"تصفية المشاريع حسب البحث أو التقنيات أو الحالة",
+                "searchTooltip":"البحث حسب عنوان المشروع أو الوصف",
+                "techStackTooltip":"تصفية حسب التقنية (مثل React، Node.js)",
+                "statusTooltip":"تصفية حسب حالة النشر",
+                "clearFiltersTooltip":"إعادة تعيين جميع المرشحات",
                 "table":{
                     "title":"العنوان",
                     "techStack":"التقنيات المستخدمة",
@@ -163,7 +176,11 @@
                     "actions":"الإجراءات",
                     "noResults":"لا توجد نتائج.",
                     "showing":"عرض {from} إلى {to} من {total} نتيجة",
-                    "page":"الصفحة {current} من {total}"
+                    "page":"الصفحة {current} من {total}",
+                    "firstPage":"الانتقال إلى الصفحة الأولى",
+                    "previousPage":"الانتقال إلى الصفحة السابقة",
+                    "nextPage":"الانتقال إلى الصفحة التالية",
+                    "lastPage":"الانتقال إلى الصفحة الأخيرة"
                 },
                 "deleteDialog":{
                     "title":"حذف المشروع",

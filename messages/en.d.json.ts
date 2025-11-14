@@ -155,6 +155,19 @@ declare const messages: {
                 "published":"Published",
                 "draft":"Draft",
                 "clearFilters":"Clear Filters",
+                "previewButton":"Preview",
+                "previewTooltip":"Preview project details",
+                "viewLive":"View Live",
+                "viewLiveTooltip":"Open live demo in new tab",
+                "edit":"Edit",
+                "editTooltip":"Edit project",
+                "delete":"Delete",
+                "deleteTooltip":"Delete project",
+                "filtersTooltip":"Filter projects by search, tech stack, or status",
+                "searchTooltip":"Search by project title or description",
+                "techStackTooltip":"Filter by technology (e.g., React, Node.js)",
+                "statusTooltip":"Filter by publication status",
+                "clearFiltersTooltip":"Reset all filters",
                 "table":{
                     "title":"Title",
                     "techStack":"Tech Stack",
@@ -166,7 +179,11 @@ declare const messages: {
                     "actions":"Actions",
                     "noResults":"No results.",
                     "showing":"Showing {from} to {to} of {total} results",
-                    "page":"Page {current} of {total}"
+                    "page":"Page {current} of {total}",
+                    "firstPage":"Go to first page",
+                    "previousPage":"Go to previous page",
+                    "nextPage":"Go to next page",
+                    "lastPage":"Go to last page"
                 },
                 "deleteDialog":{
                     "title":"Delete Project",

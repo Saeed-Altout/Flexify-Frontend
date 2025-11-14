@@ -21,6 +21,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -259,6 +265,10 @@ function DataTablePaginationControls({
 }: {
   translations?: {
     page?: string;
+    firstPage?: string;
+    previousPage?: string;
+    nextPage?: string;
+    lastPage?: string;
   };
   className?: string;
 }) {
@@ -276,41 +286,71 @@ function DataTablePaginationControls({
     : `Page ${currentPage} of ${pageCount}`;
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handlePageChange(1)}
-        disabled={currentPage === 1}
-      >
-        <ChevronsLeft className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </Button>
-      <div className="text-sm">{pageText}</div>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage >= pageCount}
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handlePageChange(pageCount)}
-        disabled={currentPage >= pageCount}
-      >
-        <ChevronsRight className="h-4 w-4" />
-      </Button>
-    </div>
+    <TooltipProvider>
+      <div className={cn("flex items-center gap-2", className)}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronsLeft className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">{translations?.firstPage || "First page"}</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">{translations?.previousPage || "Previous page"}</p>
+          </TooltipContent>
+        </Tooltip>
+        <div className="text-sm">{pageText}</div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage >= pageCount}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">{translations?.nextPage || "Next page"}</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(pageCount)}
+              disabled={currentPage >= pageCount}
+            >
+              <ChevronsRight className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-xs">{translations?.lastPage || "Last page"}</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   );
 }
 
