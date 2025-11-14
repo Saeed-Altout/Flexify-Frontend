@@ -124,11 +124,7 @@
             "loading":"جاري تحميل المشاريع...",
             "techStack":"التقنيات المستخدمة",
             "role":"الدور",
-            "responsibilities":"المسؤوليات",
             "features":"الميزات",
-            "challenges":"التحديات",
-            "solutions":"الحلول",
-            "lessons":"الدروس المستفادة",
             "github":"GitHub",
             "liveDemo":"عرض مباشر",
             "rate":"تقييم",
@@ -189,12 +185,8 @@
                     "techStack":"التقنيات المستخدمة",
                     "description":"الوصف",
                     "role":"الدور",
-                    "responsibilities":"المسؤوليات",
                     "architecture":"الهندسة المعمارية",
                     "features":"الميزات",
-                    "challenges":"التحديات",
-                    "solutions":"الحلول",
-                    "lessons":"الدروس المستفادة",
                     "images":"صور المشروع",
                     "github":"GitHub",
                     "backendCode":"كود الخادم",
@@ -209,9 +201,6 @@
                 "form":{
                     "title":"العنوان",
                     "titlePlaceholder":"مشروعي الرائع",
-                    "slug":"الرابط",
-                    "slugPlaceholder":"my-awesome-project",
-                    "slugDescription":"معرف مناسب للرابط (يتم إنشاؤه تلقائياً من العنوان)",
                     "summary":"الملخص",
                     "summaryPlaceholder":"ملخص موجز للمشروع...",
                     "description":"الوصف",
@@ -254,12 +243,10 @@
                     "uploadDropHere":"أفلت الملفات هنا",
                     "uploadSelectFiles":"اختر الملفات",
                     "uploadPreviewImage":"معاينة الصورة {number}",
-                    "uploadPreviewVideo":"معاينة الفيديو {number}",
                     "uploadTooManyFiles":"عدد كبير من الملفات. الحد الأقصى {max} ملف.",
                     "uploadInvalidFileType":"نوع ملف غير صحيح. يرجى اختيار ملفات {type} فقط.",
                     "uploadError":"حدث خطأ أثناء رفع الملفات.",
-                    "uploadFileTypeImage":"صورة",
-                    "uploadFileTypeVideo":"فيديو"
+                    "uploadFileTypeImage":"صورة"
                 }
             }
         }

@@ -2,12 +2,12 @@
 
 import * as React from "react";
 import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
-import { useProjects, useProject } from "@/hooks/use-project-queries";
+import { useProjects, useProject } from "@/modules/projects/hooks/use-project-queries";
 import {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useDeleteProjectMutation,
-} from "@/hooks/use-project-mutations";
+} from "@/modules/projects/hooks/use-project-mutations";
 import { DataTable } from "@/components/projects/data-table";
 import { ProjectFormSheet } from "@/components/projects/project-form-sheet";
 import { DeleteProjectDialog } from "@/components/projects/delete-project-dialog";
@@ -25,10 +25,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Edit, Trash2, ExternalLink, Eye } from "lucide-react";
 import type { Project } from "@/types";
-import type { ProjectFormValues } from "@/utils/projects/project-schema";
+import type { ProjectFormValues } from "@/modules/projects/utils/schema";
 import type { ColumnDef } from "@tanstack/react-table";
-import { formatDate, truncate } from "@/utils/projects/format-utils";
-import { getProjectChanges } from "@/utils/projects/diff-utils";
+import { formatDate, truncate } from "@/modules/projects/utils/format";
+import { getProjectChanges } from "@/modules/projects/utils/diff";
 import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 

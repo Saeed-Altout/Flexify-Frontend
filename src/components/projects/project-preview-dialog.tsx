@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTranslations, useLocale } from "next-intl";
-import { useProject } from "@/hooks/use-project-queries";
+import { useProject } from "@/modules/projects/hooks/use-project-queries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -23,7 +23,7 @@ import {
   Globe,
   Image as ImageIcon,
 } from "lucide-react";
-import { formatDate } from "@/utils/projects/format-utils";
+import { formatDate } from "@/modules/projects/utils/format";
 
 interface ProjectPreviewDialogProps {
   projectId: string | null;
@@ -46,6 +46,8 @@ export function ProjectPreviewDialog({
   const projectTitle = translation?.title || project?.translations?.[0]?.title || "Untitled";
   const projectSummary = translation?.summary || project?.translations?.[0]?.summary || "";
   const projectDescription = translation?.description || project?.translations?.[0]?.description || "";
+  const projectArchitecture = translation?.architecture || project?.translations?.[0]?.architecture || null;
+  const projectFeatures = translation?.features || project?.translations?.[0]?.features || [];
 
   if (!open || !projectId) return null;
 
@@ -164,76 +166,27 @@ export function ProjectPreviewDialog({
               </div>
             )}
 
-            {/* Responsibilities */}
-            {project.responsibilities &&
-              project.responsibilities.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold">
-                    {t("responsibilities")}
-                  </h3>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                    {project.responsibilities.map((resp, index) => (
-                      <li key={index}>{resp}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
             {/* Architecture */}
-            {project.architecture && (
+            {projectArchitecture && (
               <div className="space-y-2">
                 <h3 className="text-sm font-semibold">{t("architecture")}</h3>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {project.architecture}
+                  {projectArchitecture}
                 </p>
               </div>
             )}
 
             {/* Features */}
-            {project.features && project.features.length > 0 && (
+            {projectFeatures && projectFeatures.length > 0 && (
               <div className="space-y-2">
                 <h3 className="text-sm font-semibold">{t("features")}</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                  {project.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
+                <div className="flex flex-wrap gap-2">
+                  {projectFeatures.map((feature, index) => (
+                    <Badge key={index} variant="secondary">
+                      {feature}
+                    </Badge>
                   ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Challenges */}
-            {project.challenges && project.challenges.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold">{t("challenges")}</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                  {project.challenges.map((challenge, index) => (
-                    <li key={index}>{challenge}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Solutions */}
-            {project.solutions && project.solutions.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold">{t("solutions")}</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                  {project.solutions.map((solution, index) => (
-                    <li key={index}>{solution}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Lessons */}
-            {project.lessons && project.lessons.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold">{t("lessons")}</h3>
-                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                  {project.lessons.map((lesson, index) => (
-                    <li key={index}>{lesson}</li>
-                  ))}
-                </ul>
+                </div>
               </div>
             )}
 

@@ -15,7 +15,7 @@ interface FileUploadProps {
   label?: string;
   description?: string;
   error?: string;
-  type?: "image" | "video" | "all";
+  type?: "image" | "all";
 }
 
 export function FileUpload({
@@ -50,15 +50,12 @@ export function FileUpload({
       if (type === "image") {
         return file.type.startsWith("image/");
       }
-      if (type === "video") {
-        return file.type.startsWith("video/");
-      }
       return true;
     });
 
     // Check for invalid file types
     if (validFiles.length !== fileArray.length) {
-      const fileTypeName = type === "image" ? t("uploadFileTypeImage") : type === "video" ? t("uploadFileTypeVideo") : "files";
+      const fileTypeName = type === "image" ? t("uploadFileTypeImage") : "files";
       setUploadError(t("uploadInvalidFileType", { type: fileTypeName }));
       return;
     }
@@ -134,13 +131,11 @@ export function FileUpload({
   const getAcceptType = () => {
     if (accept) return accept;
     if (type === "image") return "image/*";
-    if (type === "video") return "video/*";
     return "*/*";
   };
 
   const getIcon = () => {
     if (type === "image") return <ImageIcon className="h-5 w-5" />;
-    if (type === "video") return <Video className="h-5 w-5" />;
     return <FileImage className="h-5 w-5" />;
   };
 
@@ -200,21 +195,14 @@ export function FileUpload({
               key={index}
               className="relative group aspect-video rounded-lg overflow-hidden border bg-muted shadow-sm hover:shadow-md transition-shadow"
             >
-              {type === "image" ? (
-                <img
-                  src={url}
-                  alt={t("uploadPreviewImage", { number: index + 1 })}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <video
-                  src={url}
-                  className="w-full h-full object-cover"
-                  controls={false}
-                  muted
-                  aria-label={t("uploadPreviewVideo", { number: index + 1 })}
-                />
-              )}
+              <img
+                src={url}
+                alt={t("uploadPreviewImage", { number: index + 1 })}
+                className="w-full h-full object-cover"
+                onError={() => {
+                  setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+                }}
+              />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
               <Button
                 type="button"

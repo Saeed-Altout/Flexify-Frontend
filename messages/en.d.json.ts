@@ -127,11 +127,7 @@ declare const messages: {
             "loading":"Loading projects...",
             "techStack":"Tech Stack",
             "role":"Role",
-            "responsibilities":"Responsibilities",
             "features":"Features",
-            "challenges":"Challenges",
-            "solutions":"Solutions",
-            "lessons":"Lessons Learned",
             "github":"GitHub",
             "liveDemo":"Live Demo",
             "rate":"Rate",
@@ -192,12 +188,8 @@ declare const messages: {
                     "techStack":"Tech Stack",
                     "description":"Description",
                     "role":"Role",
-                    "responsibilities":"Responsibilities",
                     "architecture":"Architecture",
                     "features":"Features",
-                    "challenges":"Challenges",
-                    "solutions":"Solutions",
-                    "lessons":"Lessons Learned",
                     "images":"Project Images",
                     "github":"GitHub",
                     "backendCode":"Backend Code",
@@ -212,9 +204,6 @@ declare const messages: {
                 "form":{
                     "title":"Title",
                     "titlePlaceholder":"My Awesome Project",
-                    "slug":"Slug",
-                    "slugPlaceholder":"my-awesome-project",
-                    "slugDescription":"URL-friendly identifier (auto-generated from title)",
                     "summary":"Summary",
                     "summaryPlaceholder":"Brief summary of the project...",
                     "description":"Description",
@@ -257,12 +246,10 @@ declare const messages: {
                     "uploadDropHere":"Drop files here",
                     "uploadSelectFiles":"Select Files",
                     "uploadPreviewImage":"Preview image {number}",
-                    "uploadPreviewVideo":"Preview video {number}",
                     "uploadTooManyFiles":"Too many files. Maximum {max} files allowed.",
                     "uploadInvalidFileType":"Invalid file type. Please select {type} files only.",
                     "uploadError":"An error occurred while uploading files.",
-                    "uploadFileTypeImage":"image",
-                    "uploadFileTypeVideo":"video"
+                    "uploadFileTypeImage":"image"
                 }
             }
         }

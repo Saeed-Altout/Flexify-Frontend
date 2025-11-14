@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import {
   projectSchema,
   type ProjectFormValues,
-} from "@/utils/projects/project-schema";
+} from "@/modules/projects/utils/schema";
 import {
   Form,
   FormControl,
@@ -26,7 +26,7 @@ import { FileUpload } from "./file-upload";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
-import { hasProjectChanges } from "@/utils/projects/diff-utils";
+import { hasProjectChanges } from "@/modules/projects/utils/diff";
 import type { Project } from "@/types";
 
 interface ProjectFormProps {

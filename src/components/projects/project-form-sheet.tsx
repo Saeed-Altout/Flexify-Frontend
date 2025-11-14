@@ -10,7 +10,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { ProjectForm } from "./project-form";
 import type { Project } from "@/types";
-import type { ProjectFormValues } from "@/utils/projects/project-schema";
+import type { ProjectFormValues } from "@/modules/projects/utils/schema";
 
 interface ProjectFormSheetProps {
   project?: Project;
