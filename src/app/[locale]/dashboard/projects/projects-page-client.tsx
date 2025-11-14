@@ -371,17 +371,23 @@ export function ProjectsPageClient() {
               data={data?.data || []}
               isLoading={isLoading}
               pageCount={data?.meta?.totalPages || 1}
+              totalCount={data?.meta?.total || 0}
+              currentPage={page}
+              pageSize={limit}
               onPaginationChange={(newPage) => {
                 setPage(newPage);
               }}
               translations={{
                 noResults: tTable("noResults") as string,
                 showing: tTable("showing", {
-                  from: "",
-                  to: "",
-                  total: "",
+                  from: String((page - 1) * limit + 1),
+                  to: String(Math.min(page * limit, data?.meta?.total || 0)),
+                  total: String(data?.meta?.total || 0),
                 }) as string,
-                page: tTable("page", { current: "", total: "" }) as string,
+                page: tTable("page", {
+                  current: String(page),
+                  total: String(data?.meta?.totalPages || 1),
+                }) as string,
               }}
             />
           )}

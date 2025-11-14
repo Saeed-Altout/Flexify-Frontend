@@ -27,6 +27,9 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   isLoading?: boolean;
   pageCount?: number;
+  totalCount?: number;
+  currentPage?: number;
+  pageSize?: number;
   onPaginationChange?: (page: number, pageSize: number) => void;
   translations?: {
     noResults?: string;
@@ -40,14 +43,25 @@ export function DataTable<TData, TValue>({
   data,
   isLoading = false,
   pageCount = 1,
+  totalCount = 0,
+  currentPage = 1,
+  pageSize = 10,
   onPaginationChange,
   translations,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
+    pageIndex: currentPage - 1,
+    pageSize,
   });
+
+  // Sync pagination with props
+  React.useEffect(() => {
+    setPagination({
+      pageIndex: currentPage - 1,
+      pageSize,
+    });
+  }, [currentPage, pageSize]);
 
   const table = useReactTable({
     data,
@@ -157,56 +171,54 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          {translations?.showing
-            ? (translations.showing
-                .replace(/\{from\}/g, String(table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1))
-                .replace(/\{to\}/g, String(Math.min(
-                  (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-                  table.getRowCount()
-                )))
-                .replace(/\{total\}/g, String(table.getRowCount())))
-            : `Showing ${table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to ${Math.min(
-                (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-                table.getRowCount()
-              )} of ${table.getRowCount()} results`}
+          {totalCount > 0 ? (
+            translations?.showing
+              ? (translations.showing
+                  .replace(/\{from\}/g, String((currentPage - 1) * pageSize + 1))
+                  .replace(/\{to\}/g, String(Math.min(currentPage * pageSize, totalCount)))
+                  .replace(/\{total\}/g, String(totalCount)))
+              : `Showing ${(currentPage - 1) * pageSize + 1} to ${Math.min(currentPage * pageSize, totalCount)} of ${totalCount} results`
+          ) : (
+            translations?.noResults || "No results."
+          )}
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPaginationChange?.(1, pageSize)}
+            disabled={currentPage === 1}
           >
             <ChevronsLeft className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPaginationChange?.(currentPage - 1, pageSize)}
+            disabled={currentPage === 1}
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <div className="text-sm">
             {translations?.page
               ? (translations.page
-                  .replace(/\{current\}/g, String(table.getState().pagination.pageIndex + 1))
-                  .replace(/\{total\}/g, String(table.getPageCount())))
-              : `Page ${table.getState().pagination.pageIndex + 1} of ${table.getPageCount()}`}
+                  .replace(/\{current\}/g, String(currentPage))
+                  .replace(/\{total\}/g, String(pageCount)))
+              : `Page ${currentPage} of ${pageCount}`}
           </div>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => onPaginationChange?.(currentPage + 1, pageSize)}
+            disabled={currentPage >= pageCount}
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
+            onClick={() => onPaginationChange?.(pageCount, pageSize)}
+            disabled={currentPage >= pageCount}
           >
             <ChevronsRight className="h-4 w-4" />
           </Button>
