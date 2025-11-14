@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
-import { useProjects } from "@/hooks/use-project-queries";
+import { useProjects, useProject } from "@/hooks/use-project-queries";
 import {
   useCreateProjectMutation,
   useUpdateProjectMutation,
@@ -28,13 +28,15 @@ import type { Project } from "@/types";
 import type { ProjectFormValues } from "@/utils/projects/project-schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import { formatDate, truncate } from "@/utils/projects/format-utils";
-import { useTranslations } from "next-intl";
+import { getProjectChanges } from "@/utils/projects/diff-utils";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 
 export function ProjectsPageClient() {
   const t = useTranslations("auth.projects");
   const tDashboard = useTranslations("auth.projects.dashboard");
   const tTable = useTranslations("auth.projects.dashboard.table");
+  const locale = useLocale();
   const [mounted, setMounted] = React.useState(false);
 
   const [search, setSearch] = useQueryState(
@@ -55,9 +57,15 @@ export function ProjectsPageClient() {
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
     null
   );
+  const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(
+    null
+  );
   const [previewProjectId, setPreviewProjectId] = React.useState<string | null>(
     null
   );
+
+  // Fetch full project data with translations when editing
+  const { data: fullProjectData } = useProject(selectedProjectId);
 
   // Ensure component is mounted before rendering to prevent hydration mismatch
   React.useEffect(() => {
@@ -83,12 +91,38 @@ export function ProjectsPageClient() {
   const updateMutation = useUpdateProjectMutation();
   const deleteMutation = useDeleteProjectMutation();
 
+  // Close sheet on successful mutations only (not on errors)
+  React.useEffect(() => {
+    if (
+      createMutation.isSuccess &&
+      createMutation.data &&
+      createMutation.data.success === true
+    ) {
+      setFormDialogOpen(false);
+      setSelectedProject(null);
+      setSelectedProjectId(null);
+    }
+  }, [createMutation.isSuccess, createMutation.data]);
+
+  React.useEffect(() => {
+    if (
+      updateMutation.isSuccess &&
+      updateMutation.data &&
+      updateMutation.data.success === true
+    ) {
+      setFormDialogOpen(false);
+      setSelectedProject(null);
+      setSelectedProjectId(null);
+    }
+  }, [updateMutation.isSuccess, updateMutation.data]);
+
   const handleCreate = () => {
     setSelectedProject(null);
     setFormDialogOpen(true);
   };
 
   const handleEdit = (project: Project) => {
+    setSelectedProjectId(project.id);
     setSelectedProject(project);
     setFormDialogOpen(true);
   };
@@ -105,9 +139,13 @@ export function ProjectsPageClient() {
 
   const handleFormSubmit = (formData: ProjectFormValues) => {
     if (selectedProject) {
+      // Only send changed fields for updates to improve performance
+      // Use fullProjectData if available (has translations), otherwise use selectedProject
+      const originalProject = fullProjectData || selectedProject;
+      const changes = getProjectChanges(originalProject, formData);
       updateMutation.mutate({
         id: selectedProject.id,
-        data: formData,
+        data: changes,
       });
     } else {
       createMutation.mutate(formData);
@@ -129,16 +167,16 @@ export function ProjectsPageClient() {
         header: tTable("title"),
         cell: ({ row }) => {
           const project = row.original;
+          const translation = project.translations?.find((t) => t.language === locale);
+          const projectTitle = translation?.title || project.translations?.[0]?.title || "Untitled";
+          const projectSummary = translation?.summary || project.translations?.[0]?.summary || "";
           return (
             <div className="flex flex-col">
-              <Link
-                href={`/projects/${project.slug}`}
-                className="font-medium hover:underline"
-              >
-                {truncate(project.title, 40)}
-              </Link>
+              <span className="font-medium">
+                {truncate(projectTitle, 40)}
+              </span>
               <span className="text-xs text-muted-foreground">
-                {truncate(project.summary, 50)}
+                {truncate(projectSummary, 50)}
               </span>
             </div>
           );
@@ -351,9 +389,15 @@ export function ProjectsPageClient() {
       </Card>
 
       <ProjectFormSheet
-        project={selectedProject || undefined}
+        project={fullProjectData || selectedProject || undefined}
         open={formDialogOpen}
-        onOpenChange={setFormDialogOpen}
+        onOpenChange={(open) => {
+          setFormDialogOpen(open);
+          if (!open) {
+            setSelectedProjectId(null);
+            setSelectedProject(null);
+          }
+        }}
         onSubmit={handleFormSubmit}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />

@@ -4,7 +4,10 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { projectSchema, type ProjectFormValues } from "@/utils/projects/project-schema";
+import {
+  projectSchema,
+  type ProjectFormValues,
+} from "@/utils/projects/project-schema";
 import {
   Form,
   FormControl,
@@ -23,7 +26,7 @@ import { FileUpload } from "./file-upload";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X } from "lucide-react";
-import { slugify } from "@/utils/projects/slug-utils";
+import { hasProjectChanges } from "@/utils/projects/diff-utils";
 import type { Project } from "@/types";
 
 interface ProjectFormProps {
@@ -49,13 +52,31 @@ export function ProjectForm({
   // Always ensure en is at index 0 and ar is at index 1
   const initializeTranslations = () => {
     const defaultTranslations = [
-      { language: "en" as const, title: "", summary: "", description: "", architecture: "" },
-      { language: "ar" as const, title: "", summary: "", description: "", architecture: "" },
+      {
+        language: "en" as const,
+        title: "",
+        summary: "",
+        description: "",
+        architecture: "",
+        features: [],
+      },
+      {
+        language: "ar" as const,
+        title: "",
+        summary: "",
+        description: "",
+        architecture: "",
+        features: [],
+      },
     ];
 
     if (project?.translations && project.translations.length > 0) {
-      const enTranslation = project.translations.find((t) => t.language === "en");
-      const arTranslation = project.translations.find((t) => t.language === "ar");
+      const enTranslation = project.translations.find(
+        (t) => t.language === "en"
+      );
+      const arTranslation = project.translations.find(
+        (t) => t.language === "ar"
+      );
 
       return [
         {
@@ -63,14 +84,16 @@ export function ProjectForm({
           title: enTranslation?.title || "",
           summary: enTranslation?.summary || "",
           description: enTranslation?.description || "",
-          architecture: enTranslation?.architecture || "",
+          architecture: enTranslation?.architecture ?? "",
+          features: enTranslation?.features || [],
         },
         {
           language: "ar" as const,
           title: arTranslation?.title || "",
           summary: arTranslation?.summary || "",
           description: arTranslation?.description || "",
-          architecture: arTranslation?.architecture || "",
+          architecture: arTranslation?.architecture ?? "",
+          features: arTranslation?.features || [],
         },
       ];
     }
@@ -81,28 +104,68 @@ export function ProjectForm({
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      title: project?.title || "",
-      slug: project?.slug || "",
-      summary: project?.summary || "",
-      description: project?.description || "",
       tech_stack: project?.tech_stack || [],
       role: project?.role || "",
-      responsibilities: project?.responsibilities || [],
-      architecture: project?.architecture || "",
-      features: project?.features || [],
-      challenges: project?.challenges || [],
-      solutions: project?.solutions || [],
-      lessons: project?.lessons || [],
       github_url: project?.github_url || "",
       github_backend_url: project?.github_backend_url || "",
       live_demo_url: project?.live_demo_url || "",
-      video_demo_url: project?.video_demo_url || "",
       main_image: project?.main_image || "",
       images: project?.images || [],
       is_published: project?.is_published ?? false,
       translations: initializeTranslations(),
     },
   });
+
+  // Update form when project changes (e.g., when editing and project data is loaded)
+  React.useEffect(() => {
+    if (project) {
+      const translations = initializeTranslations();
+      form.reset({
+        tech_stack: project.tech_stack || [],
+        role: project.role || "",
+        github_url: project.github_url || "",
+        github_backend_url: project.github_backend_url || "",
+        live_demo_url: project.live_demo_url || "",
+        main_image: project.main_image || "",
+        images: project.images || [],
+        is_published: project.is_published ?? false,
+        translations: translations,
+      });
+      setTechStack(project.tech_stack || []);
+    } else {
+      // Reset form when no project (creating new)
+      form.reset({
+        tech_stack: [],
+        role: "",
+        github_url: "",
+        github_backend_url: "",
+        live_demo_url: "",
+        main_image: "",
+        images: [],
+        is_published: false,
+        translations: [
+          {
+            language: "en" as const,
+            title: "",
+            summary: "",
+            description: "",
+            architecture: "",
+            features: [],
+          },
+          {
+            language: "ar" as const,
+            title: "",
+            summary: "",
+            description: "",
+            architecture: "",
+            features: [],
+          },
+        ],
+      });
+      setTechStack([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id, project?.translations?.length]);
 
   const handleAddTech = () => {
     if (techInput.trim() && !techStack.includes(techInput.trim())) {
@@ -119,107 +182,51 @@ export function ProjectForm({
     form.setValue("tech_stack", newTech);
   };
 
-  const handleTitleChange = (value: string) => {
-    form.setValue("title", value);
-    if (!project) {
-      // Auto-generate slug from title for new projects
-      form.setValue("slug", slugify(value));
+  // Watch form values to detect changes
+  const formValues = form.watch();
+
+  // Check if there are changes when editing
+  const hasChanges = React.useMemo(() => {
+    if (!project) return true; // Always allow submit for new projects
+    try {
+      // Transform form values to match ProjectFormValues format
+      const currentFormData: ProjectFormValues = {
+        ...formValues,
+        tech_stack: techStack,
+        translations: formValues.translations || [],
+      };
+      return hasProjectChanges(project, currentFormData);
+    } catch {
+      return true; // If comparison fails, allow submit
     }
-  };
+  }, [formValues, techStack, project]);
 
   const handleFormSubmit = (data: ProjectFormValues) => {
     // Transform empty strings to undefined for optional URL fields
     // Filter out translations with empty required fields
-    const validTranslations = data.translations?.filter(
-      (t) => t.title && t.summary && t.description
-    ) || [];
+    const validTranslations =
+      data.translations?.filter((t) => t.title && t.summary && t.description) ||
+      [];
 
     const transformedData: ProjectFormValues = {
       ...data,
       github_url: data.github_url === "" ? undefined : data.github_url,
-      github_backend_url: data.github_backend_url === "" ? undefined : data.github_backend_url,
+      github_backend_url:
+        data.github_backend_url === "" ? undefined : data.github_backend_url,
       live_demo_url: data.live_demo_url === "" ? undefined : data.live_demo_url,
-      video_demo_url: data.video_demo_url === "" ? undefined : data.video_demo_url,
       main_image: data.main_image === "" ? undefined : data.main_image,
-      translations: validTranslations.length > 0 ? validTranslations : undefined,
+      translations:
+        validTranslations.length > 0 ? validTranslations : undefined,
     };
     onSubmit(transformedData);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("title")}</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder={t("titlePlaceholder")}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("slug")}</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder={t("slugPlaceholder")} />
-              </FormControl>
-              <FormDescription>
-                {t("slugDescription")}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="summary"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("summary")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder={t("summaryPlaceholder")}
-                  rows={3}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("description")}</FormLabel>
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder={t("descriptionPlaceholder")}
-                  rows={6}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+      <form
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-6"
+      >
         <FormField
           control={form.control}
           name="tech_stack"
@@ -292,16 +299,21 @@ export function ProjectForm({
               <TabsTrigger value="en">{t("english")}</TabsTrigger>
               <TabsTrigger value="ar">{t("arabic")}</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="en" className="space-y-4 mt-4">
               <FormField
                 control={form.control}
                 name="translations.0.title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationTitle")} ({t("english")})</FormLabel>
+                    <FormLabel>
+                      {t("translationTitle")} ({t("english")})
+                    </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={t("translationTitlePlaceholder")} />
+                      <Input
+                        {...field}
+                        placeholder={t("translationTitlePlaceholder")}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -312,7 +324,9 @@ export function ProjectForm({
                 name="translations.0.summary"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationSummary")} ({t("english")})</FormLabel>
+                    <FormLabel>
+                      {t("translationSummary")} ({t("english")})
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -329,7 +343,9 @@ export function ProjectForm({
                 name="translations.0.description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationDescription")} ({t("english")})</FormLabel>
+                    <FormLabel>
+                      {t("translationDescription")} ({t("english")})
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -346,7 +362,9 @@ export function ProjectForm({
                 name="translations.0.architecture"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationArchitecture")} ({t("english")})</FormLabel>
+                    <FormLabel>
+                      {t("translationArchitecture")} ({t("english")})
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -370,9 +388,15 @@ export function ProjectForm({
                 name="translations.1.title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationTitle")} ({t("arabic")})</FormLabel>
+                    <FormLabel>
+                      {t("translationTitle")} ({t("arabic")})
+                    </FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder={t("translationTitlePlaceholder")} dir="rtl" />
+                      <Input
+                        {...field}
+                        placeholder={t("translationTitlePlaceholder")}
+                        dir="rtl"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -383,7 +407,9 @@ export function ProjectForm({
                 name="translations.1.summary"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationSummary")} ({t("arabic")})</FormLabel>
+                    <FormLabel>
+                      {t("translationSummary")} ({t("arabic")})
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -401,7 +427,9 @@ export function ProjectForm({
                 name="translations.1.description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationDescription")} ({t("arabic")})</FormLabel>
+                    <FormLabel>
+                      {t("translationDescription")} ({t("arabic")})
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -419,7 +447,9 @@ export function ProjectForm({
                 name="translations.1.architecture"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("translationArchitecture")} ({t("arabic")})</FormLabel>
+                    <FormLabel>
+                      {t("translationArchitecture")} ({t("arabic")})
+                    </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
@@ -444,7 +474,7 @@ export function ProjectForm({
 
         <div className="space-y-4">
           <h3 className="text-sm font-semibold">{t("mediaSection")}</h3>
-          
+
           <FormField
             control={form.control}
             name="main_image"
@@ -496,34 +526,6 @@ export function ProjectForm({
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="video_demo_url"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("videoDemo")}</FormLabel>
-                <FormControl>
-                  <FileUpload
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(
-                        Array.isArray(value) ? value[0] : value || ""
-                      );
-                    }}
-                    type="video"
-                    label={t("videoDemoLabel")}
-                    description={t("videoDemoDescription")}
-                    error={form.formState.errors.video_demo_url?.message}
-                  />
-                </FormControl>
-                <FormDescription>
-                  {t("videoDemoNote")}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         <Separator />
@@ -536,7 +538,11 @@ export function ProjectForm({
               <FormItem>
                 <FormLabel>{t("githubUrl")}</FormLabel>
                 <FormControl>
-                  <Input {...field} type="url" placeholder={t("githubUrlPlaceholder")} />
+                  <Input
+                    {...field}
+                    type="url"
+                    placeholder={t("githubUrlPlaceholder")}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -550,7 +556,11 @@ export function ProjectForm({
               <FormItem>
                 <FormLabel>{t("liveDemoUrl")}</FormLabel>
                 <FormControl>
-                  <Input {...field} type="url" placeholder={t("liveDemoUrlPlaceholder")} />
+                  <Input
+                    {...field}
+                    type="url"
+                    placeholder={t("liveDemoUrlPlaceholder")}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -571,9 +581,7 @@ export function ProjectForm({
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>{t("published")}</FormLabel>
-                <FormDescription>
-                  {t("publishedDescription")}
-                </FormDescription>
+                <FormDescription>{t("publishedDescription")}</FormDescription>
               </div>
             </FormItem>
           )}
@@ -585,7 +593,10 @@ export function ProjectForm({
               {t("cancel")}
             </Button>
           )}
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading || (project && !hasChanges)}
+          >
             {isLoading ? t("saving") : project ? t("update") : t("create")}
           </Button>
         </div>
@@ -593,4 +604,3 @@ export function ProjectForm({
     </Form>
   );
 }
-

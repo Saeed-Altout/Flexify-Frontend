@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useProject } from "@/hooks/use-project-queries";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,6 @@ import {
   Calendar,
   Code,
   Globe,
-  Video,
   Image as ImageIcon,
 } from "lucide-react";
 import { formatDate } from "@/utils/projects/format-utils";
@@ -37,9 +37,21 @@ export function ProjectPreviewDialog({
   onOpenChange,
 }: ProjectPreviewDialogProps) {
   const t = useTranslations("auth.projects.dashboard.preview");
+  const locale = useLocale();
   const { data: project, isLoading, error } = useProject(projectId);
+  const [imageErrors, setImageErrors] = React.useState<Set<string>>(new Set());
+
+  // Get translation for current locale
+  const translation = project?.translations?.find((t) => t.language === locale);
+  const projectTitle = translation?.title || project?.translations?.[0]?.title || "Untitled";
+  const projectSummary = translation?.summary || project?.translations?.[0]?.summary || "";
+  const projectDescription = translation?.description || project?.translations?.[0]?.description || "";
 
   if (!open || !projectId) return null;
+
+  const handleImageError = (src: string) => {
+    setImageErrors((prev) => new Set(prev).add(src));
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,11 +78,19 @@ export function ProjectPreviewDialog({
             {/* Main Image */}
             {project.main_image && (
               <div className="relative w-full h-64 rounded-lg overflow-hidden border bg-muted">
-                <img
-                  src={project.main_image}
-                  alt={project.title}
-                  className="w-full h-full object-cover"
-                />
+                {imageErrors.has(project.main_image) ? (
+                  <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                    <ImageIcon className="h-12 w-12 mb-2 opacity-50" />
+                    <p className="text-sm">Image not available</p>
+                  </div>
+                ) : (
+                  <img
+                    src={project.main_image}
+                    alt={projectTitle}
+                    className="w-full h-full object-cover"
+                    onError={() => handleImageError(project.main_image!)}
+                  />
+                )}
               </div>
             )}
 
@@ -78,9 +98,9 @@ export function ProjectPreviewDialog({
             <div className="space-y-2">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h2 className="text-2xl font-bold">{project.title}</h2>
+                  <h2 className="text-2xl font-bold">{projectTitle}</h2>
                   <p className="text-muted-foreground mt-1">
-                    {project.summary}
+                    {projectSummary}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -132,7 +152,7 @@ export function ProjectPreviewDialog({
             <div className="space-y-2">
               <h3 className="text-sm font-semibold">{t("description")}</h3>
               <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                {project.description}
+                {projectDescription}
               </p>
             </div>
 
@@ -217,46 +237,37 @@ export function ProjectPreviewDialog({
               </div>
             )}
 
-            {/* Images Gallery */}
-            {project.images && project.images.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold flex items-center gap-2">
-                  <ImageIcon className="h-4 w-4" />
-                  {t("images")}
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {project.images.map((image, index) => (
-                    <div
-                      key={index}
-                      className="relative aspect-video rounded-lg overflow-hidden border bg-muted"
-                    >
-                      <img
-                        src={image}
-                        alt={`${project.title} - Image ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
+                {/* Images Gallery */}
+                {project.images && project.images.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold flex items-center gap-2">
+                      <ImageIcon className="h-4 w-4" />
+                      {t("images")}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                      {project.images.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative aspect-video rounded-lg overflow-hidden border bg-muted"
+                        >
+                          {imageErrors.has(image) ? (
+                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                              <ImageIcon className="h-8 w-8 mb-1 opacity-50" />
+                              <p className="text-xs">Image {index + 1}</p>
+                            </div>
+                          ) : (
+                            <img
+                              src={image}
+                              alt={`${projectTitle} - Image ${index + 1}`}
+                              className="w-full h-full object-cover"
+                              onError={() => handleImageError(image)}
+                            />
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Video Demo */}
-            {project.video_demo_url && (
-              <div className="space-y-2">
-                <h3 className="text-sm font-semibold flex items-center gap-2">
-                  <Video className="h-4 w-4" />
-                  {t("videoDemo")}
-                </h3>
-                <div className="relative aspect-video rounded-lg overflow-hidden border bg-muted">
-                  <video
-                    src={project.video_demo_url}
-                    controls
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-            )}
+                  </div>
+                )}
 
             <Separator />
 

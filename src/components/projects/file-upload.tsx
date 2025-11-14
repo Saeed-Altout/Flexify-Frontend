@@ -41,7 +41,7 @@ export function FileUpload({
     setPreviewUrls(currentValue);
   }, [value]);
 
-  const handleFileSelect = (files: FileList | null) => {
+  const handleFileSelect = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
     setUploadError(null);
 
@@ -76,18 +76,29 @@ export function FileUpload({
     }
 
     try {
-      // For now, we'll just store URLs (in production, you'd upload to a server/CDN)
-      // In a real app, you'd upload files to S3, Cloudinary, etc. and get back URLs
-      const newUrls = validFiles.map((file) => URL.createObjectURL(file));
+      // TODO: Implement proper file upload to server/CDN
+      // Currently using blob URLs which are temporary and won't persist
+      // In production, upload files to S3, Cloudinary, or your server and get back permanent URLs
+      
+      // For now, convert files to base64 data URLs so they can be stored in the database
+      // Note: This is not ideal for large files, but works for now
+      const filePromises = validFiles.map((file) => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve(reader.result as string);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+      
+      const newUrls = await Promise.all(filePromises);
       
       if (multiple) {
         const updated = [...currentValue, ...newUrls];
         onChange(updated.length > 0 ? updated : undefined);
       } else {
-        // Clean up previous URL if exists
-        if (currentValue[0] && currentValue[0].startsWith("blob:")) {
-          URL.revokeObjectURL(currentValue[0]);
-        }
         onChange(newUrls[0]);
       }
     } catch (err) {
@@ -113,18 +124,9 @@ export function FileUpload({
 
   const removeFile = (index: number) => {
     if (multiple && Array.isArray(value)) {
-      const urlToRemove = value[index];
-      // Clean up blob URL
-      if (urlToRemove && urlToRemove.startsWith("blob:")) {
-        URL.revokeObjectURL(urlToRemove);
-      }
       const updated = value.filter((_, i) => i !== index);
       onChange(updated.length > 0 ? updated : undefined);
     } else {
-      // Clean up blob URL
-      if (value && typeof value === "string" && value.startsWith("blob:")) {
-        URL.revokeObjectURL(value);
-      }
       onChange(undefined);
     }
   };

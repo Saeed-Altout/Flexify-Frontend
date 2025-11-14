@@ -31,7 +31,7 @@ export function ProjectFormSheet({
   const locale = useLocale();
   const handleSubmit = (data: ProjectFormValues) => {
     onSubmit(data);
-    onOpenChange(false);
+    // Don't close immediately - wait for success/error from mutation
   };
 
   return (

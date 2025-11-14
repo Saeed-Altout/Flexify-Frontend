@@ -424,22 +424,11 @@ export type PaginationParams = {
 export interface Project {
   id: string;
   user_id: string;
-  title: string;
-  slug: string;
-  summary: string;
-  description: string;
   tech_stack: string[];
   role: string;
-  responsibilities: string[];
-  architecture: string | null;
-  features: string[];
-  challenges: string[];
-  solutions: string[];
-  lessons: string[];
   github_url: string | null;
   github_backend_url: string | null;
   live_demo_url: string | null;
-  video_demo_url: string | null;
   main_image: string | null;
   images: string[];
   average_rating: number;
@@ -466,6 +455,7 @@ export interface ProjectTranslation {
   summary: string;
   description: string;
   architecture: string | null;
+  features: string[];
   created_at: Date;
   updated_at: Date;
 }
@@ -474,26 +464,15 @@ export interface ProjectTranslation {
  * Create project DTO
  */
 export interface CreateProjectDto {
-  title: string;
-  slug: string;
-  summary: string;
-  description: string;
   tech_stack: string[];
   role: string;
-  responsibilities?: string[];
-  architecture?: string;
-  features?: string[];
-  challenges?: string[];
-  solutions?: string[];
-  lessons?: string[];
   github_url?: string;
   github_backend_url?: string;
   live_demo_url?: string;
-  video_demo_url?: string;
   main_image?: string;
   images?: string[];
   is_published?: boolean;
-  translations?: ProjectTranslationDto[];
+  translations: ProjectTranslationDto[];
 }
 
 /**
@@ -505,6 +484,7 @@ export interface ProjectTranslationDto {
   summary: string;
   description: string;
   architecture?: string;
+  features?: string[];
 }
 
 /**
