@@ -44,11 +44,13 @@ export function ProjectForm({
     project?.tech_stack || []
   );
   const [techInput, setTechInput] = React.useState("");
+  const [enFeaturesInput, setEnFeaturesInput] = React.useState("");
+  const [arFeaturesInput, setArFeaturesInput] = React.useState("");
 
   // Initialize translations from project or create empty ones
   // Always ensure en is at index 0 and ar is at index 1
-  const initializeTranslations = () => {
-    const defaultTranslations = [
+  const initializeTranslations = (): ProjectFormValues["translations"] => {
+    const defaultTranslations: ProjectFormValues["translations"] = [
       {
         language: "en" as const,
         title: "",
@@ -99,6 +101,7 @@ export function ProjectForm({
   };
 
   const form = useForm<ProjectFormValues>({
+    // @ts-expect-error - Zod's default() doesn't change input type, but react-hook-form expects it
     resolver: zodResolver(projectSchema),
     defaultValues: {
       tech_stack: project?.tech_stack || [],
@@ -129,6 +132,8 @@ export function ProjectForm({
         translations: translations,
       });
       setTechStack(project.tech_stack || []);
+      setEnFeaturesInput("");
+      setArFeaturesInput("");
     } else {
       // Reset form when no project (creating new)
       form.reset({
@@ -160,6 +165,8 @@ export function ProjectForm({
         ],
       });
       setTechStack([]);
+      setEnFeaturesInput("");
+      setArFeaturesInput("");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id, project?.translations?.length]);
@@ -190,7 +197,11 @@ export function ProjectForm({
       const currentFormData: ProjectFormValues = {
         ...formValues,
         tech_stack: techStack,
-        translations: formValues.translations || [],
+        images: formValues.images || [],
+        translations: (formValues.translations || []).map((t) => ({
+          ...t,
+          features: t.features || [],
+        })),
       };
       return hasProjectChanges(project, currentFormData);
     } catch {
@@ -212,8 +223,14 @@ export function ProjectForm({
         data.github_backend_url === "" ? undefined : data.github_backend_url,
       live_demo_url: data.live_demo_url === "" ? undefined : data.live_demo_url,
       main_image: data.main_image === "" ? undefined : data.main_image,
+      images: data.images || [],
       translations:
-        validTranslations.length > 0 ? validTranslations : undefined,
+        validTranslations.length > 0
+          ? (validTranslations.map((t) => ({
+              ...t,
+              features: t.features || [],
+            })) as ProjectFormValues["translations"])
+          : ([] as ProjectFormValues["translations"]),
     };
     onSubmit(transformedData);
   };
@@ -389,21 +406,23 @@ export function ProjectForm({
                       <div className="space-y-2">
                         <div className="flex gap-2">
                           <Input
-                            value={techInput}
-                            onChange={(e) => setTechInput(e.target.value)}
+                            value={enFeaturesInput}
+                            onChange={(e) => setEnFeaturesInput(e.target.value)}
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
                                 e.preventDefault();
                                 const currentFeatures = field.value || [];
                                 if (
-                                  techInput.trim() &&
-                                  !currentFeatures.includes(techInput.trim())
+                                  enFeaturesInput.trim() &&
+                                  !currentFeatures.includes(
+                                    enFeaturesInput.trim()
+                                  )
                                 ) {
                                   field.onChange([
                                     ...currentFeatures,
-                                    techInput.trim(),
+                                    enFeaturesInput.trim(),
                                   ]);
-                                  setTechInput("");
+                                  setEnFeaturesInput("");
                                 }
                               }
                             }}
@@ -414,14 +433,16 @@ export function ProjectForm({
                             onClick={() => {
                               const currentFeatures = field.value || [];
                               if (
-                                techInput.trim() &&
-                                !currentFeatures.includes(techInput.trim())
+                                enFeaturesInput.trim() &&
+                                !currentFeatures.includes(
+                                  enFeaturesInput.trim()
+                                )
                               ) {
                                 field.onChange([
                                   ...currentFeatures,
-                                  techInput.trim(),
+                                  enFeaturesInput.trim(),
                                 ]);
-                                setTechInput("");
+                                setEnFeaturesInput("");
                               }
                             }}
                             variant="outline"
@@ -546,7 +567,6 @@ export function ProjectForm({
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="translations.1.features"
@@ -559,21 +579,23 @@ export function ProjectForm({
                       <div className="space-y-2">
                         <div className="flex gap-2">
                           <Input
-                            value={techInput}
-                            onChange={(e) => setTechInput(e.target.value)}
+                            value={arFeaturesInput}
+                            onChange={(e) => setArFeaturesInput(e.target.value)}
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
                                 e.preventDefault();
                                 const currentFeatures = field.value || [];
                                 if (
-                                  techInput.trim() &&
-                                  !currentFeatures.includes(techInput.trim())
+                                  arFeaturesInput.trim() &&
+                                  !currentFeatures.includes(
+                                    arFeaturesInput.trim()
+                                  )
                                 ) {
                                   field.onChange([
                                     ...currentFeatures,
-                                    techInput.trim(),
+                                    arFeaturesInput.trim(),
                                   ]);
-                                  setTechInput("");
+                                  setArFeaturesInput("");
                                 }
                               }
                             }}
@@ -585,14 +607,16 @@ export function ProjectForm({
                             onClick={() => {
                               const currentFeatures = field.value || [];
                               if (
-                                techInput.trim() &&
-                                !currentFeatures.includes(techInput.trim())
+                                arFeaturesInput.trim() &&
+                                !currentFeatures.includes(
+                                  arFeaturesInput.trim()
+                                )
                               ) {
                                 field.onChange([
                                   ...currentFeatures,
-                                  techInput.trim(),
+                                  arFeaturesInput.trim(),
                                 ]);
-                                setTechInput("");
+                                setArFeaturesInput("");
                               }
                             }}
                             variant="outline"

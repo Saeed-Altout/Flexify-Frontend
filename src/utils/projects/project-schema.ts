@@ -23,8 +23,8 @@ export const projectSchema = z.object({
   main_image: z
     .union([z.string().url("Invalid URL"), z.literal("")])
     .optional(),
-  images: z.array(z.string().url("Invalid URL")).optional().default([]),
-  is_published: z.boolean().optional().default(false),
+  images: z.array(z.string().url("Invalid URL")).default([]),
+  is_published: z.boolean().default(false),
   translations: z
     .array(
       z.object({
