@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getSession } from "@/lib/auth/server";
 
-import { ProjectsPageClient } from "./_components/projects-page-client";
+import { ProjectsPageClient } from "./projects-page-client";
 
 export const metadata = {
   title: "Projects | Dashboard",

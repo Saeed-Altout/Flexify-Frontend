@@ -164,9 +164,14 @@ function AreaIcon({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function AreaActions({ className, ...props }: React.ComponentProps<"div">) {
+function AreaActions({
+  className,
+  asChild = false,
+  ...props
+}: React.ComponentProps<"div"> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : "div";
   return (
-    <div
+    <Comp
       data-slot="area-actions"
       className={cn("flex items-center gap-2", className)}
       {...props}

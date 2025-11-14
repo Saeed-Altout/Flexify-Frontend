@@ -1,0 +1,156 @@
+"use client";
+
+import * as React from "react";
+import { useTranslations } from "next-intl";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
+import { TechStackField } from "../tech-stack-field";
+import { RoleField } from "../role-field";
+import { TranslationsField } from "../translations-field";
+import { MainImageField } from "../main-image-field";
+import { ImagesField } from "../images-field";
+import { GithubUrlField } from "../github-url-field";
+import { LiveDemoField } from "../live-demo-field";
+import { PublishedField } from "../published-field";
+import { GithubBackendUrlField } from "../github-backend-url-field";
+import { useCreateProjectMutation } from "../../hooks/use-project-mutations";
+
+interface CreateProjectModalProps {
+  children: React.ReactNode;
+}
+
+export function CreateProjectModal({ children }: CreateProjectModalProps) {
+  const [open, setOpen] = React.useState(false);
+  const t = useTranslations("auth.projects.dashboard.form");
+
+  const { mutate: createProject, isPending } = useCreateProjectMutation();
+
+  const formSchema = z.object({
+    tech_stack: z.array(z.string().min(1)),
+    role: z.string().min(1, "Role is required"),
+    github_url: z.url("Invalid URL").optional(),
+    github_backend_url: z.url("Invalid URL").optional(),
+    live_demo_url: z.url("Invalid URL").optional(),
+    main_image: z.url("Invalid URL").optional(),
+    images: z.array(z.url("Invalid URL")).optional(),
+    is_published: z.boolean(),
+    translations: z.array(
+      z.object({
+        language: z.enum(["en", "ar"]),
+        title: z.string().min(1, "Title is required"),
+        summary: z.string().min(1, "Summary is required"),
+        description: z.string().min(1, "Description is required"),
+        architecture: z.string().optional(),
+        features: z.array(z.string()),
+      })
+    ),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      tech_stack: [],
+      role: "",
+      images: [],
+      is_published: false,
+      translations: [
+        {
+          language: "en",
+          title: "",
+          summary: "",
+          description: "",
+          features: [],
+          architecture: "",
+        },
+        {
+          language: "ar",
+          title: "",
+          summary: "",
+          description: "",
+          features: [],
+          architecture: "",
+        },
+      ],
+      github_url: "",
+      github_backend_url: "",
+      live_demo_url: "",
+      main_image: "",
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    createProject(data, {
+      onSuccess: () => {
+        setOpen(false);
+        form.reset();
+      },
+    });
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
+      <SheetContent className="w-full sm:max-w-2xl">
+        <SheetHeader className="pb-0">
+          <SheetTitle>Create New Project</SheetTitle>
+          <SheetDescription>
+            Add a new project to your portfolio. Fill in all the required
+            information.
+          </SheetDescription>
+        </SheetHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="max-h-[75vh] sm:max-h-[78vh] overflow-y-auto px-4 space-y-4">
+              <TechStackField />
+              <RoleField />
+              <Separator />
+              <TranslationsField />
+              <Separator />
+              <div className="space-y-4">
+                <MainImageField />
+                <ImagesField />
+              </div>
+              <Separator />
+              <div className="space-y-4">
+                <GithubUrlField />
+                <GithubBackendUrlField />
+                <LiveDemoField />
+              </div>
+              <PublishedField />
+            </div>
+
+            <SheetFooter className="flex-row pt-0">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={isPending}
+              >
+                {t("cancel")}
+              </Button>
+              <Button type="submit" disabled={isPending} loading={isPending}>
+                {t("create")}
+              </Button>
+            </SheetFooter>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
+  );
+}

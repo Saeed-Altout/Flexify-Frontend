@@ -1,4 +1,5 @@
-import type { Project, UpdateProjectDto, ProjectFormValues } from "@/types";
+import type { Project, UpdateProjectDto } from "@/types";
+import type { ProjectFormValues } from "./project-schema";
 
 /**
  * Compare two objects and return only the changed fields
@@ -38,7 +39,7 @@ export function getChangedFields<T extends Record<string, unknown>>(
       }
     } else {
       // New field
-      changes[key] = updatedValue;
+      changes[key] = updated[key];
     }
   }
 
@@ -113,7 +114,8 @@ export function getProjectChanges(
         orig.summary !== updated.summary ||
         orig.description !== updated.description ||
         (orig.architecture || "") !== (updated.architecture || "") ||
-        JSON.stringify(orig.features || []) !== JSON.stringify(updated.features || [])
+        JSON.stringify(orig.features || []) !==
+          JSON.stringify(updated.features || [])
       );
     });
 
@@ -141,4 +143,3 @@ export function hasProjectChanges(
   const changes = getProjectChanges(original, updated);
   return Object.keys(changes).length > 0;
 }
-

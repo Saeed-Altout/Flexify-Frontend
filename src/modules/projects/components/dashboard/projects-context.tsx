@@ -1,8 +1,6 @@
 import { QueryProjectsDto } from "@/types";
 import { createContext, useContext, ReactNode, useState } from "react";
 
-import { useQueryStates } from "nuqs";
-
 type ProjectsContextProps = {
   queryParams: QueryProjectsDto;
   setQueryParams: (queryParams: QueryProjectsDto) => void;

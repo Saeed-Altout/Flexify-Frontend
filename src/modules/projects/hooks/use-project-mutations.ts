@@ -4,13 +4,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+
 import {
   createProject,
   updateProject,
   deleteProject,
   rateProject,
   likeProject,
-} from "../api/actions";
+} from "@/modules/projects/api/actions";
 import type {
   CreateProjectDto,
   UpdateProjectDto,
@@ -167,4 +168,3 @@ export function useLikeProjectMutation() {
     },
   });
 }
-
