@@ -1,7 +1,6 @@
+import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import {
   login,
   register,
@@ -10,23 +9,25 @@ import {
   resetPassword,
   verifyEmail,
   resendVerification,
-  logout as logoutApi,
   getCurrentUser,
   changePassword,
-} from "./auth-api";
+  logout,
+} from "@/modules/auth/auth-api";
+import { useTranslations } from "next-intl";
+
 import {
-  ILoginRequest,
-  IRegisterRequest,
   IForgotPasswordRequest,
   IResetPasswordRequest,
   IVerifyEmailRequest,
   IResendVerificationRequest,
   IRefreshTokenRequest,
   IChangePasswordRequest,
-} from "./auth-type";
-import { Routes } from "@/constants/routes";
+  IRegisterResponse,
+} from "@/modules/auth/auth-type";
 
-// Store tokens in localStorage
+import { Routes } from "@/constants/routes";
+import { useRouter } from "@/i18n/navigation";
+
 const storeTokens = (accessToken: string, refreshToken: string) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("accessToken", accessToken);
@@ -34,70 +35,71 @@ const storeTokens = (accessToken: string, refreshToken: string) => {
   }
 };
 
-// Get current user query
 export const useCurrentUserQuery = () => {
-  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("accessToken");
-  
+  const hasToken =
+    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+
   return useQuery({
     queryKey: ["user", "current"],
     queryFn: getCurrentUser,
-    enabled: hasToken, // Only run if token exists
+    enabled: hasToken,
     retry: 1,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 };
 
-// Login mutation
 export const useSignInMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const t = useTranslations("auth.login.message");
 
   return useMutation({
-    mutationFn: (data: ILoginRequest) => login(data),
+    mutationKey: ["login"],
+    mutationFn: login,
     onSuccess: (response) => {
-      storeTokens(response.tokens.accessToken, response.tokens.refreshToken);
-      queryClient.setQueryData(["user", "current"], response.user);
-      queryClient.setQueryData(["user"], response.user);
-      toast.success("Login successful");
-      
-      // Redirect based on role
-      if (response.user.role === "admin" || response.user.role === "super_admin") {
-        router.push(`${Routes.dashboard}/profile`);
-      } else {
-        router.push(Routes.home);
-      }
+      storeTokens(
+        response.data.tokens.accessToken,
+        response.data.tokens.refreshToken
+      );
+      queryClient.setQueryData(["user", "current"], response.data.user);
+      queryClient.setQueryData(["user"], response.data.user);
+      toast.success(response.message || t("success"));
+      router.push(Routes.home);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Login failed");
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
 };
 
-// Register mutation
 export const useSignUpMutation = () => {
   const router = useRouter();
+  const t = useTranslations("auth.register.message");
 
   return useMutation({
-    mutationFn: (data: IRegisterRequest) => register(data),
+    mutationKey: ["register"],
+    mutationFn: register,
     onSuccess: (response) => {
-      // Don't save tokens yet - user must verify email first
-      // Redirect to verify account page with verification token and email (for resend)
-      toast.success("Registration successful! Please verify your email.");
-      router.push(`${Routes.verifyAccount}?token=${encodeURIComponent(response.verificationToken)}&email=${encodeURIComponent(response.user.email)}`);
+      toast.success(response.message || t("success"));
+      router.push(
+        `${Routes.verifyAccount}?token=${encodeURIComponent(
+          response.data.verificationToken
+        )}&email=${encodeURIComponent(response.data.user.email)}`
+      );
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Registration failed");
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
 };
 
-// Forgot password mutation
 export const useForgotPasswordMutation = () => {
   return useMutation({
+    mutationKey: ["user", "forgot-password"],
     mutationFn: (data: IForgotPasswordRequest) => forgotPassword(data),
     onSuccess: () => {
       toast.success("If the email exists, a password reset link has been sent");
@@ -112,7 +114,6 @@ export const useForgotPasswordMutation = () => {
   });
 };
 
-// Reset password mutation
 export const useResetPasswordMutation = () => {
   const router = useRouter();
 
@@ -130,21 +131,20 @@ export const useResetPasswordMutation = () => {
   });
 };
 
-// Verify email mutation
 export const useVerifyEmailMutation = () => {
   const router = useRouter();
+  const t = useTranslations("auth.verifyAccount.message");
 
   return useMutation({
-    mutationFn: (data: IVerifyEmailRequest) => verifyEmail(data),
-    onSuccess: () => {
-      toast.success("Email verified successfully! Please login to continue.");
+    mutationKey: ["verifyEmail"],
+    mutationFn: verifyEmail,
+    onSuccess: (response) => {
+      toast.success(response.message || t("success"));
       router.push(Routes.login);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(
-          error.response?.data?.message || "Email verification failed"
-        );
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
@@ -155,10 +155,14 @@ export const useRefreshTokenMutation = () => {
   return useMutation({
     mutationFn: (data: IRefreshTokenRequest) => refreshToken(data),
     onSuccess: (response) => {
-      storeTokens(response.accessToken, response.refreshToken);
+      if (!response.data) {
+        toast.error(response.message || "");
+        return;
+      }
+      const { accessToken, refreshToken } = response.data;
+      storeTokens(accessToken, refreshToken);
     },
     onError: () => {
-      // Clear tokens on refresh failure
       if (typeof window !== "undefined") {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -167,24 +171,22 @@ export const useRefreshTokenMutation = () => {
   });
 };
 
-// Resend verification OTP mutation
 export const useResendVerificationMutation = () => {
+  const t = useTranslations("auth.resendVerification.message");
   return useMutation({
-    mutationFn: (data: IResendVerificationRequest) => resendVerification(data),
-    onSuccess: () => {
-      toast.success("Verification code sent successfully");
+    mutationKey: ["resendVerification"],
+    mutationFn: resendVerification,
+    onSuccess: (response) => {
+      toast.success(response.message || t("success"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(
-          error.response?.data?.message || "Failed to send verification code"
-        );
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
 };
 
-// Change password mutation
 export const useChangePasswordMutation = () => {
   return useMutation({
     mutationFn: (data: IChangePasswordRequest) => changePassword(data),
@@ -193,27 +195,45 @@ export const useChangePasswordMutation = () => {
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to change password");
+        toast.error(
+          error.response?.data?.message || "Failed to change password"
+        );
       }
     },
   });
 };
 
-// Logout mutation
 export const useLogoutMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => {
-      logoutApi();
-      return Promise.resolve();
-    },
-    onSuccess: () => {
+    mutationKey: ["user", "logout"],
+    mutationFn: () => logout(),
+    onSuccess: (response) => {
+      // Clear tokens from localStorage
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
+      // Clear all queries
+      queryClient.removeQueries({ queryKey: ["user", "current"] });
       queryClient.removeQueries({ queryKey: ["user"] });
       queryClient.clear();
+      // Redirect to login
       router.push(Routes.login);
-      toast.success("Logged out successfully");
+      toast.success(response.message || "Logged out successfully");
+    },
+    onError: (error) => {
+      // Even if logout fails, clear local tokens
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
+      queryClient.clear();
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Failed to logout");
+      }
     },
   });
 };

@@ -7,49 +7,40 @@ import {
   IVerifyEmailRequest,
   IResendVerificationRequest,
   IRefreshTokenRequest,
-  IAuthResponse,
   IRefreshTokenResponse,
-  IUser,
   IChangePasswordRequest,
-} from "./auth-type";
-import type { ISingleItemApiResponse } from "@/types/api-response";
+  ILoginResponse,
+  IRegisterResponse,
+  IUserResponse,
+  IChangePasswordResponse,
+  ILogoutResponse,
+  IVerifyEmailResponse,
+  IResendVerificationResponse,
+} from "@/modules/auth/auth-type";
 
-export const login = async (data: ILoginRequest): Promise<IAuthResponse> => {
-  const response = await apiClient.post<ISingleItemApiResponse<IAuthResponse>>(
-    "/auth/login",
-    data
-  );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && "data" in response.data.data) {
-    return response.data.data.data;
-  }
-  throw new Error("Invalid response format");
+export const login = async (data: ILoginRequest): Promise<ILoginResponse> => {
+  const response = await apiClient.post<ILoginResponse>("/auth/login", data);
+  return response.data;
 };
 
 export const register = async (
   data: IRegisterRequest
-): Promise<{ user: IUser; verificationToken: string }> => {
-  const response = await apiClient.post<
-    ISingleItemApiResponse<{ user: IUser; verificationToken: string }>
-  >("/auth/register", data);
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && "data" in response.data.data) {
-    return response.data.data.data;
-  }
-  throw new Error("Invalid response format");
+): Promise<IRegisterResponse> => {
+  const response = await apiClient.post<IRegisterResponse>(
+    "/auth/register",
+    data
+  );
+  return response.data;
 };
 
 export const refreshToken = async (
   data: IRefreshTokenRequest
 ): Promise<IRefreshTokenResponse> => {
-  const response = await apiClient.post<
-    ISingleItemApiResponse<IRefreshTokenResponse>
-  >("/auth/refresh", data);
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && "data" in response.data.data) {
-    return response.data.data.data;
-  }
-  throw new Error("Invalid response format");
+  const response = await apiClient.post<IRefreshTokenResponse>(
+    "/auth/refresh",
+    data
+  );
+  return response.data;
 };
 
 export const forgotPassword = async (
@@ -64,39 +55,42 @@ export const resetPassword = async (
   await apiClient.post("/auth/reset-password", data);
 };
 
-export const verifyEmail = async (data: IVerifyEmailRequest): Promise<void> => {
-  await apiClient.post("/auth/verify-email", data);
+export const verifyEmail = async (
+  data: IVerifyEmailRequest
+): Promise<IVerifyEmailResponse> => {
+  const response = await apiClient.post<IVerifyEmailResponse>(
+    "/auth/verify-email",
+    data
+  );
+  return response.data;
 };
 
 export const resendVerification = async (
   data: IResendVerificationRequest
-): Promise<void> => {
-  await apiClient.post("/auth/resend-verification", data);
+): Promise<IResendVerificationResponse> => {
+  const response = await apiClient.post<IResendVerificationResponse>(
+    "/auth/resend-verification",
+    data
+  );
+  return response.data;
 };
 
-export const getCurrentUser = async (): Promise<IUser> => {
-  const response = await apiClient.get<ISingleItemApiResponse<IUser>>(
-    "/auth/me"
-  );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && "data" in response.data.data) {
-    return response.data.data.data;
-  }
-  throw new Error("Invalid response format");
+export const getCurrentUser = async (): Promise<IUserResponse> => {
+  const response = await apiClient.get<IUserResponse>("/auth/me");
+  return response.data;
 };
 
 export const changePassword = async (
   data: IChangePasswordRequest
-): Promise<void> => {
-  await apiClient.post<ISingleItemApiResponse<null>>(
+): Promise<IChangePasswordResponse> => {
+  const response = await apiClient.post<IChangePasswordResponse>(
     "/auth/change-password",
     data
   );
+  return response.data;
 };
 
-export const logout = (): void => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-  }
+export const logout = async (): Promise<ILogoutResponse> => {
+  const response = await apiClient.post<ILogoutResponse>("/auth/logout");
+  return response.data;
 };

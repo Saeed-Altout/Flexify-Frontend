@@ -1,14 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { useSignUpMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
-import type { IRegisterRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -29,36 +28,38 @@ import {
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/inputs/password-input";
 import { EmailInput } from "@/components/inputs/email-input";
-import { Input } from "@/components/ui/input";
 import { LinkButton } from "@/components/buttons/link-button";
+import { FirstNameInput } from "@/components/inputs/firstName-input";
+import { LastNameInput } from "@/components/inputs/lastName-input";
+import { PhoneInput } from "@/components/inputs/phone-input";
 
 export function RegisterForm() {
   const t = useTranslations("auth.register");
+  const tCommon = useTranslations("common");
 
-  const { registerSchema } = useValidationsSchema();
-  const formSchema = registerSchema();
+  const formSchema = z.object({
+    email: z.email(t("emailValidation")),
+    password: z.string().min(8, t("passwordValidation")),
+    firstName: z.string().max(20, t("firstNameValidation")),
+    lastName: z.string().max(20, t("lastNameValidation")),
+    phone: z.string().min(10, t("phoneValidation")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: "",
       firstName: "",
       lastName: "",
+      phone: "",
     },
   });
 
   const { mutate: signUp, isPending } = useSignUpMutation();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const registerData: IRegisterRequest = {
-      email: values.email,
-      password: values.password,
-      firstName: values.firstName || undefined,
-      lastName: values.lastName || undefined,
-    };
-    signUp(registerData);
+    signUp(values);
   };
 
   return (
@@ -70,7 +71,7 @@ export function RegisterForm() {
             <CardDescription>{t("description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -78,7 +79,7 @@ export function RegisterForm() {
                   <FormItem>
                     <FormLabel>{t("firstNameLabel")}</FormLabel>
                     <FormControl>
-                      <Input
+                      <FirstNameInput
                         {...field}
                         placeholder={t("firstNamePlaceholder")}
                         disabled={isPending}
@@ -95,7 +96,7 @@ export function RegisterForm() {
                   <FormItem>
                     <FormLabel>{t("lastNameLabel")}</FormLabel>
                     <FormControl>
-                      <Input
+                      <LastNameInput
                         {...field}
                         placeholder={t("lastNamePlaceholder")}
                         disabled={isPending}
@@ -125,6 +126,23 @@ export function RegisterForm() {
             />
             <FormField
               control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("phoneLabel")}</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      {...field}
+                      placeholder={t("phonePlaceholder")}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -140,37 +158,20 @@ export function RegisterForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      {...field}
-                      placeholder={t("confirmPasswordPlaceholder")}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <Button
               type="submit"
               className="w-full"
               disabled={isPending}
               loading={isPending}
             >
-              {t("submit")}
+              {tCommon("signUp")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("hasAccount")}</p>
+            <p className="text-muted-foreground">{tCommon("haveAccount")}</p>
             <LinkButton
-              label={t("signIn")}
-              href={Routes.login}
+              label={tCommon("login")}
+              href={Routes.register}
               className="ps-1"
               disabled={isPending}
             />

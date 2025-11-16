@@ -1,7 +1,6 @@
-"use client";
-
-import { Logo } from "@/components/common/logo";
+import { useTranslations } from "next-intl";
 import { ZapIcon } from "lucide-react";
+
 import { AuthGuard } from "@/components/auth/auth-guard";
 
 export default function AuthLayout({
@@ -9,25 +8,20 @@ export default function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const t = useTranslations("auth");
+
   return (
     <AuthGuard>
       <div className="grid min-h-svh lg:grid-cols-2">
-        <div className="flex flex-col gap-4 p-6 md:p-10">
-          <div className="flex lg:hidden justify-center gap-2 md:justify-start rtl:md:justify-end">
-            <Logo />
-          </div>
-          <div className="flex flex-1 items-center justify-center">
-            <div className="w-full max-w-md">{children}</div>
-          </div>
+        <div className="flex flex-col items-center justify-center gap-4 p-6 md:p-10">
+          <div className="w-full max-w-md">{children}</div>
         </div>
         <div className="relative hidden lg:block p-6">
           <div className="bg-background size-full flex justify-center items-center">
             <ZapIcon className="size-48" />
             <div className="flex flex-col gap-2">
-              <h1 className="text-4xl font-bold">Flexify</h1>
-              <p className="text-muted-foreground">
-                Join the future of work with Flexify.
-              </p>
+              <h1 className="text-4xl font-bold">{t("title")}</h1>
+              <p className="text-muted-foreground">{t("description")}</p>
             </div>
           </div>
         </div>

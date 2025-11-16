@@ -1,14 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { useSignInMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
-import type { ILoginRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -33,9 +32,12 @@ import { LinkButton } from "@/components/buttons/link-button";
 
 export function LoginForm() {
   const t = useTranslations("auth.login");
+  const tCommon = useTranslations("common");
 
-  const { loginSchema } = useValidationsSchema();
-  const formSchema = loginSchema();
+  const formSchema = z.object({
+    email: z.email(t("emailValidation")),
+    password: z.string().min(8, t("passwordValidation")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,11 +50,7 @@ export function LoginForm() {
   const { mutate: signIn, isPending } = useSignInMutation();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const loginData: ILoginRequest = {
-      email: values.email,
-      password: values.password,
-    };
-    signIn(loginData);
+    signIn(values);
   };
 
   return (
@@ -112,13 +110,13 @@ export function LoginForm() {
               disabled={isPending}
               loading={isPending}
             >
-              {t("submit")}
+              {tCommon("login")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("noAccount")}</p>
+            <p className="text-muted-foreground">{tCommon("noAccount")}</p>
             <LinkButton
-              label={t("signUp")}
+              label={tCommon("signUp")}
               href={Routes.register}
               className="ps-1"
               disabled={isPending}

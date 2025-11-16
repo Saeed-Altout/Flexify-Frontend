@@ -1,44 +1,61 @@
-export interface ILoginRequest {
+import { IApiResponse } from "@/types/api-response";
+
+export type ILoginRequest = {
   email: string;
   password: string;
-}
+};
 
-export interface IRegisterRequest {
+export type ILoginResponse = IApiResponse<{
+  user: IUser;
+  tokens: IAuthTokens;
+}>;
+
+export type IRegisterRequest = {
   email: string;
   password: string;
   firstName?: string;
   lastName?: string;
-}
+  phone?: string;
+};
 
-export interface IForgotPasswordRequest {
+export type IRegisterResponse = IApiResponse<{
+  user: IUser;
+  verificationToken: string;
+}>;
+
+export type IForgotPasswordRequest = {
   email: string;
-}
+};
 
-export interface IResetPasswordRequest {
+export type IResetPasswordRequest = {
   token: string;
   password: string;
-}
+};
 
-export interface IVerifyEmailRequest {
-  verificationToken: string; // UUID token from registration
-  otp: string; // 6-digit OTP code
-}
+export type IVerifyEmailRequest = {
+  verificationToken: string;
+  otp: string;
+};
 
-export interface IResendVerificationRequest {
+export type IVerifyEmailResponse = IApiResponse<void>;
+
+export type IResendVerificationRequest = {
   email: string;
-}
+};
 
-export interface IRefreshTokenRequest {
+export type IResendVerificationResponse = IApiResponse<void>;
+
+export type IRefreshTokenRequest = {
   refreshToken: string;
-}
+};
 
-export interface IAuthTokens {
+export type IAuthTokens = {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
-}
+};
 
-export interface IUser {
+export type IUser = {
   id: string;
   email: string;
   firstName: string | null;
@@ -48,21 +65,17 @@ export interface IUser {
   isEmailVerified: boolean;
   isActive: boolean;
   role: string;
-}
+};
 
-export interface IAuthResponse {
-  user: IUser;
-  tokens: IAuthTokens;
-}
+export type IUserResponse = IApiResponse<IUser>;
 
-export interface IRefreshTokenResponse {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
+export type IRefreshTokenResponse = IApiResponse<IAuthTokens>;
 
-export interface IChangePasswordRequest {
+export type IChangePasswordRequest = {
   currentPassword: string;
   newPassword: string;
-}
+};
 
+export type IChangePasswordResponse = IApiResponse<void>;
+
+export type ILogoutResponse = IApiResponse<void>;

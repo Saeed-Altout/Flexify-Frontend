@@ -1,15 +1,18 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { toast } from "sonner";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import * as z from "zod";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { useEffect, useRef, useState } from "react";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { useVerifyEmailMutation, useResendVerificationMutation } from "@/modules/auth/auth-hook";
-import type { IVerifyEmailRequest, IResendVerificationRequest } from "@/modules/auth/auth-type";
-import { toast } from "sonner";
+import {
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
+} from "@/modules/auth/auth-hook";
 
 import {
   Form,
@@ -32,44 +35,87 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { LinkButton } from "../buttons/link-button";
+import { Routes } from "@/constants/routes";
 
 interface VerifyAccountFormProps {
   verificationToken: string;
   email?: string;
 }
 
-export function VerifyAccountForm({ verificationToken, email }: VerifyAccountFormProps) {
+export function VerifyAccountForm({
+  verificationToken,
+  email,
+}: VerifyAccountFormProps) {
   const t = useTranslations("auth.verifyAccount");
-  const { verifyAccountSchema } = useValidationsSchema();
-  const formSchema = verifyAccountSchema();
+  const tCommon = useTranslations("common");
+
+  const formSchema = z.object({
+    verificationToken: z.string(),
+    otp: z.string().length(6, {
+      message: t("otpValidation"),
+    }),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      verificationToken,
       otp: "",
     },
   });
 
   const { mutate: verifyEmail, isPending } = useVerifyEmailMutation();
-  const { mutate: resendOTP, isPending: isResending } = useResendVerificationMutation();
+  const { mutate: resendOTP, isPending: isResending } =
+    useResendVerificationMutation();
+
+  const RESEND_TIMEOUT = 60;
+  const [timer, setTimer] = useState<number>(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isResendDisabled = isPending || isResending || timer > 0;
+
+  const startTimer = () => {
+    setTimer(RESEND_TIMEOUT);
+  };
+
+  useEffect(() => {
+    if (timer === 0 && intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (timer > 0 && !intervalRef.current) {
+      intervalRef.current = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (intervalRef.current && timer === 0) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [timer]);
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const verifyEmailData: IVerifyEmailRequest = {
-      verificationToken,
-      otp: values.otp,
-    };
-    verifyEmail(verifyEmailData);
+    verifyEmail(values);
   };
 
   const handleResendOTP = () => {
     if (!email) {
-      toast.error("Email not available. Please register again.");
+      toast.error(t("emailNotAvailable"));
       return;
     }
-    const resendData: IResendVerificationRequest = {
-      email,
-    };
-    resendOTP(resendData);
+    resendOTP({ email });
+    startTimer();
   };
 
   return (
@@ -94,16 +140,16 @@ export function VerifyAccountForm({ verificationToken, email }: VerifyAccountFor
                       disabled={isPending}
                     >
                       <InputOTPGroup className="mx-auto">
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
+                        <InputOTPSlot index={0} className="lg:size-12" />
+                        <InputOTPSlot index={1} className="lg:size-12" />
+                        <InputOTPSlot index={2} className="lg:size-12" />
+                        <InputOTPSlot index={3} className="lg:size-12" />
+                        <InputOTPSlot index={4} className="lg:size-12" />
+                        <InputOTPSlot index={5} className="lg:size-12" />
                       </InputOTPGroup>
                     </InputOTP>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="mx-auto" />
                 </FormItem>
               )}
             />
@@ -113,19 +159,27 @@ export function VerifyAccountForm({ verificationToken, email }: VerifyAccountFor
               disabled={isPending}
               loading={isPending}
             >
-              {t("submit")}
+              {tCommon("verifyAccount")}
             </Button>
           </CardContent>
-          <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("noCode")}</p>
-            <button
-              type="button"
-              onClick={handleResendOTP}
-              disabled={isPending || isResending}
-              className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed ps-1"
-            >
-              {isResending ? t("sendingCode") : t("resendCode")}
-            </button>
+          <CardFooter className="flex-col justify-center text-sm">
+            <div className="flex items-center gap-1">
+              <p className="text-muted-foreground">{tCommon("noCode")}</p>
+              <button
+                type="button"
+                onClick={handleResendOTP}
+                disabled={isResendDisabled}
+                className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed ps-1"
+              >
+                {isResending
+                  ? tCommon("sendingCode")
+                  : timer > 0
+                  ? `${tCommon("resendCode")} (${timer})`
+                  : tCommon("resendCode")}
+              </button>
+            </div>
+
+            <LinkButton label={tCommon("login")} href={Routes.login} />
           </CardFooter>
         </Card>
       </form>
