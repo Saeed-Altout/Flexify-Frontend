@@ -61,3 +61,8 @@ export interface IRefreshTokenResponse {
   expiresIn: number;
 }
 
+export interface IChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+

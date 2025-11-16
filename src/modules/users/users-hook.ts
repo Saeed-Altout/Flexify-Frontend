@@ -12,11 +12,14 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  updateProfile,
+  uploadAvatar,
 } from "./users-api";
 import {
   ICreateUserRequest,
   IUpdateUserRequest,
   IQueryUserParams,
+  IUpdateProfileRequest,
 } from "./users-type";
 
 // Query keys
@@ -101,6 +104,50 @@ export const useDeleteUserMutation = () => {
     onError: (error) => {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message || "Failed to delete user");
+      }
+    },
+  });
+};
+
+// Update profile mutation
+export const useUpdateProfileMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: IUpdateProfileRequest) => updateProfile(data),
+    onSuccess: (response) => {
+      queryClient.setQueryData(["user", "current"], response.user);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.success("Profile updated successfully");
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Failed to update profile");
+      }
+    },
+  });
+};
+
+// Upload avatar mutation
+export const useUploadAvatarMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (file: File) => uploadAvatar(file),
+    onSuccess: (response) => {
+      // Update user cache with new avatar URL
+      queryClient.setQueryData(["user", "current"], (old: any) => {
+        if (old) {
+          return { ...old, avatarUrl: response.avatarUrl };
+        }
+        return old;
+      });
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.success("Avatar uploaded successfully");
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Failed to upload avatar");
       }
     },
   });

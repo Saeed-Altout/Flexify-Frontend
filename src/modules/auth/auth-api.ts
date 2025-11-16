@@ -10,6 +10,7 @@ import {
   IAuthResponse,
   IRefreshTokenResponse,
   IUser,
+  IChangePasswordRequest,
 } from "./auth-type";
 
 // Generic API Response type
@@ -33,10 +34,9 @@ export const login = async (data: ILoginRequest): Promise<IAuthResponse> => {
 export const register = async (
   data: IRegisterRequest
 ): Promise<{ user: IUser; verificationToken: string }> => {
-  const response = await apiClient.post<IApiResponse<{ user: IUser; verificationToken: string }>>(
-    "/auth/register",
-    data
-  );
+  const response = await apiClient.post<
+    IApiResponse<{ user: IUser; verificationToken: string }>
+  >("/auth/register", data);
   return response.data.data;
 };
 
@@ -66,13 +66,21 @@ export const verifyEmail = async (data: IVerifyEmailRequest): Promise<void> => {
   await apiClient.post("/auth/verify-email", data);
 };
 
-export const resendVerification = async (data: IResendVerificationRequest): Promise<void> => {
+export const resendVerification = async (
+  data: IResendVerificationRequest
+): Promise<void> => {
   await apiClient.post("/auth/resend-verification", data);
 };
 
 export const getCurrentUser = async (): Promise<IUser> => {
   const response = await apiClient.get<IApiResponse<IUser>>("/auth/me");
   return response.data.data;
+};
+
+export const changePassword = async (
+  data: IChangePasswordRequest
+): Promise<void> => {
+  await apiClient.post<IApiResponse<void>>("/auth/change-password", data);
 };
 
 export const logout = (): void => {

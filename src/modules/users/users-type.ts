@@ -17,6 +17,17 @@ export interface IUserResponse {
   user: IUser;
 }
 
+export interface IUpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface IUploadAvatarResponse {
+  avatarUrl: string;
+}
+
 export interface IUsersListResponse {
   users: IUser[];
   total: number;

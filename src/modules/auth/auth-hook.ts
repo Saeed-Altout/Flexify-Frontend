@@ -12,6 +12,7 @@ import {
   resendVerification,
   logout as logoutApi,
   getCurrentUser,
+  changePassword,
 } from "./auth-api";
 import {
   ILoginRequest,
@@ -21,6 +22,7 @@ import {
   IVerifyEmailRequest,
   IResendVerificationRequest,
   IRefreshTokenRequest,
+  IChangePasswordRequest,
 } from "./auth-type";
 import { Routes } from "@/constants/routes";
 
@@ -177,6 +179,21 @@ export const useResendVerificationMutation = () => {
         toast.error(
           error.response?.data?.message || "Failed to send verification code"
         );
+      }
+    },
+  });
+};
+
+// Change password mutation
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationFn: (data: IChangePasswordRequest) => changePassword(data),
+    onSuccess: () => {
+      toast.success("Password changed successfully");
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Failed to change password");
       }
     },
   });

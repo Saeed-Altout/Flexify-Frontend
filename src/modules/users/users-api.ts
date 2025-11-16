@@ -52,3 +52,29 @@ export const deleteUser = async (id: string): Promise<void> => {
   await apiClient.delete(`/users/${id}`);
 };
 
+export const updateProfile = async (
+  data: IUpdateProfileRequest
+): Promise<IUserResponse> => {
+  const response = await apiClient.patch<IApiResponse<IUserResponse>>(
+    "/users/me",
+    data
+  );
+  return response.data.data;
+};
+
+export const uploadAvatar = async (file: File): Promise<IUploadAvatarResponse> => {
+  const formData = new FormData();
+  formData.append("file", file);
+  
+  const response = await apiClient.post<IApiResponse<IUploadAvatarResponse>>(
+    "/users/me/avatar",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data.data;
+};
+
