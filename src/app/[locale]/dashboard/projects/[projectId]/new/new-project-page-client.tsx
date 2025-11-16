@@ -20,16 +20,16 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
-import { TechStackField } from "../tech-stack-field";
-import { RoleField } from "../role-field";
-import { TranslationsField } from "../translations-field";
-import { MainImageField } from "../main-image-field";
-import { ImagesField } from "../images-field";
-import { GithubUrlField } from "../github-url-field";
-import { LiveDemoField } from "../live-demo-field";
-import { PublishedField } from "../published-field";
-import { GithubBackendUrlField } from "../github-backend-url-field";
-import { useCreateProjectMutation } from "../../hooks/use-project-mutations";
+import { TechStackField } from "../_components/tech-stack-field";
+import { RoleField } from "../_components/role-field";
+import { TranslationsField } from "../_components/translations-field";
+import { MainImageField } from "../_components/main-image-field";
+import { ImagesField } from "../_components/images-field";
+import { GithubUrlField } from "../_components/github-url-field";
+import { LiveDemoField } from "../_components/live-demo-field";
+import { PublishedField } from "../_components/published-field";
+import { GithubBackendUrlField } from "../_components/github-backend-url-field";
+import { useCreateProjectMutation } from "../../../../../../modules/projects/hooks/use-project-mutations";
 
 interface CreateProjectModalProps {
   children: React.ReactNode;
@@ -44,11 +44,11 @@ export function CreateProjectModal({ children }: CreateProjectModalProps) {
   const formSchema = z.object({
     tech_stack: z.array(z.string().min(1)),
     role: z.string().min(1, "Role is required"),
-    github_url: z.url("Invalid URL").optional(),
-    github_backend_url: z.url("Invalid URL").optional(),
-    live_demo_url: z.url("Invalid URL").optional(),
-    main_image: z.url("Invalid URL").optional(),
-    images: z.array(z.url("Invalid URL")).optional(),
+    github_url: z.url("Invalid URL").min(1, "GitHub URL is required"),
+    github_backend_url: z.string().optional(),
+    live_demo_url: z.string().min(1, "Live demo URL is required"),
+    main_image: z.string().optional(),
+    images: z.array(z.string().min(1, "Image is required")).optional(),
     is_published: z.boolean(),
     translations: z.array(
       z.object({

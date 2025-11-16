@@ -450,7 +450,7 @@ export interface Project {
 export interface ProjectTranslation {
   id: string;
   project_id: string;
-  language: string;
+  language: "en" | "ar";
   title: string;
   summary: string;
   description: string;
@@ -479,7 +479,7 @@ export interface CreateProjectDto {
  * Project translation DTO
  */
 export interface ProjectTranslationDto {
-  language: string;
+  language: "en" | "ar";
   title: string;
   summary: string;
   description: string;

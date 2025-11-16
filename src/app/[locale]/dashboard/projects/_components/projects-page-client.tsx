@@ -31,13 +31,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { Project } from "@/types";
 import { SearchIcon, SortAscIcon, SortDescIcon, PlusIcon } from "lucide-react";
 
-import { ProjectsProvider } from "@/modules/projects/components/dashboard/projects-context";
+import { ProjectsProvider } from "@/app/[locale]/dashboard/projects/_components/projects-context";
 import { useProjectsTable } from "@/modules/projects/hooks/use-projects-table";
-import { createProjectsColumns } from "@/modules/projects/components/dashboard/projects-table-columns";
-import { CreateProjectModal } from "@/modules/projects/components/dashboard/create-project-modal";
-import { EditProjectModal } from "@/modules/projects/components/dashboard/edit-project-modal";
-import { DeleteProjectModal } from "@/modules/projects/components/dashboard/delete-project-modal";
-import { PreviewProjectModal } from "@/modules/projects/components/dashboard/preview-project-modal";
+import { createProjectsColumns } from "@/app/[locale]/dashboard/projects/_components/projects-table-columns";
+import { CreateProjectModal } from "@/app/[locale]/dashboard/projects/[projectId]/new/create-project-modal";
+import { EditProjectModal } from "@/app/[locale]/dashboard/projects/[projectId]/edit/_components/update-project-page-client";
+import { DeleteProjectModal } from "@/app/[locale]/dashboard/projects/_components/delete-project-modal";
+import { PreviewProjectModal } from "@/app/[locale]/dashboard/projects/[projectId]/(view)/_components/preview-project-page-client";
 
 function ProjectsPageContent() {
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
@@ -79,19 +79,9 @@ function ProjectsPageContent() {
     setIsPreviewOpen(true);
   }, []);
 
-  const handleEdit = React.useCallback((project: Project) => {
-    setSelectedProject(project);
-    setIsEditOpen(true);
-  }, []);
-
   const handleDelete = React.useCallback((project: Project) => {
     setSelectedProject(project);
     setIsDeleteOpen(true);
-  }, []);
-
-  const handleCreate = React.useCallback(() => {
-    setSelectedProject(null);
-    setIsCreateOpen(true);
   }, []);
 
   const handleCloseModals = React.useCallback(() => {
@@ -107,10 +97,9 @@ function ProjectsPageContent() {
     () =>
       createProjectsColumns({
         onPreview: handlePreview,
-        onEdit: handleEdit,
         onDelete: handleDelete,
       }),
-    [handlePreview, handleEdit, handleDelete]
+    [handlePreview, handleDelete]
   );
 
   // Pagination helpers
@@ -273,12 +262,6 @@ function ProjectsPageContent() {
 
       {selectedProject && (
         <>
-          <EditProjectModal
-            open={isEditOpen}
-            onOpenChange={setIsEditOpen}
-            project={selectedProject}
-            onSuccess={handleCloseModals}
-          />
           <DeleteProjectModal
             open={isDeleteOpen}
             onOpenChange={setIsDeleteOpen}

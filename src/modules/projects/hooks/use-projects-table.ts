@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useProjects } from "../components/dashboard/projects-context";
+import { useProjects } from "../../../app/[locale]/dashboard/projects/_components/projects-context";
 import { useProjects as useProjectsQuery } from "@/modules/projects/hooks/use-project-queries";
 
 /**

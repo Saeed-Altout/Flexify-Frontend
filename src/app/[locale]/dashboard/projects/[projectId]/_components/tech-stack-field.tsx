@@ -25,7 +25,9 @@ export function TechStackField() {
 
   const form = useFormContext();
   const [techInput, setTechInput] = useState("");
-  const [techStack, setTechStack] = useState<string[]>([]);
+  const [techStack, setTechStack] = useState<string[]>(
+    form.getValues("tech_stack") || []
+  );
 
   const handleTechStackAdd = () => {
     if (techInput.trim() && !techStack.includes(techInput.trim())) {

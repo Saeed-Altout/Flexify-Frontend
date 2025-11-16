@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { Upload, X, Image as ImageIcon, FileImage } from "lucide-react";
+import { Upload, X, Image as ImageIcon, FileImage, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { uploadFile, uploadFiles, type UploadFileResult } from "@/core/lib/supabase/storage";
 
 interface FileUploadProps {
   value?: string | string[];
@@ -16,6 +17,8 @@ interface FileUploadProps {
   description?: string;
   error?: string;
   type?: "image" | "all";
+  bucket?: string;
+  folder?: string;
 }
 
 export function FileUpload({
@@ -28,12 +31,15 @@ export function FileUpload({
   description,
   error,
   type = "image",
+  bucket = "uploads",
+  folder = "files",
 }: FileUploadProps) {
   const t = useTranslations("auth.projects.dashboard.form");
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [previewUrls, setPreviewUrls] = React.useState<string[]>([]);
   const [isDragging, setIsDragging] = React.useState(false);
   const [uploadError, setUploadError] = React.useState<string | null>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
 
   const currentValue = Array.isArray(value) ? value : value ? [value] : [];
 
@@ -72,21 +78,30 @@ export function FileUpload({
       return;
     }
 
+    setIsUploading(true);
+    setUploadError(null);
+
     try {
-      // Convert files to base64 data URLs so they can be stored in the database
-      const filePromises = validFiles.map((file) => {
-        return new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            resolve(reader.result as string);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
+      // Upload files to Supabase Storage
+      let uploadResults: UploadFileResult[];
+
+      if (multiple) {
+        uploadResults = await uploadFiles({
+          bucket,
+          path: folder,
+          files: validFiles,
         });
-      });
-      
-      const newUrls = await Promise.all(filePromises);
-      
+      } else {
+        const result = await uploadFile({
+          bucket,
+          path: `${folder}/${Date.now()}-${validFiles[0].name}`,
+          file: validFiles[0],
+        });
+        uploadResults = [result];
+      }
+
+      const newUrls = uploadResults.map((result) => result.publicUrl);
+
       if (multiple) {
         const updated = [...currentValue, ...newUrls];
         onChange(updated.length > 0 ? updated : undefined);
@@ -94,7 +109,10 @@ export function FileUpload({
         onChange(newUrls[0]);
       }
     } catch (err) {
-      setUploadError(t("uploadError"));
+      const errorMessage = err instanceof Error ? err.message : t("uploadError");
+      setUploadError(errorMessage);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -176,9 +194,19 @@ export function FileUpload({
             variant="outline"
             size="sm"
             onClick={() => inputRef.current?.click()}
+            disabled={isUploading}
           >
-            <Upload className="h-4 w-4 mr-2" />
-            {t("uploadSelectFiles")}
+            {isUploading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                {t("uploadUploading") || "Uploading..."}
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4 mr-2" />
+                {t("uploadSelectFiles")}
+              </>
+            )}
           </Button>
         </div>
       </div>
