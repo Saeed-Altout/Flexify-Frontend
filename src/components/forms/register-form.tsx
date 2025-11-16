@@ -6,8 +6,9 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { useSignUpMutation } from "@/hooks/use-auth-mutations";
+import { useSignUpMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
+import type { IRegisterRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -37,8 +38,6 @@ export function RegisterForm() {
   const { registerSchema } = useValidationsSchema();
   const formSchema = registerSchema();
 
-  const { mutate: signUp, isPending } = useSignUpMutation();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,8 +49,16 @@ export function RegisterForm() {
     },
   });
 
+  const { mutate: signUp, isPending } = useSignUpMutation();
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    signUp(values);
+    const registerData: IRegisterRequest = {
+      email: values.email,
+      password: values.password,
+      firstName: values.firstName || undefined,
+      lastName: values.lastName || undefined,
+    };
+    signUp(registerData);
   };
 
   return (

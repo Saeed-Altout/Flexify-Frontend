@@ -7,10 +7,8 @@ import * as z from "zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import {
-  useVerifyAccountMutation,
-  useSendVerificationCodeMutation,
-} from "@/hooks/use-auth-mutations";
+import { useVerifyEmailMutation, useResendVerificationMutation } from "@/modules/auth/auth-hook";
+import type { IVerifyEmailRequest, IResendVerificationRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -43,13 +41,6 @@ export function VerifyAccountForm({ email }: VerifyAccountFormProps) {
   const { verifyAccountSchema } = useValidationsSchema();
   const formSchema = verifyAccountSchema();
 
-  const { mutate: verifyAccount, isPending: isVerifyAccountPending } =
-    useVerifyAccountMutation();
-  const { mutate: sendVerificationCode, isPending: isSendingVerificationCode } =
-    useSendVerificationCodeMutation();
-
-  const isPending = isVerifyAccountPending || isSendingVerificationCode;
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,15 +48,21 @@ export function VerifyAccountForm({ email }: VerifyAccountFormProps) {
     },
   });
 
+  const { mutate: verifyEmail, isPending } = useVerifyEmailMutation();
+  const { mutate: resendOTP, isPending: isResending } = useResendVerificationMutation();
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    verifyAccount({
-      email,
-      code: values.otp,
-    });
+    const verifyEmailData: IVerifyEmailRequest = {
+      token: values.otp,
+    };
+    verifyEmail(verifyEmailData);
   };
 
-  const handleResendCode = () => {
-    sendVerificationCode({ email });
+  const handleResendOTP = () => {
+    const resendData: IResendVerificationRequest = {
+      email,
+    };
+    resendOTP(resendData);
   };
 
   return (
@@ -116,11 +113,11 @@ export function VerifyAccountForm({ email }: VerifyAccountFormProps) {
             <p className="text-muted-foreground">{t("noCode")}</p>
             <button
               type="button"
-              onClick={handleResendCode}
-              disabled={isPending}
+              onClick={handleResendOTP}
+              disabled={isPending || isResending}
               className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed ps-1"
             >
-              {isPending ? t("sendingCode") : t("resendCode")}
+              {isResending ? t("sendingCode") : t("resendCode")}
             </button>
           </CardFooter>
         </Card>

@@ -6,8 +6,9 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { useResetPasswordMutation } from "@/hooks/use-auth-mutations";
+import { useResetPasswordMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
+import type { IResetPasswordRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -39,20 +40,22 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const { resetPasswordSchema } = useValidationsSchema();
   const formSchema = resetPasswordSchema();
 
-  const { mutate: resetPassword, isPending } = useResetPasswordMutation();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       password: "",
+      confirmPassword: "",
     },
   });
 
+  const { mutate: resetPassword, isPending } = useResetPasswordMutation();
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    resetPassword({
+    const resetPasswordData: IResetPasswordRequest = {
       token,
       password: values.password,
-    });
+    };
+    resetPassword(resetPasswordData);
   };
 
   return (
@@ -74,6 +77,23 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                     <PasswordInput
                       {...field}
                       placeholder={t("passwordPlaceholder")}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
+                  <FormControl>
+                    <PasswordInput
+                      {...field}
+                      placeholder={t("confirmPasswordPlaceholder")}
                       disabled={isPending}
                     />
                   </FormControl>

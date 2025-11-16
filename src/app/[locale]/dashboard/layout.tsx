@@ -1,6 +1,3 @@
-import { getSession } from "@/lib/auth/server";
-import { redirect } from "next/navigation";
-
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -10,13 +7,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Authentication check in Data Access Layer (server component)
-  const session = await getSession();
-
-  if (!session) {
-    redirect("/auth/login");
-  }
-
   return (
     <SidebarProvider
       style={

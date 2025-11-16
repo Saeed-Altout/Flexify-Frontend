@@ -6,8 +6,9 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
-import { useForgotPasswordMutation } from "@/hooks/use-auth-mutations";
+import { useForgotPasswordMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
+import type { IForgotPasswordRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -35,8 +36,6 @@ export function ForgetPasswordForm() {
   const { forgetPasswordSchema } = useValidationsSchema();
   const formSchema = forgetPasswordSchema();
 
-  const { mutate: forgotPassword, isPending } = useForgotPasswordMutation();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,8 +43,13 @@ export function ForgetPasswordForm() {
     },
   });
 
+  const { mutate: forgotPassword, isPending } = useForgotPasswordMutation();
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    forgotPassword(values);
+    const forgotPasswordData: IForgotPasswordRequest = {
+      email: values.email,
+    };
+    forgotPassword(forgotPasswordData);
   };
 
   return (

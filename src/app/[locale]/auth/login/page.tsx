@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-
-import { getSession } from "@/lib/auth/server";
 
 import { LoginForm } from "@/components/forms/login-form";
 
@@ -16,10 +13,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LoginPage() {
-  const session = await getSession();
-  if (session) {
-    redirect("/dashboard");
-  }
-
   return <LoginForm />;
 }
