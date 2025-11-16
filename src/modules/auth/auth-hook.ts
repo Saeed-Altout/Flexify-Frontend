@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -11,6 +11,7 @@ import {
   verifyEmail,
   resendVerification,
   logout as logoutApi,
+  getCurrentUser,
 } from "./auth-api";
 import {
   ILoginRequest,
@@ -31,6 +32,19 @@ const storeTokens = (accessToken: string, refreshToken: string) => {
   }
 };
 
+// Get current user query
+export const useCurrentUserQuery = () => {
+  const hasToken = typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+  
+  return useQuery({
+    queryKey: ["user", "current"],
+    queryFn: getCurrentUser,
+    enabled: hasToken, // Only run if token exists
+    retry: 1,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
 // Login mutation
 export const useSignInMutation = () => {
   const router = useRouter();
@@ -40,9 +54,16 @@ export const useSignInMutation = () => {
     mutationFn: (data: ILoginRequest) => login(data),
     onSuccess: (response) => {
       storeTokens(response.tokens.accessToken, response.tokens.refreshToken);
+      queryClient.setQueryData(["user", "current"], response.user);
       queryClient.setQueryData(["user"], response.user);
       toast.success("Login successful");
-      router.push(Routes.dashboard);
+      
+      // Redirect based on role
+      if (response.user.role === "admin" || response.user.role === "super_admin") {
+        router.push(`${Routes.dashboard}/profile`);
+      } else {
+        router.push(Routes.home);
+      }
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -172,6 +193,7 @@ export const useLogoutMutation = () => {
       return Promise.resolve();
     },
     onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["user"] });
       queryClient.clear();
       router.push(Routes.login);
       toast.success("Logged out successfully");

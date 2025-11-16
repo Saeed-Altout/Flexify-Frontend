@@ -70,6 +70,11 @@ export const resendVerification = async (data: IResendVerificationRequest): Prom
   await apiClient.post("/auth/resend-verification", data);
 };
 
+export const getCurrentUser = async (): Promise<IUser> => {
+  const response = await apiClient.get<IApiResponse<IUser>>("/auth/me");
+  return response.data.data;
+};
+
 export const logout = (): void => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("accessToken");
