@@ -31,6 +31,8 @@ export function useValidationsSchema() {
       email: email(),
       password: password(),
       confirmPassword: password(),
+      firstName: z.string().optional().or(z.literal("")),
+      lastName: z.string().optional().or(z.literal("")),
     }).refine((data) => data.password === data.confirmPassword, {
       message: tAuth("register.confirmPasswordError"),
       path: ["confirmPassword"],

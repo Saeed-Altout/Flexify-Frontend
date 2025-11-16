@@ -20,7 +20,8 @@ declare const messages: {
         "password":{
             "error":"Password is required",
             "message":"Password must be at least {min} characters"
-        }
+        },
+        "required":"This field is required"
     },
     "auth":{
         "login":{
@@ -42,6 +43,10 @@ declare const messages: {
         "register":{
             "title":"Register",
             "description":"Create a new Flexify account",
+            "firstNameLabel":"First Name",
+            "firstNamePlaceholder":"Enter your first name",
+            "lastNameLabel":"Last Name",
+            "lastNamePlaceholder":"Enter your last name",
             "emailLabel":"Email",
             "emailPlaceholder":"Enter your email address",
             "passwordLabel":"Password",

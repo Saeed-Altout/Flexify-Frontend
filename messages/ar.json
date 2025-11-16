@@ -17,7 +17,8 @@
         "password":{
             "error":"كلمة المرور مطلوبة",
             "message":"يجب أن يكون لوحظ على الأقل {min} أحرف!"
-        }
+        },
+        "required":"هذا الحقل مطلوب"
     },
     "auth":{
         "login":{
@@ -39,6 +40,10 @@
         "register":{
             "title":"التسجيل",
             "description":"إنشاء حساب Flexify جديد",
+            "firstNameLabel":"الاسم الأول",
+            "firstNamePlaceholder":"أدخل اسمك الأول",
+            "lastNameLabel":"اسم العائلة",
+            "lastNamePlaceholder":"أدخل اسم عائلتك",
             "emailLabel":"البريد الإلكتروني",
             "emailPlaceholder":"أدخل بريدك الإلكتروني",
             "passwordLabel":"كلمة المرور",

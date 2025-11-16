@@ -129,6 +129,43 @@ function DialogDescription({
   );
 }
 
+// AlertDialog components - wrappers around Dialog for destructive actions
+const AlertDialog = Dialog;
+const AlertDialogTrigger = DialogTrigger;
+const AlertDialogContent = DialogContent;
+const AlertDialogHeader = DialogHeader;
+const AlertDialogFooter = DialogFooter;
+const AlertDialogTitle = DialogTitle;
+const AlertDialogDescription = DialogDescription;
+const AlertDialogCancel = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Close
+    ref={ref}
+    className={cn(
+      "mt-2 sm:mt-0",
+      className
+    )}
+    {...props}
+  />
+));
+AlertDialogCancel.displayName = "AlertDialogCancel";
+
+const AlertDialogAction = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Close
+    ref={ref}
+    className={cn(
+      className
+    )}
+    {...props}
+  />
+));
+AlertDialogAction.displayName = "AlertDialogAction";
+
 export {
   Dialog,
   DialogClose,
@@ -140,4 +177,13 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
 };
