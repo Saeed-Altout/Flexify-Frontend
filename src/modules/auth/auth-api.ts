@@ -9,6 +9,7 @@ import {
   IRefreshTokenRequest,
   IAuthResponse,
   IRefreshTokenResponse,
+  IUser,
 } from "./auth-type";
 
 // Generic API Response type
@@ -31,8 +32,8 @@ export const login = async (data: ILoginRequest): Promise<IAuthResponse> => {
 
 export const register = async (
   data: IRegisterRequest
-): Promise<IAuthResponse> => {
-  const response = await apiClient.post<IApiResponse<IAuthResponse>>(
+): Promise<{ user: IUser; verificationToken: string }> => {
+  const response = await apiClient.post<IApiResponse<{ user: IUser; verificationToken: string }>>(
     "/auth/register",
     data
   );

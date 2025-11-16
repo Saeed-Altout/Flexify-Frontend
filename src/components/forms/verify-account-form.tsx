@@ -9,6 +9,7 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { useVerifyEmailMutation, useResendVerificationMutation } from "@/modules/auth/auth-hook";
 import type { IVerifyEmailRequest, IResendVerificationRequest } from "@/modules/auth/auth-type";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -33,10 +34,11 @@ import {
 } from "@/components/ui/input-otp";
 
 interface VerifyAccountFormProps {
-  email: string;
+  verificationToken: string;
+  email?: string;
 }
 
-export function VerifyAccountForm({ email }: VerifyAccountFormProps) {
+export function VerifyAccountForm({ verificationToken, email }: VerifyAccountFormProps) {
   const t = useTranslations("auth.verifyAccount");
   const { verifyAccountSchema } = useValidationsSchema();
   const formSchema = verifyAccountSchema();
@@ -53,12 +55,17 @@ export function VerifyAccountForm({ email }: VerifyAccountFormProps) {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     const verifyEmailData: IVerifyEmailRequest = {
-      token: values.otp,
+      verificationToken,
+      otp: values.otp,
     };
     verifyEmail(verifyEmailData);
   };
 
   const handleResendOTP = () => {
+    if (!email) {
+      toast.error("Email not available. Please register again.");
+      return;
+    }
     const resendData: IResendVerificationRequest = {
       email,
     };

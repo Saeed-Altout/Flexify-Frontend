@@ -14,18 +14,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 interface VerifyAccountPageProps {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ token?: string; email?: string }>;
 }
 
 export default async function VerifyAccountPage({
   searchParams,
 }: VerifyAccountPageProps) {
   const params = await searchParams;
+  const token = params.token;
   const email = params.email;
 
-  if (!email) {
+  if (!token) {
     redirect("/auth/register");
   }
 
-  return <VerifyAccountForm email={email} />;
+  return <VerifyAccountForm verificationToken={token} email={email} />;
 }

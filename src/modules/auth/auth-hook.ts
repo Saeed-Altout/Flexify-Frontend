@@ -55,15 +55,14 @@ export const useSignInMutation = () => {
 // Register mutation
 export const useSignUpMutation = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: IRegisterRequest) => register(data),
     onSuccess: (response) => {
-      storeTokens(response.tokens.accessToken, response.tokens.refreshToken);
-      queryClient.setQueryData(["user"], response.user);
-      toast.success("Registration successful");
-      router.push(Routes.verifyAccount);
+      // Don't save tokens yet - user must verify email first
+      // Redirect to verify account page with verification token and email (for resend)
+      toast.success("Registration successful! Please verify your email.");
+      router.push(`${Routes.verifyAccount}?token=${encodeURIComponent(response.verificationToken)}&email=${encodeURIComponent(response.user.email)}`);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -115,8 +114,8 @@ export const useVerifyEmailMutation = () => {
   return useMutation({
     mutationFn: (data: IVerifyEmailRequest) => verifyEmail(data),
     onSuccess: () => {
-      toast.success("Email verified successfully");
-      router.push(Routes.dashboard);
+      toast.success("Email verified successfully! Please login to continue.");
+      router.push(Routes.login);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

@@ -20,7 +20,8 @@ export interface IResetPasswordRequest {
 }
 
 export interface IVerifyEmailRequest {
-  token: string; // OTP code (6 digits)
+  verificationToken: string; // UUID token from registration
+  otp: string; // 6-digit OTP code
 }
 
 export interface IResendVerificationRequest {
