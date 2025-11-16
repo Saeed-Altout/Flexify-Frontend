@@ -30,6 +30,7 @@ import { EmailInput } from "@/components/inputs/email-input";
 import { FirstNameInput } from "@/components/inputs/firstName-input";
 import { LastNameInput } from "@/components/inputs/lastName-input";
 import { PhoneInput } from "@/components/inputs/phone-input";
+import { AvatarUpload } from "@/components/avatar-upload";
 
 export function EditProfileTab({ user }: { user: IUser }) {
   const t = useTranslations("dashboard.profile");
@@ -67,7 +68,8 @@ export function EditProfileTab({ user }: { user: IUser }) {
         </CardTitle>
         <CardDescription>{t("tabs.editProfile.description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
+        <AvatarUpload defaultAvatar={user?.avatarUrl || undefined} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">

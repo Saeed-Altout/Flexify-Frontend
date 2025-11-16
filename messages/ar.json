@@ -5,7 +5,7 @@
         "tryAgain":"حاول مرة أخرى",
         "someThingWentWrong":"هناك خطأ ما",
         "success":"تم العملية بنجاح",
-        "error":"هناك خطأ ما",
+        "error":"خطأ",
         "unauthorized":"غير مصرح لك",
         "submit":"إرسال",
         "noAccount":"ليس لديك حساب؟",
@@ -18,7 +18,24 @@
         "resendCode":"إعادة إرسال رمز التحقق",
         "saveChanges":"حفظ التعديلات",
         "chooseImage":"اختر الصورة",
-        "uploadMessage":"الموصى به: صورة مربعة، حد أقصى 5MB"
+        "uploadMessage":"الموصى به: صورة مربعة، حد أقصى 5MB",
+        "avatarUploaded":"تم رفع الصورة الشخصية بنجاح",
+        "uploadAvatar":"رفع الصورة الشخصية",
+        "fileUploadError":"فشل رفع الصورة الشخصية",
+        "accountStatus":"حالة الحساب",
+        "verified":"موثوق",
+        "unverified":"غير موثوق",
+        "active":"مفعل",
+        "inactive":"معطل",
+        "email":"البريد الإلكتروني",
+        "phone":"الهاتف",
+        "roles":{
+            "admin":"مدير",
+            "super_admin":"مدير عام",
+            "user":"مستخدم"
+            },
+        "loading":"جاري التحميل",
+        "loadingDescription":"يرجى الإنتظار أثناء التحميل"
     },
     "auth":{
         "title":"فلكسيفاي",
@@ -150,7 +167,7 @@
     "dashboard":{
         "profile":{
             "title":"الملف الشخصي",
-            "description":"الملف الشخصي",
+            "description":"يمكنك إدارة ملفك الشخصي هنا.",
             "firstNameLabel":"الاسم الأول",
             "firstNamePlaceholder":"الاسم الأول",
             "firstNameValidation":"الاسم الأول يجب أن يكون على الأكثر 20 حرف",
@@ -175,23 +192,17 @@
             "tabs":{
                 "overview":{
                     "title":"الملف الشخصي",
-                    "description":"الملف الشخصي"
+                    "description":"يمكنك عرض ملفك الشخصي هنا."
                 },
                 "editProfile":{
                     "title":"تعديل الملف الشخصي",
-                    "description":"تعديل الملف الشخصي"
+                    "description":"يمكنك تعديل ملفك الشخصي هنا."
                 },
-                "chnagePassword":{
+                "changePassword":{
                     "title":"تغيير كلمة المرور",
-                    "description":"تغيير كلمة المرور"
-                },
-                "avatar":{
-                    "title":"الصورة الشخصية",
-                    "description":"الصورة الشخصية"
+                    "description":"يمكنك تغيير كلمة المرور هنا."
                 }
             },
-            
-            
             "metadata":{
                 "title":"الملف الشخصي",
                 "description":"الملف الشخصي"

@@ -1,6 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { MailIcon, PhoneIcon, ShieldIcon, UserIcon } from "lucide-react";
+
+import { IUser } from "@/modules/auth/auth-type";
 
 import {
   Card,
@@ -9,13 +12,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Phone, Shield, UserIcon } from "lucide-react";
-import { IUser } from "@/modules/auth/auth-type";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function OverviewTab({ user }: { user: IUser }) {
   const t = useTranslations("dashboard.profile");
+  const tCommon = useTranslations("common");
 
   return (
     <Card>
@@ -28,8 +37,12 @@ export function OverviewTab({ user }: { user: IUser }) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center gap-4">
-          <Avatar className="h-20 w-20">
-            <AvatarImage src={user?.avatarUrl || undefined} alt={user?.email} />
+          <Avatar className="h-24 w-24">
+            <AvatarImage
+              src={user?.avatarUrl || undefined}
+              alt={user?.email}
+              className="object-cover"
+            />
             <AvatarFallback className="text-lg">
               {user?.firstName?.charAt(0) ||
                 user?.lastName?.charAt(0) ||
@@ -46,46 +59,58 @@ export function OverviewTab({ user }: { user: IUser }) {
               variant={user.role === "admin" ? "default" : "secondary"}
               className="mt-1"
             >
-              {user.role === "admin" ? "Admin" : "User"}
+              {tCommon(`roles.${user.role}`)}
             </Badge>
           </div>
         </div>
 
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Mail className="h-4 w-4 text-muted-foreground" />
-            <div>
-              <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium">{user?.email}</p>
-            </div>
-          </div>
-
-          {user?.phone && (
-            <div className="flex items-center gap-3">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="text-sm text-muted-foreground">Phone</p>
-                <p className="font-medium">{user?.phone}</p>
-              </div>
-            </div>
+          {user.email && (
+            <Item>
+              <ItemMedia>
+                <MailIcon className="size-5" />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{tCommon("email")}</ItemTitle>
+                <ItemDescription>{user?.email}</ItemDescription>
+              </ItemContent>
+            </Item>
           )}
 
-          <div className="flex items-center gap-3">
-            <Shield className="h-4 w-4 text-muted-foreground" />
-            <div>
-              <p className="text-sm text-muted-foreground">Account Status</p>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge
-                  variant={user?.isEmailVerified ? "default" : "secondary"}
-                >
-                  {user?.isEmailVerified ? "Verified" : "Unverified"}
-                </Badge>
-                <Badge variant={user?.isActive ? "default" : "destructive"}>
-                  {user?.isActive ? "Active" : "Inactive"}
-                </Badge>
-              </div>
-            </div>
-          </div>
+          {user?.phone && (
+            <Item>
+              <ItemMedia>
+                <PhoneIcon className="size-5" />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{tCommon("phone")}</ItemTitle>
+                <ItemDescription>{user?.phone}</ItemDescription>
+              </ItemContent>
+            </Item>
+          )}
+
+          {(user?.isEmailVerified || user?.isActive) && (
+            <Item>
+              <ItemMedia>
+                <ShieldIcon className="size-5" />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{tCommon("accountStatus")}</ItemTitle>
+                <ItemDescription className="flex items-center gap-2">
+                  <Badge
+                    variant={user?.isEmailVerified ? "default" : "secondary"}
+                  >
+                    {user?.isEmailVerified
+                      ? tCommon("verified")
+                      : tCommon("unverified")}
+                  </Badge>
+                  <Badge variant={user?.isActive ? "default" : "destructive"}>
+                    {user?.isActive ? tCommon("active") : tCommon("inactive")}
+                  </Badge>
+                </ItemDescription>
+              </ItemContent>
+            </Item>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -68,7 +68,7 @@ export type IUser = {
   phone: string | null;
   isEmailVerified: boolean;
   isActive: boolean;
-  role: string;
+  role: "admin" | "super_admin" | "user";
 };
 
 export type IUserResponse = IApiResponse<{ data: IUser }>;

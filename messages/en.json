@@ -5,7 +5,7 @@
         "tryAgain":"Try Again",
         "someThingWentWrong":"Something Went wrong!",
         "success":"Operation completed successfully",
-        "error":"An error occurred",
+        "error":"Error",
         "unauthorized":"Unauthorized access",
         "submit":"Submit",
         "noAccount":"Don't have an account?",
@@ -18,7 +18,24 @@
         "resendCode":"Resend code",
         "saveChanges":"Save Changes",
         "chooseImage":"Choose Image",
-        "uploadMessage":"Recommended: Square image, max 5MB"
+        "uploadMessage":"Recommended: Square image, max 5MB",
+        "avatarUploaded":"Avatar uploaded successfully",
+        "uploadAvatar":"Upload avatar",
+        "fileUploadError":"Failed to upload avatar",
+        "accountStatus":"Account Status",
+        "verified":"Verified",
+        "unverified":"Unverified",
+        "active":"Active",
+        "inactive":"Inactive",
+        "email":"Email",
+        "phone":"Phone",
+        "roles":{
+            "admin":"Admin",
+            "super_admin":"Super Admin",
+            "user":"User"
+        },
+        "loading":"Loading",
+        "loadingDescription":"Please wait while we load the data"
     },
     "auth":{
         "title":"Flexify",
@@ -150,7 +167,7 @@
     "dashboard":{
         "profile":{
             "title":"Profile",
-            "description":"Profile",
+            "description":"You can manage your profile here.",
             "firstNameLabel":"First Name",
             "firstNamePlaceholder":"First Name",
             "firstNameValidation":"First name must be at most 20 characters",
@@ -175,19 +192,15 @@
             "tabs":{
                 "overview":{
                     "title":"Profile",
-                    "description":"View your personal information."
+                    "description":"You can view your personal information here."
                 },
                 "editProfile":{
                     "title":"Edit Profile",
-                    "description":"Update your personal information."
+                    "description":"You can update your personal information here."
                 },
                 "changePassword":{
                     "title":"Change Password",
-                    "description":"Change your password, and make sure is powerful."
-                },
-                "avatar":{
-                    "title":"Avatar",
-                    "description":"Change your avatar"
+                    "description":"You can change your password here."
                 }
             },
             "metadata":{
