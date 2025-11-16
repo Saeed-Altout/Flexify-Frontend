@@ -3,6 +3,7 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
 } from "axios";
+import { useAuthStore } from "@/stores/use-auth-store";
 
 // Get API base URL from environment or default to localhost
 const API_BASE_URL =
@@ -20,13 +21,14 @@ export const apiClient: AxiosInstance = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Get token from localStorage if available
     if (typeof window !== "undefined") {
       const currentLocale = document.documentElement.lang || "en";
       config.headers["Accept-Language"] = currentLocale;
-      const token = localStorage.getItem("accessToken");
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+      
+      // Get token from auth store
+      const accessToken = useAuthStore.getState().accessToken;
+      if (accessToken && config.headers) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
     return config;
@@ -49,8 +51,9 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Try to refresh token
-        const refreshToken = localStorage.getItem("refreshToken");
+        const authStore = useAuthStore.getState();
+        const refreshToken = authStore.refreshToken;
+        
         if (refreshToken) {
           const response = await axios.post(
             `${API_BASE_URL}/auth/refresh`,
@@ -65,11 +68,12 @@ apiClient.interceptors.response.use(
           }
           const { accessToken, refreshToken: newRefreshToken } = tokenData;
 
-          // Store new tokens
-          localStorage.setItem("accessToken", accessToken);
-          if (newRefreshToken) {
-            localStorage.setItem("refreshToken", newRefreshToken);
-          }
+          // Update tokens in store
+          authStore.setTokens({
+            accessToken,
+            refreshToken: newRefreshToken || refreshToken,
+            expiresIn: tokenData.expiresIn || 3600,
+          });
 
           // Retry original request with new token
           if (originalRequest.headers) {
@@ -78,10 +82,11 @@ apiClient.interceptors.response.use(
           return apiClient(originalRequest);
         }
       } catch (refreshError) {
-        // Refresh failed, clear tokens and redirect to login
+        // Refresh failed, clear auth and redirect to login
+        const authStore = useAuthStore.getState();
+        authStore.clearAuth();
+        
         if (typeof window !== "undefined") {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
           window.location.href = "/auth/login";
         }
         return Promise.reject(refreshError);

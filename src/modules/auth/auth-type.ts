@@ -71,7 +71,7 @@ export type IUser = {
   role: string;
 };
 
-export type IUserResponse = IApiResponse<IUser>;
+export type IUserResponse = IApiResponse<{ data: IUser }>;
 
 export type IRefreshTokenResponse = IApiResponse<IAuthTokens>;
 

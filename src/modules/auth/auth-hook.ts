@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import {
   login,
   register,
@@ -14,45 +15,81 @@ import {
   logout,
 } from "@/modules/auth/auth-api";
 import { useTranslations } from "next-intl";
-
 import { Routes } from "@/constants/routes";
 import { useRouter } from "@/i18n/navigation";
-
-const storeTokens = (accessToken: string, refreshToken: string) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-  }
-};
+import { useAuthStore } from "@/stores/use-auth-store";
+import { IUserResponse } from "@/modules/auth/auth-type";
 
 export const useCurrentUserQuery = () => {
-  const hasToken =
-    typeof window !== "undefined" && !!localStorage.getItem("accessToken");
+  const { accessToken, setUser, setIsAuthenticated, setIsInitialized } =
+    useAuthStore();
 
-  return useQuery({
+  const query = useQuery<IUserResponse>({
     queryKey: ["user", "current"],
     queryFn: getCurrentUser,
-    enabled: hasToken,
-    retry: 1,
+    enabled: !!accessToken,
+    retry: (failureCount, error) => {
+      // Don't retry if there's no token
+      if (!accessToken) {
+        return false;
+      }
+
+      // Retry up to 2 times for 401 errors (token might be refreshing)
+      const axiosError = error as AxiosError;
+      const isUnauthorized =
+        axiosError?.response?.status === 401 || axiosError?.status === 401;
+
+      if (isUnauthorized && failureCount < 2) {
+        return true;
+      }
+
+      // For other errors, retry once
+      return failureCount < 1;
+    },
+    retryDelay: (attemptIndex) => {
+      // Exponential backoff: 500ms, 1000ms
+      return Math.min(1000 * 2 ** attemptIndex, 2000);
+    },
     staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
+
+  // Handle success/error with useEffect (React Query v5 removed onSuccess/onError)
+  useEffect(() => {
+    if (query.data?.data.data) {
+      setUser(query.data.data.data);
+      setIsAuthenticated(true);
+      setIsInitialized(true);
+    }
+  }, [query.data, setUser, setIsAuthenticated, setIsInitialized]);
+
+  useEffect(() => {
+    if (query.isError && !query.isLoading) {
+      setIsInitialized(true);
+    }
+  }, [query.isError, query.isLoading, setIsInitialized]);
+
+  return query;
 };
 
 export const useSignInMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations("auth.login.message");
+  const { login: setAuthLogin } = useAuthStore();
 
   return useMutation({
     mutationKey: ["login"],
     mutationFn: login,
     onSuccess: (response) => {
-      storeTokens(
-        response.data.tokens.accessToken,
-        response.data.tokens.refreshToken
-      );
-      queryClient.setQueryData(["user", "current"], response.data.user);
+      // Update store with user and tokens
+      setAuthLogin(response.data.user, response.data.tokens);
+
+      // Update React Query cache
+      queryClient.setQueryData(["user", "current"], response.data);
       queryClient.setQueryData(["user"], response.data.user);
+
       toast.success(response.message || t("success"));
       router.push(Routes.home);
     },
@@ -141,17 +178,22 @@ export const useVerifyEmailMutation = () => {
 };
 
 export const useRefreshTokenMutation = () => {
+  const { setTokens, clearAuth } = useAuthStore();
+
   return useMutation({
     mutationKey: ["refreshToken"],
     mutationFn: refreshToken,
     onSuccess: (response) => {
-      storeTokens(response.data.accessToken, response.data.refreshToken);
+      if (response.data) {
+        setTokens({
+          accessToken: response.data.accessToken,
+          refreshToken: response.data.refreshToken,
+          expiresIn: response.data.expiresIn,
+        });
+      }
     },
     onError: () => {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-      }
+      clearAuth();
     },
   });
 };
@@ -192,30 +234,29 @@ export const useLogoutMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations("auth.logout.message");
+  const { logout: clearAuthStore } = useAuthStore();
+
   return useMutation({
     mutationKey: ["logout"],
     mutationFn: logout,
     onSuccess: (response) => {
-      // Clear tokens from localStorage
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-      }
+      // Clear auth store (includes tokens)
+      clearAuthStore();
+
       // Clear all queries
       queryClient.removeQueries({ queryKey: ["user", "current"] });
       queryClient.removeQueries({ queryKey: ["user"] });
       queryClient.clear();
+
       // Redirect to login
       router.push(Routes.login);
       toast.success(response.message || t("success"));
     },
     onError: (error) => {
-      // Even if logout fails, clear local tokens
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-      }
+      // Even if logout fails, clear auth store
+      clearAuthStore();
       queryClient.clear();
+
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message || t("error"));
       }

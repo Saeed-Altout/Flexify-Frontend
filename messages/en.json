@@ -15,7 +15,10 @@
         "verifyAccount":"Verify Account",
         "noCode":"No code",
         "sendingCode":"Sending code",
-        "resendCode":"Resend code"
+        "resendCode":"Resend code",
+        "saveChanges":"Save Changes",
+        "chooseImage":"Choose Image",
+        "uploadMessage":"Recommended: Square image, max 5MB"
     },
     "auth":{
         "title":"Flexify",
@@ -141,6 +144,55 @@
             "message":{
                 "success":"Logged out successfully",
                 "error":"Failed to logout"
+            }
+        }
+    },
+    "dashboard":{
+        "profile":{
+            "title":"Profile",
+            "description":"Profile",
+            "firstNameLabel":"First Name",
+            "firstNamePlaceholder":"First Name",
+            "firstNameValidation":"First name must be at most 20 characters",
+            "lastNameLabel":"Last Name",
+            "lastNamePlaceholder":"Last Name",
+            "lastNameValidation":"Last name must be at most 20 characters",
+            "emailLabel":"Email",
+            "emailPlaceholder":"Email",
+            "emailValidation":"Invalid email address",
+            "phoneLabel":"Phone",
+            "phonePlaceholder":"Phone Number",
+            "phoneValidation":"Phone must be at least 10 digits",
+            "currentPasswordLabel":"Current Password",
+            "currentPasswordPlaceholder":"Current Password",
+            "currentPasswordValidation":"Current password must be at least 8 characters",
+            "newPasswordLabel":"New Password",
+            "newPasswordPlaceholder":"New Password",
+            "newPasswordValidation":"New password must be at least 8 characters",
+            "confirmPasswordLabel":"Confirm Password",
+            "confirmPasswordPlaceholder":"Confirm Password",
+            "confirmPasswordValidation":"Confirm password must be at least 8 characters",
+            "tabs":{
+                "overview":{
+                    "title":"Profile",
+                    "description":"View your personal information."
+                },
+                "editProfile":{
+                    "title":"Edit Profile",
+                    "description":"Update your personal information."
+                },
+                "changePassword":{
+                    "title":"Change Password",
+                    "description":"Change your password, and make sure is powerful."
+                },
+                "avatar":{
+                    "title":"Avatar",
+                    "description":"Change your avatar"
+                }
+            },
+            "metadata":{
+                "title":"Profile",
+                "description":"Profile"
             }
         }
     }

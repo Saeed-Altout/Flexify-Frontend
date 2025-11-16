@@ -1,14 +1,21 @@
 "use client";
 
-import { useCurrentUserQuery, useLogoutMutation } from "@/modules/auth/auth-hook";
+import { useLogoutMutation } from "@/modules/auth/auth-hook";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { LogOut, User } from "lucide-react";
 import { Routes } from "@/constants/routes";
 import Link from "next/link";
+import { useAuthStore } from "@/stores/use-auth-store";
 
 export default function Home() {
-  const { data: user, isLoading } = useCurrentUserQuery();
+  const { user, isLoading } = useAuthStore();
   const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
 
   const handleLogout = () => {
@@ -19,7 +26,9 @@ export default function Home() {
     <div className="min-h-screen flex items-center justify-center p-6">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Welcome to Flexify</CardTitle>
+          <CardTitle className="text-3xl font-bold">
+            Welcome to Flexify
+          </CardTitle>
           <CardDescription>
             Your all-in-one project management solution
           </CardDescription>
@@ -43,7 +52,7 @@ export default function Home() {
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 {(user.role === "admin" || user.role === "super_admin") && (
                   <Link href={Routes.dashboardProfile}>

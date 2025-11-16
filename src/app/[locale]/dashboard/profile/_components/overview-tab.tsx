@@ -1,3 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+
 import {
   Card,
   CardContent,
@@ -11,14 +15,16 @@ import { Mail, Phone, Shield, UserIcon } from "lucide-react";
 import { IUser } from "@/modules/auth/auth-type";
 
 export function OverviewTab({ user }: { user: IUser }) {
+  const t = useTranslations("dashboard.profile");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <UserIcon className="h-4 w-4" />
-          <span>Personal Information</span>
+        <CardTitle className="flex items-center gap-2 text-lg font-medium">
+          <UserIcon className="size-5" />
+          <span>{t("tabs.overview.title")}</span>
         </CardTitle>
-        <CardDescription>Your account details</CardDescription>
+        <CardDescription>{t("tabs.overview.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-center gap-4">

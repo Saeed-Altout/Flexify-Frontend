@@ -39,9 +39,18 @@ import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import type { IUpdateProfileRequest } from "@/modules/users/users-type";
 import type { IChangePasswordRequest } from "@/modules/auth/auth-type";
 import { OverviewTab } from "./_components/overview-tab";
+import { useAuthStore } from "@/stores/use-auth-store";
+import { EditProfileTab } from "./_components/edit-profile-tab";
+import { ChangePasswordTab } from "./_components/change-password-tab";
 
 export default function ProfilePage() {
-  const { data: user, isLoading, isError, refetch } = useCurrentUserQuery();
+  const {
+    user: storeUser,
+    isLoading,
+    isInitialized,
+    setIsInitialized,
+    setUser,
+  } = useAuthStore();
   const { mutate: updateProfile, isPending: isUpdatingProfile } =
     useUpdateProfileMutation();
   const { mutate: changePassword, isPending: isChangingPassword } =
@@ -52,7 +61,7 @@ export default function ProfilePage() {
   const formInitializedRef = useRef<string | null>(null);
   const { email, password } = useValidationsSchema();
 
-  console.log(user);
+  console.log(storeUser);
 
   // Profile edit schema
   const profileSchema = z.object({
@@ -77,10 +86,10 @@ export default function ProfilePage() {
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: user?.data?.firstName || "",
-      lastName: user?.data?.lastName || "",
-      email: user?.data?.email || "",
-      phone: user?.data?.phone || "",
+      firstName: storeUser?.firstName || "",
+      lastName: storeUser?.lastName || "",
+      email: storeUser?.email || "",
+      phone: storeUser?.phone || "",
     },
   });
 
@@ -95,17 +104,17 @@ export default function ProfilePage() {
 
   // Update form when user data loads
   useEffect(() => {
-    if (user && user?.data?.id !== formInitializedRef.current) {
+    if (storeUser && storeUser?.id !== formInitializedRef.current) {
       profileForm.reset({
-        firstName: user?.data?.firstName || "",
-        lastName: user?.data?.lastName || "",
-        email: user?.data?.email,
-        phone: user?.data?.phone || "",
+        firstName: storeUser?.firstName || "",
+        lastName: storeUser?.lastName || "",
+        email: storeUser?.email,
+        phone: storeUser?.phone || "",
       });
-      formInitializedRef.current = user?.data?.id;
+      formInitializedRef.current = storeUser?.id;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.data?.id]);
+  }, [storeUser?.id]);
 
   const handleProfileSubmit = (values: z.infer<typeof profileSchema>) => {
     const updateData: IUpdateProfileRequest = {
@@ -115,9 +124,7 @@ export default function ProfilePage() {
       phone: values.phone || undefined,
     };
     updateProfile(updateData, {
-      onSuccess: () => {
-        refetch();
-      },
+      onSuccess: () => {},
     });
   };
 
@@ -153,7 +160,7 @@ export default function ProfilePage() {
 
     uploadAvatar(file, {
       onSuccess: () => {
-        refetch();
+        setUser(storeUser);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
@@ -176,7 +183,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (isError || !user) {
+  if (!isInitialized || !storeUser) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
@@ -187,27 +194,9 @@ export default function ProfilePage() {
   }
 
   const getInitials = () => {
-    const first = user?.data?.firstName?.charAt(0) || "";
-    const last = user?.data?.lastName?.charAt(0) || "";
-    return first + last || user?.data?.email?.charAt(0).toUpperCase();
-  };
-
-  const getRoleBadgeVariant = (role: string) => {
-    switch (role) {
-      case "super_admin":
-        return "destructive";
-      case "admin":
-        return "default";
-      default:
-        return "secondary";
-    }
-  };
-
-  const formatRole = (role: string) => {
-    return role
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
+    const first = storeUser?.firstName?.charAt(0) || "";
+    const last = storeUser?.lastName?.charAt(0) || "";
+    return first + last || storeUser?.email?.charAt(0).toUpperCase();
   };
 
   return (
@@ -228,188 +217,15 @@ export default function ProfilePage() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <OverviewTab user={user?.data} />
+          <OverviewTab user={storeUser} />
         </TabsContent>
 
         <TabsContent value="edit">
-          <Card>
-            <CardHeader>
-              <CardTitle>Edit Profile</CardTitle>
-              <CardDescription>
-                Update your personal information
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...profileForm}>
-                <form
-                  onSubmit={profileForm.handleSubmit(handleProfileSubmit)}
-                  className="space-y-4"
-                >
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={profileForm.control}
-                      name="firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>First Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="First Name"
-                              disabled={isUpdatingProfile}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={profileForm.control}
-                      name="lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last Name</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="Last Name"
-                              disabled={isUpdatingProfile}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={profileForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <EmailInput
-                            {...field}
-                            placeholder="Email"
-                            disabled={isUpdatingProfile}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={profileForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Phone"
-                            disabled={isUpdatingProfile}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    disabled={isUpdatingProfile}
-                    loading={isUpdatingProfile}
-                  >
-                    Save Changes
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+          <EditProfileTab user={storeUser} />
         </TabsContent>
 
         <TabsContent value="password">
-          <Card>
-            <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-              <CardDescription>
-                Update your password to keep your account secure
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...passwordForm}>
-                <form
-                  onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)}
-                  className="space-y-4"
-                >
-                  <FormField
-                    control={passwordForm.control}
-                    name="currentPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Current Password</FormLabel>
-                        <FormControl>
-                          <PasswordInput
-                            {...field}
-                            placeholder="Current Password"
-                            disabled={isChangingPassword}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={passwordForm.control}
-                    name="newPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>New Password</FormLabel>
-                        <FormControl>
-                          <PasswordInput
-                            {...field}
-                            placeholder="New Password"
-                            disabled={isChangingPassword}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={passwordForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm New Password</FormLabel>
-                        <FormControl>
-                          <PasswordInput
-                            {...field}
-                            placeholder="Confirm New Password"
-                            disabled={isChangingPassword}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    disabled={isChangingPassword}
-                    loading={isChangingPassword}
-                  >
-                    Change Password
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+          <ChangePasswordTab />
         </TabsContent>
 
         <TabsContent value="avatar">
@@ -418,50 +234,7 @@ export default function ProfilePage() {
               <CardTitle>Upload Avatar</CardTitle>
               <CardDescription>Update your profile picture</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex flex-col items-center gap-4">
-                <div className="relative">
-                  <Avatar className="h-32 w-32">
-                    <AvatarImage
-                      src={user?.data?.avatarUrl || undefined}
-                      alt={user?.data?.email}
-                    />
-                    <AvatarFallback className="text-2xl">
-                      {getInitials()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <button
-                    type="button"
-                    onClick={handleAvatarClick}
-                    disabled={isUploadingAvatar}
-                    className="absolute bottom-0 right-0 p-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50"
-                  >
-                    <Camera className="h-4 w-4" />
-                  </button>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarUpload}
-                  className="hidden"
-                />
-                <div className="text-center space-y-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleAvatarClick}
-                    disabled={isUploadingAvatar}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    {isUploadingAvatar ? "Uploading..." : "Choose Image"}
-                  </Button>
-                  <p className="text-sm text-muted-foreground">
-                    Recommended: Square image, max 5MB
-                  </p>
-                </div>
-              </div>
-            </CardContent>
+            <CardContent className="space-y-6"></CardContent>
           </Card>
         </TabsContent>
       </Tabs>

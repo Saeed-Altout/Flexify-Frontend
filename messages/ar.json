@@ -15,7 +15,10 @@
         "verifyAccount":"تحقق من البريد الإلكتروني",
         "noCode":"لا يوجد رمز التحقق",
         "sendingCode":"جاري إرسال رمز التحقق",
-        "resendCode":"إعادة إرسال رمز التحقق"
+        "resendCode":"إعادة إرسال رمز التحقق",
+        "saveChanges":"حفظ التعديلات",
+        "chooseImage":"اختر الصورة",
+        "uploadMessage":"الموصى به: صورة مربعة، حد أقصى 5MB"
     },
     "auth":{
         "title":"فلكسيفاي",
@@ -141,6 +144,57 @@
             "message":{
                 "success":"تم تسجيل الخروج بنجاح",
                 "error":"فشل تسجيل الخروج"
+            }
+        }
+    },
+    "dashboard":{
+        "profile":{
+            "title":"الملف الشخصي",
+            "description":"الملف الشخصي",
+            "firstNameLabel":"الاسم الأول",
+            "firstNamePlaceholder":"الاسم الأول",
+            "firstNameValidation":"الاسم الأول يجب أن يكون على الأكثر 20 حرف",
+            "lastNameLabel":"الاسم الأخير",
+            "lastNamePlaceholder":"الاسم الأخير",
+            "lastNameValidation":"الاسم الأخير يجب أن يكون على الأكثر 20 حرف",
+            "emailLabel":"البريد الإلكتروني",
+            "emailPlaceholder":"البريد الإلكتروني",
+            "emailValidation":"البريد الإلكتروني غير صالح",
+            "phoneLabel":"الهاتف",
+            "phonePlaceholder":"الهاتف",
+            "phoneValidation":"الهاتف يجب أن يكون على الأقل 10 أرقام",
+            "currentPasswordLabel":"كلمة المرور الحالية",
+            "currentPasswordPlaceholder":"كلمة المرور الحالية",
+            "currentPasswordValidation":"كلمة المرور الحالية يجب أن تكون على الأقل 8 أحرف",
+            "newPasswordLabel":"كلمة المرور الجديدة",
+            "newPasswordPlaceholder":"كلمة المرور الجديدة",
+            "newPasswordValidation":"كلمة المرور الجديدة يجب أن تكون على الأقل 8 أحرف",
+            "confirmPasswordLabel":"تأكيد كلمة المرور",
+            "confirmPasswordPlaceholder":"تأكيد كلمة المرور",
+            "confirmPasswordValidation":"كلمة المرور المأكدة يجب أن تكون على الأقل 8 أحرف",
+            "tabs":{
+                "overview":{
+                    "title":"الملف الشخصي",
+                    "description":"الملف الشخصي"
+                },
+                "editProfile":{
+                    "title":"تعديل الملف الشخصي",
+                    "description":"تعديل الملف الشخصي"
+                },
+                "chnagePassword":{
+                    "title":"تغيير كلمة المرور",
+                    "description":"تغيير كلمة المرور"
+                },
+                "avatar":{
+                    "title":"الصورة الشخصية",
+                    "description":"الصورة الشخصية"
+                }
+            },
+            
+            
+            "metadata":{
+                "title":"الملف الشخصي",
+                "description":"الملف الشخصي"
             }
         }
     }
