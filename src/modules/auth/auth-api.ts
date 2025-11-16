@@ -12,42 +12,44 @@ import {
   IUser,
   IChangePasswordRequest,
 } from "./auth-type";
-
-// Generic API Response type
-interface IApiResponse<T> {
-  success: boolean;
-  data: T;
-  message: string;
-  error?: string | object;
-  lang?: string;
-  timestamp: string;
-}
+import type { ISingleItemApiResponse } from "@/types/api-response";
 
 export const login = async (data: ILoginRequest): Promise<IAuthResponse> => {
-  const response = await apiClient.post<IApiResponse<IAuthResponse>>(
+  const response = await apiClient.post<ISingleItemApiResponse<IAuthResponse>>(
     "/auth/login",
     data
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && "data" in response.data.data) {
+    return response.data.data.data;
+  }
+  throw new Error("Invalid response format");
 };
 
 export const register = async (
   data: IRegisterRequest
 ): Promise<{ user: IUser; verificationToken: string }> => {
   const response = await apiClient.post<
-    IApiResponse<{ user: IUser; verificationToken: string }>
+    ISingleItemApiResponse<{ user: IUser; verificationToken: string }>
   >("/auth/register", data);
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && "data" in response.data.data) {
+    return response.data.data.data;
+  }
+  throw new Error("Invalid response format");
 };
 
 export const refreshToken = async (
   data: IRefreshTokenRequest
 ): Promise<IRefreshTokenResponse> => {
-  const response = await apiClient.post<IApiResponse<IRefreshTokenResponse>>(
-    "/auth/refresh",
-    data
-  );
-  return response.data.data;
+  const response = await apiClient.post<
+    ISingleItemApiResponse<IRefreshTokenResponse>
+  >("/auth/refresh", data);
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && "data" in response.data.data) {
+    return response.data.data.data;
+  }
+  throw new Error("Invalid response format");
 };
 
 export const forgotPassword = async (
@@ -73,14 +75,23 @@ export const resendVerification = async (
 };
 
 export const getCurrentUser = async (): Promise<IUser> => {
-  const response = await apiClient.get<IApiResponse<IUser>>("/auth/me");
-  return response.data.data;
+  const response = await apiClient.get<ISingleItemApiResponse<IUser>>(
+    "/auth/me"
+  );
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && "data" in response.data.data) {
+    return response.data.data.data;
+  }
+  throw new Error("Invalid response format");
 };
 
 export const changePassword = async (
   data: IChangePasswordRequest
 ): Promise<void> => {
-  await apiClient.post<IApiResponse<void>>("/auth/change-password", data);
+  await apiClient.post<ISingleItemApiResponse<null>>(
+    "/auth/change-password",
+    data
+  );
 };
 
 export const logout = (): void => {

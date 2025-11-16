@@ -6,46 +6,59 @@ import {
   IUserResponse,
   IUsersListResponse,
 } from './users-type';
-
-// Generic API Response type
-interface IApiResponse<T> {
-  success: boolean;
-  data: T;
-  message: string;
-  error?: string | object;
-  lang?: string;
-  timestamp: string;
-}
+import type { IArrayApiResponse, ISingleItemApiResponse } from '@/types/api-response';
 
 export const getUsers = async (params?: IQueryUserParams): Promise<IUsersListResponse> => {
-  const response = await apiClient.get<IApiResponse<IUsersListResponse>>(
+  const response = await apiClient.get<IArrayApiResponse<IUser>>(
     '/users',
     { params }
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data (array) and response.data.data.meta
+  if (response.data.data && 'data' in response.data.data && 'meta' in response.data.data) {
+    return {
+      users: response.data.data.data,
+      total: response.data.data.meta.total,
+      page: response.data.data.meta.page,
+      limit: response.data.data.meta.limit,
+      totalPages: response.data.data.meta.totalPages,
+    };
+  }
+  throw new Error('Invalid response format');
 };
 
 export const getUserById = async (id: string): Promise<IUserResponse> => {
-  const response = await apiClient.get<IApiResponse<IUserResponse>>(
+  const response = await apiClient.get<ISingleItemApiResponse<IUser>>(
     `/users/${id}`
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && 'data' in response.data.data) {
+    return { user: response.data.data.data };
+  }
+  throw new Error('Invalid response format');
 };
 
 export const createUser = async (data: ICreateUserRequest): Promise<IUserResponse> => {
-  const response = await apiClient.post<IApiResponse<IUserResponse>>(
+  const response = await apiClient.post<ISingleItemApiResponse<IUser>>(
     '/users',
     data
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && 'data' in response.data.data) {
+    return { user: response.data.data.data };
+  }
+  throw new Error('Invalid response format');
 };
 
 export const updateUser = async (id: string, data: IUpdateUserRequest): Promise<IUserResponse> => {
-  const response = await apiClient.patch<IApiResponse<IUserResponse>>(
+  const response = await apiClient.patch<ISingleItemApiResponse<IUser>>(
     `/users/${id}`,
     data
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && 'data' in response.data.data) {
+    return { user: response.data.data.data };
+  }
+  throw new Error('Invalid response format');
 };
 
 export const deleteUser = async (id: string): Promise<void> => {
@@ -55,18 +68,22 @@ export const deleteUser = async (id: string): Promise<void> => {
 export const updateProfile = async (
   data: IUpdateProfileRequest
 ): Promise<IUserResponse> => {
-  const response = await apiClient.patch<IApiResponse<IUserResponse>>(
+  const response = await apiClient.patch<ISingleItemApiResponse<IUser>>(
     "/users/me",
     data
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && 'data' in response.data.data) {
+    return { user: response.data.data.data };
+  }
+  throw new Error('Invalid response format');
 };
 
-export const uploadAvatar = async (file: File): Promise<IUploadAvatarResponse> => {
+export const uploadAvatar = async (file: File): Promise<{ avatarUrl: string }> => {
   const formData = new FormData();
   formData.append("file", file);
   
-  const response = await apiClient.post<IApiResponse<IUploadAvatarResponse>>(
+  const response = await apiClient.post<ISingleItemApiResponse<{ avatarUrl: string }>>(
     "/users/me/avatar",
     formData,
     {
@@ -75,6 +92,10 @@ export const uploadAvatar = async (file: File): Promise<IUploadAvatarResponse> =
       },
     }
   );
-  return response.data.data;
+  // Extract data from nested structure: response.data.data.data
+  if (response.data.data && 'data' in response.data.data) {
+    return response.data.data.data;
+  }
+  throw new Error('Invalid response format');
 };
 

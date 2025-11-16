@@ -49,7 +49,12 @@ apiClient.interceptors.response.use(
             { withCredentials: true }
           );
 
-          const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+          // Extract tokens from nested structure: response.data.data.data
+          const tokenData = response.data.data?.data;
+          if (!tokenData) {
+            throw new Error('Invalid token response format');
+          }
+          const { accessToken, refreshToken: newRefreshToken } = tokenData;
 
           // Store new tokens
           localStorage.setItem('accessToken', accessToken);
