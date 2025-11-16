@@ -1,14 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { useResetPasswordMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
-import type { IResetPasswordRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -30,32 +29,27 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/inputs/password-input";
 import { LinkButton } from "@/components/buttons/link-button";
 
-interface ResetPasswordFormProps {
-  token: string;
-}
-
-export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+export function ResetPasswordForm({ token }: { token: string }) {
   const t = useTranslations("auth.resetPassword");
+  const tCommon = useTranslations("common");
 
-  const { resetPasswordSchema } = useValidationsSchema();
-  const formSchema = resetPasswordSchema();
+  const formSchema = z.object({
+    token: z.string().min(1, t("tokenValidation")),
+    password: z.string().min(8, t("passwordValidation")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      token: token,
       password: "",
-      confirmPassword: "",
     },
   });
 
   const { mutate: resetPassword, isPending } = useResetPasswordMutation();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const resetPasswordData: IResetPasswordRequest = {
-      token,
-      password: values.password,
-    };
-    resetPassword(resetPasswordData);
+    resetPassword(values);
   };
 
   return (
@@ -84,37 +78,21 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("confirmPasswordLabel")}</FormLabel>
-                  <FormControl>
-                    <PasswordInput
-                      {...field}
-                      placeholder={t("confirmPasswordPlaceholder")}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <Button
               type="submit"
               className="w-full"
               disabled={isPending}
               loading={isPending}
             >
-              {t("submit")}
+              {tCommon("submit")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("rememberPassword")}</p>
+            <p className="text-muted-foreground">{tCommon("noAccount")}</p>
             <LinkButton
-              label={t("signIn")}
-              href={Routes.login}
+              label={tCommon("signUp")}
+              href={Routes.register}
               className="ps-1"
               disabled={isPending}
             />

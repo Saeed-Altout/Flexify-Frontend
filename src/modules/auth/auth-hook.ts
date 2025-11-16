@@ -15,16 +15,6 @@ import {
 } from "@/modules/auth/auth-api";
 import { useTranslations } from "next-intl";
 
-import {
-  IForgotPasswordRequest,
-  IResetPasswordRequest,
-  IVerifyEmailRequest,
-  IResendVerificationRequest,
-  IRefreshTokenRequest,
-  IChangePasswordRequest,
-  IRegisterResponse,
-} from "@/modules/auth/auth-type";
-
 import { Routes } from "@/constants/routes";
 import { useRouter } from "@/i18n/navigation";
 
@@ -98,17 +88,16 @@ export const useSignUpMutation = () => {
 };
 
 export const useForgotPasswordMutation = () => {
+  const t = useTranslations("auth.forgetPassword.message");
   return useMutation({
-    mutationKey: ["user", "forgot-password"],
-    mutationFn: (data: IForgotPasswordRequest) => forgotPassword(data),
-    onSuccess: () => {
-      toast.success("If the email exists, a password reset link has been sent");
+    mutationKey: ["forgot-password"],
+    mutationFn: forgotPassword,
+    onSuccess: (response) => {
+      toast.success(response.message || t("success"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(
-          error.response?.data?.message || "Failed to send reset email"
-        );
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
@@ -116,16 +105,17 @@ export const useForgotPasswordMutation = () => {
 
 export const useResetPasswordMutation = () => {
   const router = useRouter();
+  const t = useTranslations("auth.resetPassword.message");
 
   return useMutation({
-    mutationFn: (data: IResetPasswordRequest) => resetPassword(data),
-    onSuccess: () => {
-      toast.success("Password reset successful");
+    mutationFn: resetPassword,
+    onSuccess: (response) => {
+      toast.success(response.message || t("success"));
       router.push(Routes.login);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Password reset failed");
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
@@ -150,17 +140,12 @@ export const useVerifyEmailMutation = () => {
   });
 };
 
-// Refresh token mutation
 export const useRefreshTokenMutation = () => {
   return useMutation({
-    mutationFn: (data: IRefreshTokenRequest) => refreshToken(data),
+    mutationKey: ["refreshToken"],
+    mutationFn: refreshToken,
     onSuccess: (response) => {
-      if (!response.data) {
-        toast.error(response.message || "");
-        return;
-      }
-      const { accessToken, refreshToken } = response.data;
-      storeTokens(accessToken, refreshToken);
+      storeTokens(response.data.accessToken, response.data.refreshToken);
     },
     onError: () => {
       if (typeof window !== "undefined") {
@@ -188,16 +173,16 @@ export const useResendVerificationMutation = () => {
 };
 
 export const useChangePasswordMutation = () => {
+  const t = useTranslations("auth.changePassword.message");
   return useMutation({
-    mutationFn: (data: IChangePasswordRequest) => changePassword(data),
-    onSuccess: () => {
-      toast.success("Password changed successfully");
+    mutationKey: ["changePassword"],
+    mutationFn: changePassword,
+    onSuccess: (response) => {
+      toast.success(response.message || t("success"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(
-          error.response?.data?.message || "Failed to change password"
-        );
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });
@@ -206,10 +191,10 @@ export const useChangePasswordMutation = () => {
 export const useLogoutMutation = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-
+  const t = useTranslations("auth.logout.message");
   return useMutation({
-    mutationKey: ["user", "logout"],
-    mutationFn: () => logout(),
+    mutationKey: ["logout"],
+    mutationFn: logout,
     onSuccess: (response) => {
       // Clear tokens from localStorage
       if (typeof window !== "undefined") {
@@ -222,7 +207,7 @@ export const useLogoutMutation = () => {
       queryClient.clear();
       // Redirect to login
       router.push(Routes.login);
-      toast.success(response.message || "Logged out successfully");
+      toast.success(response.message || t("success"));
     },
     onError: (error) => {
       // Even if logout fails, clear local tokens
@@ -232,7 +217,7 @@ export const useLogoutMutation = () => {
       }
       queryClient.clear();
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to logout");
+        toast.error(error.response?.data?.message || t("error"));
       }
     },
   });

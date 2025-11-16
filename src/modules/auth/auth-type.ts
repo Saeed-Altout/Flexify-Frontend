@@ -27,10 +27,14 @@ export type IForgotPasswordRequest = {
   email: string;
 };
 
+export type IForgotPasswordResponse = IApiResponse<void>;
+
 export type IResetPasswordRequest = {
   token: string;
   password: string;
 };
+
+export type IResetPasswordResponse = IApiResponse<void>;
 
 export type IVerifyEmailRequest = {
   verificationToken: string;

@@ -1,14 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { useValidationsSchema } from "@/hooks/use-validations-schema";
 import { useForgotPasswordMutation } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
-import type { IForgotPasswordRequest } from "@/modules/auth/auth-type";
 
 import {
   Form,
@@ -32,9 +31,11 @@ import { LinkButton } from "@/components/buttons/link-button";
 
 export function ForgetPasswordForm() {
   const t = useTranslations("auth.forgetPassword");
+  const tCommon = useTranslations("common");
 
-  const { forgetPasswordSchema } = useValidationsSchema();
-  const formSchema = forgetPasswordSchema();
+  const formSchema = z.object({
+    email: z.email(t("emailValidation")),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,10 +47,7 @@ export function ForgetPasswordForm() {
   const { mutate: forgotPassword, isPending } = useForgotPasswordMutation();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const forgotPasswordData: IForgotPasswordRequest = {
-      email: values.email,
-    };
-    forgotPassword(forgotPasswordData);
+    forgotPassword(values);
   };
 
   return (
@@ -84,14 +82,14 @@ export function ForgetPasswordForm() {
               disabled={isPending}
               loading={isPending}
             >
-              {t("submit")}
+              {tCommon("submit")}
             </Button>
           </CardContent>
           <CardFooter className="justify-center">
-            <p className="text-muted-foreground">{t("rememberPassword")}</p>
+            <p className="text-muted-foreground">{tCommon("noAccount")}</p>
             <LinkButton
-              label={t("signIn")}
-              href={Routes.login}
+              label={tCommon("signUp")}
+              href={Routes.register}
               className="ps-1"
               disabled={isPending}
             />

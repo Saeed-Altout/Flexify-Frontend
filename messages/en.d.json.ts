@@ -88,6 +88,63 @@ declare const messages: {
                 "success":"Verification code sent successfully",
                 "error":"Failed to send verification code"
             }
+        },
+        "forgetPassword":{
+            "title":"Forget Password",
+            "description":"You will receive an email with a link to reset your password",
+            "emailLabel":"Email",
+            "emailValidation":"Invalid email address",
+            "emailPlaceholder":"email",
+            "metadata":{
+                "title":"Forget Password",
+                "description":"Forget your password"
+            },
+            "message":{
+                "success":"Password reset link sent successfully",
+                "error":"Failed to send password reset link"
+            }
+        },
+        "resetPassword":{
+            "title":"Reset Password",
+            "description":"Reset your password",
+            "passwordLabel":"Password",
+            "passwordValidation":"Password must be at least 8 characters",
+            "passwordPlaceholder":"password",
+            "tokenValidation":"Token is required",
+            "metadata":{
+                "title":"Reset Password",
+                "description":"Reset your password"
+            },
+            "message":{
+                "success":"Password reset successfully",
+                "error":"Failed to reset password"
+            }
+        },
+        "changePassword":{
+            "title":"Change Password",
+            "description":"Change your password",
+            "currentPasswordLabel":"Current Password",
+            "currentPasswordPlaceholder":"Current Password",
+            "currentPasswordValidation":"Current password must be at least 8 characters",
+            "newPasswordLabel":"New Password",
+            "newPasswordPlaceholder":"New Password",
+            "newPasswordValidation":"New password must be at least 8 characters",
+            "message":{
+                "success":"Password changed successfully",
+                "error":"Failed to change password"
+            }
+        },
+        "logout":{
+            "title":"Logout",
+            "description":"Logout from your account",
+            "metadata":{
+                "title":"Logout",
+                "description":"Logout from your account"
+            },
+            "message":{
+                "success":"Logged out successfully",
+                "error":"Failed to logout"
+            }
         }
     }
 };

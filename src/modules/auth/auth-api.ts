@@ -16,6 +16,8 @@ import {
   ILogoutResponse,
   IVerifyEmailResponse,
   IResendVerificationResponse,
+  IForgotPasswordResponse,
+  IResetPasswordResponse,
 } from "@/modules/auth/auth-type";
 
 export const login = async (data: ILoginRequest): Promise<ILoginResponse> => {
@@ -45,14 +47,22 @@ export const refreshToken = async (
 
 export const forgotPassword = async (
   data: IForgotPasswordRequest
-): Promise<void> => {
-  await apiClient.post("/auth/forgot-password", data);
+): Promise<IForgotPasswordResponse> => {
+  const response = await apiClient.post<IForgotPasswordResponse>(
+    "/auth/forgot-password",
+    data
+  );
+  return response.data;
 };
 
 export const resetPassword = async (
   data: IResetPasswordRequest
-): Promise<void> => {
-  await apiClient.post("/auth/reset-password", data);
+): Promise<IResetPasswordResponse> => {
+  const response = await apiClient.post<IResetPasswordResponse>(
+    "/auth/reset-password",
+    data
+  );
+  return response.data;
 };
 
 export const verifyEmail = async (

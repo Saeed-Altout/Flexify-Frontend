@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
 
@@ -10,20 +10,17 @@ interface AuthGuardProps {
   redirectTo?: string;
 }
 
-export function AuthGuard({
-  children,
-  redirectTo,
-}: AuthGuardProps) {
+export function AuthGuard({ children, redirectTo }: AuthGuardProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const { data: user, isLoading } = useCurrentUserQuery();
 
   useEffect(() => {
     if (!isLoading && user) {
       // User is authenticated, redirect based on role
-      const redirectPath = redirectTo || 
-        (user.role === "admin" || user.role === "super_admin" 
-          ? Routes.dashboardProfile 
+      const redirectPath =
+        redirectTo ||
+        (user.data.role === "admin" || user.data.role === "super_admin"
+          ? Routes.dashboardProfile
           : Routes.home);
       router.push(redirectPath);
     }
@@ -49,4 +46,3 @@ export function AuthGuard({
   // User is authenticated, don't render (will redirect)
   return null;
 }
-

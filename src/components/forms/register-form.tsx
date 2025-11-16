@@ -171,7 +171,7 @@ export function RegisterForm() {
             <p className="text-muted-foreground">{tCommon("haveAccount")}</p>
             <LinkButton
               label={tCommon("login")}
-              href={Routes.register}
+              href={Routes.login}
               className="ps-1"
               disabled={isPending}
             />

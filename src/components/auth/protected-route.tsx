@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
-import type { IUser } from "@/modules/auth/auth-type";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -29,7 +28,7 @@ export function ProtectedRoute({
       }
 
       // Check if user has required role
-      if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+      if (allowedRoles.length > 0 && !allowedRoles.includes(user.data.role)) {
         router.push(redirectTo);
         return;
       }
@@ -49,10 +48,13 @@ export function ProtectedRoute({
   }
 
   // Don't render if not authenticated or doesn't have required role
-  if (isError || !user || (allowedRoles.length > 0 && !allowedRoles.includes(user.role))) {
+  if (
+    isError ||
+    !user ||
+    (allowedRoles.length > 0 && !allowedRoles.includes(user.data.role))
+  ) {
     return null;
   }
 
   return <>{children}</>;
 }
-

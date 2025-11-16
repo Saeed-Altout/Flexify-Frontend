@@ -10,7 +10,7 @@
         "submit":"إرسال",
         "noAccount":"ليس لديك حساب؟",
         "haveAccount":"لديك حساب؟",
-        "signUp":"تسجيل الدخول",
+        "signUp":"تسجيل حساب",
         "login":"تسجيل الدخول",
         "verifyAccount":"تحقق من البريد الإلكتروني",
         "noCode":"لا يوجد رمز التحقق",
@@ -84,6 +84,63 @@
             "message":{
                 "success":"تم إعادة إرسال رمز التحقق بنجاح",
                 "error":"فشل إعادة إرسال رمز التحقق"
+            }
+        },
+        "forgetPassword":{
+            "title":"هل نسيت كلمة المرور؟",
+            "description":"سيتم إرسال بريد إلكتروني برابط لإعادة تعيين كلمة المرور",
+            "emailLabel":"البريد الإلكتروني",
+            "emailValidation":"البريد الإلكتروني غير صالح",
+            "emailPlaceholder":"البريد الإلكتروني",
+            "metadata":{
+                "title":"هل نسيت كلمة المرور؟",
+                "description":"هل نسيت كلمة المرور؟"
+            },
+            "message":{
+                "success":"تم إرسال رابط إعادة تعيين كلمة المرور بنجاح",
+                "error":"فشل إرسال رابط إعادة تعيين كلمة المرور"
+            }
+        },
+        "resetPassword":{
+            "title":"إعادة تعيين كلمة المرور",
+            "description":"إعادة تعيين كلمة المرور",
+            "passwordLabel":"كلمة المرور",
+            "passwordValidation":"كلمة المرور يجب أن تكون على الأقل 8 أحرف",
+            "passwordPlaceholder":"كلمة المرور",
+            "tokenValidation":"رمز التحقق مطلوب",
+            "metadata":{
+                "title":"إعادة تعيين كلمة المرور",
+                "description":"إعادة تعيين كلمة المرور"
+            },
+            "message":{
+                "success":"تم إعادة تعيين كلمة المرور بنجاح",
+                "error":"فشل إعادة تعيين كلمة المرور"
+            }
+        },
+        "changePassword":{
+            "title":"تغيير كلمة المرور",
+            "description":"تغيير كلمة المرور",
+            "currentPasswordLabel":"كلمة المرور الحالية",
+            "currentPasswordPlaceholder":"كلمة المرور الحالية",
+            "currentPasswordValidation":"كلمة المرور الحالية يجب أن تكون على الأقل 8 أحرف",
+            "newPasswordLabel":"كلمة المرور الجديدة",
+            "newPasswordPlaceholder":"كلمة المرور الجديدة",
+            "newPasswordValidation":"كلمة المرور الجديدة يجب أن تكون على الأقل 8 أحرف",
+            "message":{
+                "success":"تم تغيير كلمة المرور بنجاح",
+                "error":"فشل تغيير كلمة المرور"
+            }
+        },
+        "logout":{
+            "title":"تسجيل الخروج",
+            "description":"تسجيل الخروج",
+            "metadata":{
+                "title":"تسجيل الخروج",
+                "description":"تسجيل الخروج"
+            },
+            "message":{
+                "success":"تم تسجيل الخروج بنجاح",
+                "error":"فشل تسجيل الخروج"
             }
         }
     }
