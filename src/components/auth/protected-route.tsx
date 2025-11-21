@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
 import { useAuthStore } from "@/stores/use-auth-store";
+import { AxiosError } from "axios";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -20,9 +21,11 @@ export function ProtectedRoute({
   const router = useRouter();
   const { 
     accessToken, 
+    refreshToken,
     user: storeUser, 
     isInitialized,
-    setIsInitialized 
+    setIsInitialized,
+    clearAuth 
   } = useAuthStore();
   
   const { 
@@ -30,12 +33,11 @@ export function ProtectedRoute({
     isLoading, 
     isError, 
     error, 
-    refetch, 
     isRefetching 
   } = useCurrentUserQuery();
 
-  // Use user from store (persisted) or query (fresh)
-  const user = storeUser || queryUser?.data;
+  // Use user from query (fresh) or store (persisted)
+  const user = queryUser?.data?.data || storeUser;
 
   useEffect(() => {
     // Mark as initialized once loading completes or if we have user from store
@@ -43,35 +45,33 @@ export function ProtectedRoute({
       setIsInitialized(true);
     }
 
-    // If no token at all, redirect immediately
-    if (!accessToken && !isLoading && isInitialized) {
+    // If no tokens at all, redirect to login
+    if (!accessToken && !refreshToken && !isLoading && isInitialized) {
       router.push(Routes.login);
       return;
     }
 
-    // If there's a token but query failed, it might be expired
-    // The axios interceptor should handle refresh, so wait a bit and retry
-    if (isError && accessToken && !isLoading) {
-      const isUnauthorized = 
-        (error as any)?.response?.status === 401 ||
-        (error as any)?.status === 401;
+    // If query failed with 401 and we have a refresh token,
+    // the axios interceptor will handle the refresh automatically.
+    // If refresh fails, the interceptor will clear auth and redirect to login.
+    // So we just need to wait for the query to complete or fail.
+    if (isError && !isLoading && isInitialized) {
+      const axiosError = error as AxiosError;
+      const isUnauthorized = axiosError?.response?.status === 401;
 
       if (isUnauthorized) {
-        // Wait for token refresh to complete, then retry
-        const retryTimer = setTimeout(() => {
-          refetch().catch(() => {
-            // If retry fails and token was cleared, redirect
-            const currentToken = useAuthStore.getState().accessToken;
-            if (!currentToken) {
-              router.push(Routes.login);
-            }
-          });
-        }, 1000);
-
-        return () => clearTimeout(retryTimer);
+        // If we have a refresh token, the interceptor is handling it
+        // If refresh fails, interceptor will redirect to login
+        // If no refresh token, redirect immediately
+        if (!refreshToken) {
+          clearAuth();
+          router.push(Routes.login);
+        }
+        // Otherwise, wait for interceptor to handle refresh
+        return;
       } else {
-        // Non-401 error, redirect
-        router.push(Routes.login);
+        // Non-401 error, might be network or server error
+        // Don't redirect, let the error be handled by error boundaries
         return;
       }
     }
@@ -83,7 +83,20 @@ export function ProtectedRoute({
         return;
       }
     }
-  }, [user, isLoading, isError, error, accessToken, isInitialized, allowedRoles, redirectTo, router, refetch]);
+  }, [
+    user, 
+    isLoading, 
+    isError, 
+    error, 
+    accessToken, 
+    refreshToken,
+    isInitialized, 
+    allowedRoles, 
+    redirectTo, 
+    router, 
+    storeUser,
+    clearAuth
+  ]);
 
   // Show loading state while checking auth
   // Only show loading if:
@@ -111,7 +124,7 @@ export function ProtectedRoute({
   }
 
   // Don't render if user doesn't have required role
-  const currentUser = storeUser || queryUser?.data;
+  const currentUser = storeUser || queryUser?.data?.data;
   if (currentUser && allowedRoles.length > 0 && !allowedRoles.includes(currentUser.role)) {
     return null;
   }

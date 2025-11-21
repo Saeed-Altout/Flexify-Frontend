@@ -18,13 +18,34 @@ export const apiClient: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+// Refresh token queue to prevent multiple simultaneous refresh attempts
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}> = [];
+
+const processQueue = (
+  error: AxiosError | null,
+  token: string | null = null
+) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (typeof window !== "undefined") {
       const currentLocale = document.documentElement.lang || "en";
       config.headers["Accept-Language"] = currentLocale;
-      
+
       // Get token from auth store
       const accessToken = useAuthStore.getState().accessToken;
       if (accessToken && config.headers) {
@@ -44,52 +65,104 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
+      _skipRefresh?: boolean;
     };
 
-    // If error is 401 and we haven't retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Skip refresh for refresh token endpoint itself or if already retried
+    if (
+      originalRequest._skipRefresh ||
+      originalRequest._retry ||
+      originalRequest.url?.includes("/auth/refresh") ||
+      originalRequest.url?.includes("/auth/login")
+    ) {
+      return Promise.reject(error);
+    }
+
+    // If error is 401, try to refresh token
+    if (error.response?.status === 401) {
+      // If already refreshing, queue this request
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            if (originalRequest.headers && token) {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+            }
+            return apiClient(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         const authStore = useAuthStore.getState();
         const refreshToken = authStore.refreshToken;
-        
-        if (refreshToken) {
-          const response = await axios.post(
-            `${API_BASE_URL}/auth/refresh`,
-            { refreshToken },
-            { withCredentials: true }
-          );
 
-          // Extract tokens from nested structure: response.data.data.data
-          const tokenData = response.data.data?.data;
-          if (!tokenData) {
-            throw new Error("Invalid token response format");
-          }
-          const { accessToken, refreshToken: newRefreshToken } = tokenData;
-
-          // Update tokens in store
-          authStore.setTokens({
-            accessToken,
-            refreshToken: newRefreshToken || refreshToken,
-            expiresIn: tokenData.expiresIn || 3600,
-          });
-
-          // Retry original request with new token
-          if (originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-          }
-          return apiClient(originalRequest);
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
         }
+
+        // Call refresh endpoint without interceptors to avoid infinite loop
+        const response = await axios.post(
+          `${API_BASE_URL}/auth/refresh`,
+          { refreshToken },
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        // Extract tokens from response: response.data is IApiResponse<IAuthTokens>
+        // So response.data.data is IAuthTokens
+        const tokenData = response.data?.data;
+        if (!tokenData || !tokenData.accessToken) {
+          throw new Error("Invalid token response format");
+        }
+
+        const {
+          accessToken,
+          refreshToken: newRefreshToken,
+          expiresIn,
+        } = tokenData;
+
+        // Update tokens in store
+        authStore.setTokens({
+          accessToken,
+          refreshToken: newRefreshToken || refreshToken,
+          expiresIn: expiresIn || 3600,
+        });
+
+        // Process queued requests
+        processQueue(null, accessToken);
+
+        // Retry original request with new token
+        if (originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return apiClient(originalRequest);
       } catch (refreshError) {
-        // Refresh failed, clear auth and redirect to login
+        // Refresh failed, process queue with error
+        processQueue(refreshError as AxiosError);
+
+        // Clear auth and redirect to login
         const authStore = useAuthStore.getState();
         authStore.clearAuth();
-        
+
+        // Use window.location for hard redirect to clear all state
         if (typeof window !== "undefined") {
           window.location.href = "/auth/login";
         }
+
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 

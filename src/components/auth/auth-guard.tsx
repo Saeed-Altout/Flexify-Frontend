@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
+import { useAuthStore } from "@/stores/use-auth-store";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -12,14 +13,18 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children, redirectTo }: AuthGuardProps) {
   const router = useRouter();
-  const { data: user, isLoading } = useCurrentUserQuery();
+  const { accessToken, user: storeUser } = useAuthStore();
+  const { data: queryUser, isLoading } = useCurrentUserQuery();
+
+  // Use user from query (fresh) or store (persisted)
+  const user = queryUser?.data?.data || storeUser;
 
   useEffect(() => {
     if (!isLoading && user) {
       // User is authenticated, redirect based on role
       const redirectPath =
         redirectTo ||
-        (user.data.role === "admin" || user.data.role === "super_admin"
+        (user.role === "admin" || user.role === "super_admin"
           ? Routes.dashboardProfile
           : Routes.home);
       router.push(redirectPath);
@@ -27,7 +32,7 @@ export function AuthGuard({ children, redirectTo }: AuthGuardProps) {
   }, [user, isLoading, router, redirectTo]);
 
   // Show loading state while checking auth
-  if (isLoading) {
+  if (isLoading || (accessToken && !user)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -39,7 +44,7 @@ export function AuthGuard({ children, redirectTo }: AuthGuardProps) {
   }
 
   // Only render children if user is not authenticated
-  if (!user) {
+  if (!user && !accessToken) {
     return <>{children}</>;
   }
 

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { IUser, IAuthTokens } from "@/modules/auth/auth-type";
+import { IAuthTokens } from "@/modules/auth/auth-type";
+import { IUser } from "@/modules/users/users-type";
 
 interface AuthStore {
   // State

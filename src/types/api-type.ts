@@ -27,3 +27,12 @@ export type IApiResponse<T> = {
   timestamp: string;
   data: T;
 };
+
+export type IUserRole = "admin" | "super_admin" | "user";
+export type IUserSortBy =
+  | "created_at"
+  | "updated_at"
+  | "email"
+  | "first_name"
+  | "last_name";
+export type IUserSortOrder = "asc" | "desc";

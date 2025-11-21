@@ -34,8 +34,43 @@
             "super_admin":"Super Admin",
             "user":"User"
         },
+        "columns":{
+            "firstName":"First Name",
+            "lastName":"Last Name",
+            "email":"Email",
+            "phone":"Phone",
+            "role":"Role",
+            "createdAt":"Created At"
+        },
         "loading":"Loading",
-        "loadingDescription":"Please wait while we load the data"
+        "loadingDescription":"Please wait while we load the data",
+        "page":"Page",
+        "of":"of",
+        "pages":"pages",
+        "rowsPerPage":"Rows per page",
+        "goToFirstPage":"Go to first page",
+        "goToPreviousPage":"Go to previous page",
+        "goToNextPage":"Go to next page",
+        "goToLastPage":"Go to last page",   
+        "searchPlaceholder":"Search here.",
+        "createUser":"Create User",
+        "editUser":"Edit User",
+        "deleteUser":"Delete User",
+        "filters":"Filters",
+        "clear":"Clear",
+        "filtersTitle":"Filters",
+        "filtersDescription":"Filters the data in the table.",
+        "resetFilters":"Reset Filters",
+        "applyFilters":"Apply Filters",
+        "all":"All",
+        "selectRole":"Select Role",
+        "openMenu":"Open Menu",
+        "view":"View",
+        "edit":"Edit",
+        "delete":"Delete",
+        "actions":"Actions",
+        "create":"Create",
+        "cancel":"Cancel"
     },
     "auth":{
         "title":"Flexify",
@@ -206,6 +241,83 @@
             "metadata":{
                 "title":"Profile",
                 "description":"Profile"
+            }
+        },
+        "users":{
+            "title":"Users",
+            "description":"You can manage users here.",
+            "createUser":{
+                "title":"Create User",
+                "description":"You can create a new user here.",
+                "emailLabel":"Email",
+                "emailPlaceholder":"Email",
+                "emailValidation":"Invalid email address",
+                "passwordLabel":"Password",
+                "passwordValidation":"Password must be at least 8 characters",
+                "passwordPlaceholder":"Password",
+                "firstNameLabel":"First Name",
+                "firstNamePlaceholder":"First Name",
+                "firstNameValidation":"First name must be at most 20 characters",
+                "lastNameLabel":"Last Name",
+                "lastNamePlaceholder":"Last Name",
+                "lastNameValidation":"Last name must be at most 20 characters",
+                "phoneLabel":"Phone",
+                "phonePlaceholder":"Phone Number",
+                "phoneValidation":"Phone must be at least 10 digits"
+            },
+            "editUser":{
+                "title":"Edit User",
+                "description":"You can edit the user here.",
+                "emailLabel":"Email",
+                "emailPlaceholder":"Email",
+                "emailValidation":"Invalid email address",
+                "passwordLabel":"Password",
+                "passwordValidation":"Password must be at least 8 characters",
+                "passwordPlaceholder":"Password",
+                "firstNameLabel":"First Name",
+                "firstNamePlaceholder":"First Name",
+                "firstNameValidation":"First name must be at most 20 characters",
+                "lastNameLabel":"Last Name",
+                "lastNamePlaceholder":"Last Name",
+                "lastNameValidation":"Last name must be at most 20 characters",
+                "phoneLabel":"Phone",
+                "phonePlaceholder":"Phone Number",
+                "phoneValidation":"Phone must be at least 10 digits"
+            },
+            "deleteUser":{
+                "title":"Delete User",
+                "description":"You can delete the user here."
+            },
+            "message":{
+                "createSuccess":"User created successfully",
+                "createError":"Failed to create user",
+                "updateSuccess":"User updated successfully",
+                "updateError":"Failed to update user",
+                "deleteSuccess":"User deleted successfully",
+                "deleteError":"Failed to delete user",
+                "uploadSuccess":"Avatar uploaded successfully",
+                "uploadError":"Failed to upload avatar"
+            },
+            "metadata":{
+                "title":"Users",
+                "description":"Users"
+            },
+            "detail":{
+                "title":"User Details",
+                "description":"View detailed information about the user",
+                "lastLogin":"Last Login",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "sections":{
+                    "personalInfo":"Personal Information",
+                    "personalInfoDescription":"Basic information about the user",
+                    "accountInfo":"Account Information",
+                    "accountInfoDescription":"Account status and settings"
+                },
+                "metadata":{
+                    "title":"User Details - {id}",
+                    "description":"View detailed information about the user"
+                }
             }
         }
     }

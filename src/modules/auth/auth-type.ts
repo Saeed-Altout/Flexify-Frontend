@@ -1,4 +1,5 @@
-import { IApiResponse } from "@/types/api-response";
+import { IApiResponse } from "@/types/api-type";
+import { IUser } from "@/modules/users/users-type";
 
 export type ILoginRequest = {
   email: string;
@@ -57,18 +58,6 @@ export type IAuthTokens = {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
-};
-
-export type IUser = {
-  id: string;
-  email: string;
-  firstName: string | null;
-  lastName: string | null;
-  avatarUrl: string | null;
-  phone: string | null;
-  isEmailVerified: boolean;
-  isActive: boolean;
-  role: "admin" | "super_admin" | "user";
 };
 
 export type IUserResponse = IApiResponse<{ data: IUser }>;

@@ -1,64 +1,46 @@
-import { apiClient } from '@/lib/axios';
+import { apiClient } from "@/lib/axios";
 import {
   ICreateUserRequest,
   IUpdateUserRequest,
+  IUpdateProfileRequest,
   IQueryUserParams,
   IUserResponse,
-  IUsersListResponse,
-} from './users-type';
-import type { IArrayApiResponse, ISingleItemApiResponse } from '@/types/api-response';
+  IUsersResponse,
+  IUploadAvatarResponse,
+} from "@/modules/users/users-type";
 
-export const getUsers = async (params?: IQueryUserParams): Promise<IUsersListResponse> => {
-  const response = await apiClient.get<IArrayApiResponse<IUser>>(
-    '/users',
-    { params }
+export const getUsers = async (
+  params?: IQueryUserParams
+): Promise<IUsersResponse> => {
+  const queryParams = Object.fromEntries(
+    Object.entries(params || {}).filter(
+      ([_, value]) => value !== undefined && value !== null && value !== "null"
+    )
   );
-  // Extract data from nested structure: response.data.data.data (array) and response.data.data.meta
-  if (response.data.data && 'data' in response.data.data && 'meta' in response.data.data) {
-    return {
-      users: response.data.data.data,
-      total: response.data.data.meta.total,
-      page: response.data.data.meta.page,
-      limit: response.data.data.meta.limit,
-      totalPages: response.data.data.meta.totalPages,
-    };
-  }
-  throw new Error('Invalid response format');
+  const response = await apiClient.get<IUsersResponse>("/users", {
+    params: queryParams,
+  });
+  return response.data;
 };
 
 export const getUserById = async (id: string): Promise<IUserResponse> => {
-  const response = await apiClient.get<ISingleItemApiResponse<IUser>>(
-    `/users/${id}`
-  );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && 'data' in response.data.data) {
-    return { user: response.data.data.data };
-  }
-  throw new Error('Invalid response format');
+  const response = await apiClient.get<IUserResponse>(`/users/${id}`);
+  return response.data;
 };
 
-export const createUser = async (data: ICreateUserRequest): Promise<IUserResponse> => {
-  const response = await apiClient.post<ISingleItemApiResponse<IUser>>(
-    '/users',
-    data
-  );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && 'data' in response.data.data) {
-    return { user: response.data.data.data };
-  }
-  throw new Error('Invalid response format');
+export const createUser = async (
+  data: ICreateUserRequest
+): Promise<IUserResponse> => {
+  const response = await apiClient.post<IUserResponse>("/users", data);
+  return response.data;
 };
 
-export const updateUser = async (id: string, data: IUpdateUserRequest): Promise<IUserResponse> => {
-  const response = await apiClient.patch<ISingleItemApiResponse<IUser>>(
-    `/users/${id}`,
-    data
-  );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && 'data' in response.data.data) {
-    return { user: response.data.data.data };
-  }
-  throw new Error('Invalid response format');
+export const updateUser = async (
+  id: string,
+  data: IUpdateUserRequest
+): Promise<IUserResponse> => {
+  const response = await apiClient.patch<IUserResponse>(`/users/${id}`, data);
+  return response.data;
 };
 
 export const deleteUser = async (id: string): Promise<void> => {
@@ -68,22 +50,16 @@ export const deleteUser = async (id: string): Promise<void> => {
 export const updateProfile = async (
   data: IUpdateProfileRequest
 ): Promise<IUserResponse> => {
-  const response = await apiClient.patch<ISingleItemApiResponse<IUser>>(
-    "/users/me",
-    data
-  );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && 'data' in response.data.data) {
-    return { user: response.data.data.data };
-  }
-  throw new Error('Invalid response format');
+  const response = await apiClient.patch<IUserResponse>("/users/me", data);
+  return response.data;
 };
 
-export const uploadAvatar = async (file: File): Promise<{ avatarUrl: string }> => {
+export const uploadAvatar = async (
+  file: File
+): Promise<IUploadAvatarResponse> => {
   const formData = new FormData();
   formData.append("file", file);
-  
-  const response = await apiClient.post<ISingleItemApiResponse<{ avatarUrl: string }>>(
+  const response = await apiClient.post<IUploadAvatarResponse>(
     "/users/me/avatar",
     formData,
     {
@@ -92,10 +68,5 @@ export const uploadAvatar = async (file: File): Promise<{ avatarUrl: string }> =
       },
     }
   );
-  // Extract data from nested structure: response.data.data.data
-  if (response.data.data && 'data' in response.data.data) {
-    return response.data.data.data;
-  }
-  throw new Error('Invalid response format');
+  return response.data;
 };
-

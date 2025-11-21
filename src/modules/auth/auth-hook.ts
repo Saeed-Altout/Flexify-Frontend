@@ -75,7 +75,6 @@ export const useCurrentUserQuery = () => {
 
 export const useSignInMutation = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const t = useTranslations("auth.login.message");
   const { login: setAuthLogin } = useAuthStore();
 
@@ -83,13 +82,7 @@ export const useSignInMutation = () => {
     mutationKey: ["login"],
     mutationFn: login,
     onSuccess: (response) => {
-      // Update store with user and tokens
       setAuthLogin(response.data.user, response.data.tokens);
-
-      // Update React Query cache
-      queryClient.setQueryData(["user", "current"], response.data);
-      queryClient.setQueryData(["user"], response.data.user);
-
       toast.success(response.message || t("success"));
       router.push(Routes.home);
     },

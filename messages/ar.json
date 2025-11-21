@@ -33,9 +33,44 @@
             "admin":"مدير",
             "super_admin":"مدير عام",
             "user":"مستخدم"
-            },
+        },
+        "columns":{
+            "firstName":"الاسم الأول",
+            "lastName":"الاسم الأخير",
+            "email":"البريد الإلكتروني",
+            "phone":"الهاتف",
+            "role":"الدور",
+            "createdAt":"تاريخ الإنشاء"
+        },
         "loading":"جاري التحميل",
-        "loadingDescription":"يرجى الإنتظار أثناء التحميل"
+        "loadingDescription":"يرجى الإنتظار أثناء التحميل",
+        "page":"الصفحة",
+        "of":"من",
+        "pages":"صفحات",
+        "rowsPerPage":"عدد الصفوف في الصفحة",
+        "goToFirstPage":"الصفحة الأولى",
+        "goToPreviousPage":"الصفحة السابقة",
+        "goToNextPage":"الصفحة التالية",
+        "goToLastPage":"الصفحة الأخيرة",
+        "searchPlaceholder":"ابحث هنا.",
+        "createUser":"إنشاء مستخدم",
+        "editUser":"تعديل المستخدم",
+        "deleteUser":"حذف المستخدم",
+        "filters":"الفلاتر",
+        "clear":"مسح",
+        "filtersTitle":"الفلاتر",
+        "filtersDescription":"الفلاتر البيانات في الجدول.",
+        "resetFilters":"إعادة تعيين الفلاتر",
+        "applyFilters":"تطبيق الفلاتر",
+        "all":"الكل",
+        "selectRole":"اختر الدور",
+        "openMenu":"فتح القائمة",
+        "view":"عرض",
+        "edit":"تعديل",
+        "delete":"حذف",
+        "actions":"الإجراءات",
+        "create":"إنشاء",
+        "cancel":"إلغاء"
     },
     "auth":{
         "title":"فلكسيفاي",
@@ -206,6 +241,83 @@
             "metadata":{
                 "title":"الملف الشخصي",
                 "description":"الملف الشخصي"
+            }
+        },
+        "users":{
+            "title":"المستخدمين",
+            "description":"يمكنك إدارة المستخدمين هنا.",
+            "createUser":{
+                "title":"إنشاء مستخدم",
+                "description":"يمكنك إنشاء مستخدم جديد هنا.",
+                "emailLabel":"البريد الإلكتروني",
+                "emailPlaceholder":"البريد الإلكتروني",
+                "emailValidation":"البريد الإلكتروني غير صالح",
+                "passwordLabel":"كلمة المرور",
+                "passwordValidation":"كلمة المرور يجب أن تكون على الأقل 8 أحرف",
+                "passwordPlaceholder":"كلمة المرور",
+                "firstNameLabel":"الاسم الأول",
+                "firstNamePlaceholder":"الاسم الأول",
+                "firstNameValidation":"الاسم الأول يجب أن يكون على الأكثر 20 حرف",
+                "lastNameLabel":"الاسم الأخير",
+                "lastNamePlaceholder":"الاسم الأخير",
+                "lastNameValidation":"الاسم الأخير يجب أن يكون على الأكثر 20 حرف",
+                "phoneLabel":"الهاتف",
+                "phonePlaceholder":"الهاتف",
+                "phoneValidation":"الهاتف يجب أن يكون على الأقل 10 أرقام"
+            },
+            "editUser":{
+                "title":"تعديل المستخدم",
+                "description":"يمكنك تعديل المستخدم هنا.",
+                "emailLabel":"البريد الإلكتروني",
+                "emailPlaceholder":"البريد الإلكتروني",
+                "emailValidation":"البريد الإلكتروني غير صالح",
+                "passwordLabel":"كلمة المرور",
+                "passwordValidation":"كلمة المرور يجب أن تكون على الأقل 8 أحرف",
+                "passwordPlaceholder":"كلمة المرور",
+                "firstNameLabel":"الاسم الأول",
+                "firstNamePlaceholder":"الاسم الأول",
+                "firstNameValidation":"الاسم الأول يجب أن يكون على الأكثر 20 حرف",
+                "lastNameLabel":"الاسم الأخير",
+                "lastNamePlaceholder":"الاسم الأخير",
+                "lastNameValidation":"الاسم الأخير يجب أن يكون على الأكثر 20 حرف",
+                "phoneLabel":"الهاتف",
+                "phonePlaceholder":"الهاتف",
+                "phoneValidation":"الهاتف يجب أن يكون على الأقل 10 أرقام"
+            },
+            "deleteUser":{
+                "title":"حذف المستخدم",
+                "description":"يمكنك حذف المستخدم هنا."
+            },
+            "message":{
+                "createSuccess":"تم إنشاء المستخدم بنجاح",
+                "createError":"فشل إنشاء المستخدم",
+                "updateSuccess":"تم تحديث المستخدم بنجاح",
+                "updateError":"فشل تحديث المستخدم",
+                "deleteSuccess":"تم حذف المستخدم بنجاح",
+                "deleteError":"فشل حذف المستخدم",
+                "uploadSuccess":"تم رفع الصورة الشخصية بنجاح",
+                "uploadError":"فشل رفع الصورة الشخصية"
+            },
+            "metadata":{
+                "title":"المستخدمين",
+                "description":"المستخدمين"
+            },
+            "detail":{
+                "title":"تفاصيل المستخدم",
+                "description":"عرض معلومات مفصلة عن المستخدم",
+                "lastLogin":"آخر تسجيل دخول",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "sections":{
+                    "personalInfo":"المعلومات الشخصية",
+                    "personalInfoDescription":"معلومات أساسية عن المستخدم",
+                    "accountInfo":"معلومات الحساب",
+                    "accountInfoDescription":"حالة الحساب والإعدادات"
+                },
+                "metadata":{
+                    "title":"تفاصيل المستخدم - {id}",
+                    "description":"عرض معلومات مفصلة عن المستخدم"
+                }
             }
         }
     }

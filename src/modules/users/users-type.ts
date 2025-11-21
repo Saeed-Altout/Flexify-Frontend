@@ -1,4 +1,12 @@
-export interface IUser {
+import {
+  IApiResponse,
+  IPaginationMeta,
+  IUserRole,
+  IUserSortBy,
+  IUserSortOrder,
+} from "@/types/api-type";
+
+export type IUser = {
   id: string;
   email: string;
   firstName: string | null;
@@ -7,45 +15,22 @@ export interface IUser {
   phone: string | null;
   isEmailVerified: boolean;
   isActive: boolean;
-  role: string;
+  role: IUserRole;
   lastLoginAt: string | null;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface IUserResponse {
-  user: IUser;
-}
-
-export interface IUpdateProfileRequest {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: string;
-}
-
-export interface IUploadAvatarResponse {
-  avatarUrl: string;
-}
-
-export interface IUsersListResponse {
-  users: IUser[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export interface ICreateUserRequest {
+export type ICreateUserRequest = {
   email: string;
   password: string;
   firstName?: string;
   lastName?: string;
   phone?: string;
-  role?: string;
-}
+  role?: IUserRole;
+};
 
-export interface IUpdateUserRequest {
+export type IUpdateUserRequest = {
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -53,17 +38,33 @@ export interface IUpdateUserRequest {
   phone?: string;
   isActive?: boolean;
   isEmailVerified?: boolean;
-  role?: string;
-}
+  role?: IUserRole;
+};
 
-export interface IQueryUserParams {
+export type IUpdateProfileRequest = {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+};
+
+export type IQueryUserParams = {
   search?: string;
-  role?: string;
+  role?: IUserRole | string;
   isActive?: boolean;
   isEmailVerified?: boolean;
   page?: number;
   limit?: number;
-  sortBy?: 'created_at' | 'updated_at' | 'email' | 'first_name' | 'last_name';
-  sortOrder?: 'asc' | 'desc';
-}
+  sortBy?: IUserSortBy;
+  sortOrder?: IUserSortOrder;
+};
 
+export type IUserResponse = IApiResponse<{ data: IUser }>;
+
+export type IUsersResponse = IApiResponse<{
+  data: IUser[];
+  meta: IPaginationMeta;
+}>;
+export type IUploadAvatarResponse = IApiResponse<{
+  data: { avatarUrl: string };
+}>;

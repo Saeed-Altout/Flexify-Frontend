@@ -6,6 +6,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import {
   getUsers,
   getUserById,
@@ -14,140 +15,126 @@ import {
   deleteUser,
   updateProfile,
   uploadAvatar,
-} from "./users-api";
+} from "@/modules/users/users-api";
 import {
   ICreateUserRequest,
   IUpdateUserRequest,
   IQueryUserParams,
   IUpdateProfileRequest,
-} from "./users-type";
+} from "@/modules/users/users-type";
 
-// Query keys
-export const userKeys = {
-  all: ["users"] as const,
-  lists: () => [...userKeys.all, "list"] as const,
-  list: (params?: IQueryUserParams) => [...userKeys.lists(), params] as const,
-  details: () => [...userKeys.all, "detail"] as const,
-  detail: (id: string) => [...userKeys.details(), id] as const,
-};
-
-// Get users list query
 export const useUsersQuery = (params?: IQueryUserParams) => {
   return useQuery({
-    queryKey: userKeys.list(params),
+    queryKey: ["users", params],
     queryFn: () => getUsers(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
     placeholderData: keepPreviousData,
   });
 };
 
-// Get user by ID query
 export const useUserQuery = (id: string) => {
   return useQuery({
-    queryKey: userKeys.detail(id),
+    queryKey: ["users", id],
     queryFn: () => getUserById(id),
     enabled: !!id,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 };
 
-// Create user mutation
 export const useCreateUserMutation = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations("dashboard.users.message");
 
   return useMutation({
+    mutationKey: ["createUser"],
     mutationFn: (data: ICreateUserRequest) => createUser(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      toast.success("User created successfully");
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success(response.message || t("createSuccess"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to create user");
+        toast.error(error.response?.data?.message || t("createError"));
       }
     },
   });
 };
 
-// Update user mutation
 export const useUpdateUserMutation = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations("dashboard.users.message");
 
   return useMutation({
+    mutationKey: ["updateUser"],
     mutationFn: ({ id, data }: { id: string; data: IUpdateUserRequest }) =>
       updateUser(id, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
+    onSuccess: (response, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({
-        queryKey: userKeys.detail(variables.id),
+        queryKey: ["users", variables.id],
       });
-      toast.success("User updated successfully");
+      toast.success(response.message || t("updateSuccess"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to update user");
+        toast.error(error.response?.data?.message || t("updateError"));
       }
     },
   });
 };
 
-// Delete user mutation
 export const useDeleteUserMutation = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations("dashboard.users.message");
 
   return useMutation({
+    mutationKey: ["deleteUser"],
     mutationFn: (id: string) => deleteUser(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userKeys.lists() });
-      toast.success("User deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success(t("deleteSuccess"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to delete user");
+        toast.error(error.response?.data?.message || t("deleteError"));
       }
     },
   });
 };
 
-// Update profile mutation
 export const useUpdateProfileMutation = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations("dashboard.users.message");
 
   return useMutation({
+    mutationKey: ["updateProfile"],
     mutationFn: (data: IUpdateProfileRequest) => updateProfile(data),
     onSuccess: (response) => {
-      queryClient.setQueryData(["user", "current"], response.user);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      toast.success("Profile updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success(response.message || t("updateSuccess"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to update profile");
+        toast.error(error.response?.data?.message || t("updateError"));
       }
     },
   });
 };
 
-// Upload avatar mutation
 export const useUploadAvatarMutation = () => {
   const queryClient = useQueryClient();
+  const t = useTranslations("dashboard.users.message");
 
   return useMutation({
+    mutationKey: ["uploadAvatar"],
     mutationFn: (file: File) => uploadAvatar(file),
     onSuccess: (response) => {
-      // Update user cache with new avatar URL
-      queryClient.setQueryData(["user", "current"], (old: any) => {
-        if (old) {
-          return { ...old, avatarUrl: response.avatarUrl };
-        }
-        return old;
-      });
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      toast.success("Avatar uploaded successfully");
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success(response.message || t("uploadSuccess"));
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || "Failed to upload avatar");
+        toast.error(error.response?.data?.message || t("uploadError"));
       }
     },
   });
