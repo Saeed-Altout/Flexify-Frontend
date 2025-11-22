@@ -654,6 +654,44 @@ declare const messages: {
                         "description": "Focused on delivering solutions that meet business objectives"
                     }
                 }
+            },
+            "services": {
+                "title": "My Services",
+                "description": "Comprehensive solutions for your digital needs",
+                "seeMore": "See More",
+                "seeLess": "See Less",
+                "items": {
+                    "web": {
+                        "title": "Web Development",
+                        "description": "Building responsive and modern web applications using the latest technologies"
+                    },
+                    "frontend": {
+                        "title": "Frontend Development",
+                        "description": "Creating beautiful and interactive user interfaces with React, Next.js, and TypeScript"
+                    },
+                    "backend": {
+                        "title": "Backend Development",
+                        "description": "Developing robust APIs and server-side solutions with NestJS and Node.js"
+                    },
+                    "cloud": {
+                        "title": "Cloud Solutions",
+                        "description": "Deploying and managing applications on cloud platforms like AWS, Azure, and Supabase"
+                    },
+                    "mobile": {
+                        "title": "Mobile Development",
+                        "description": "Building cross-platform mobile applications with React Native and Flutter"
+                    },
+                    "devops": {
+                        "title": "DevOps & CI/CD",
+                        "description": "Setting up automated deployment pipelines and infrastructure management",
+                        "moreContent": "I help teams streamline their development workflow with modern DevOps practices:",
+                        "features": [
+                            "Continuous Integration and Deployment pipelines",
+                            "Container orchestration with Docker and Kubernetes",
+                            "Infrastructure as Code with Terraform and CloudFormation"
+                        ]
+                    }
+                }
             }
         }
     }
