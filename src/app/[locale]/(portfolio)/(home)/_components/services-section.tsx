@@ -64,7 +64,7 @@ export function ServicesSection() {
   };
 
   return (
-    <section className="py-16 px-4">
+    <section className="py-16">
       <div className="container">
         {/* Section Header */}
         <motion.div

@@ -8,7 +8,7 @@ import { CTASection } from "./_components/cta-section";
 
 export default function HomePage() {
   return (
-    <main className="container">
+    <main>
       <HeroSection />
       <StatisticsSection />
       <AboutSection />

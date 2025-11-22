@@ -55,6 +55,12 @@ export function ProjectsPageClient() {
   const meta = projectsData?.data?.meta;
   const categories = categoriesData?.data?.data?.categories || [];
 
+  // Helper function to get project type translation key
+  const getProjectTypeKey = (type: ProjectType): "personal" | "client" | "openSource" => {
+    if (type === "open_source") return "openSource";
+    return type;
+  };
+
   // Clear filters
   const hasActiveFilters = search || projectType !== "all" || categoryId !== "all";
   const clearFilters = () => {
@@ -202,7 +208,7 @@ export function ProjectsPageClient() {
             )}
             {projectType !== "all" && (
               <Badge variant="secondary" className="gap-1">
-                {t("type")}: {t(projectType)}
+                {t("type")}: {t(getProjectTypeKey(projectType))}
                 <button
                   onClick={() => {
                     setProjectType("all");
@@ -238,8 +244,11 @@ export function ProjectsPageClient() {
       {/* Results Count */}
       {meta && (
         <div className="mb-6 text-sm text-muted-foreground">
-          {t("showing")} {meta.from} - {meta.to} {t("of")} {meta.total}{" "}
-          {t("projects")}
+          {t("showing")}{" "}
+          {meta.total > 0
+            ? `${(meta.page - 1) * meta.limit + 1} - ${Math.min(meta.page * meta.limit, meta.total)}`
+            : "0 - 0"}{" "}
+          {t("of")} {meta.total} {t("projects")}
         </div>
       )}
 

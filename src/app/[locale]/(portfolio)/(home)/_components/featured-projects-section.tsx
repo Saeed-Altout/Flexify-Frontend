@@ -25,7 +25,7 @@ export function FeaturedProjectsSection() {
 
   if (isLoading) {
     return (
-      <section className="py-16 px-4">
+      <section className="py-16">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
@@ -37,10 +37,7 @@ export function FeaturedProjectsSection() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="h-64 bg-muted animate-pulse rounded-lg"
-              />
+              <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
             ))}
           </div>
         </div>
@@ -92,4 +89,3 @@ export function FeaturedProjectsSection() {
     </section>
   );
 }
-

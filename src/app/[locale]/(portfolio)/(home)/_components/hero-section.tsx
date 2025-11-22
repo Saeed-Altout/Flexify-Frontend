@@ -40,7 +40,7 @@ export function HeroSection() {
   ];
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-[80vh] py-16 px-4 text-center">
+    <section className="flex flex-col items-center justify-center min-h-[80vh] py-16 text-center">
       {/* Badge */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -10,7 +10,7 @@ export function CTASection() {
   const t = useTranslations("portfolio.home.cta");
 
   return (
-    <section className="py-16 px-4">
+    <section className="py-16">
       <div className="container">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

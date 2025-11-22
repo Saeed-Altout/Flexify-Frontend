@@ -108,7 +108,7 @@ export function TestimonialsSection() {
   const t = useTranslations("portfolio.home.testimonials");
 
   return (
-    <section className="py-16 px-4">
+    <section className="py-16">
       <div className="container">
         {/* Section Header */}
         <motion.div
@@ -135,7 +135,12 @@ export function TestimonialsSection() {
             ))}
           </Marquee>
           {/* Marquee moving right to left (reverse) */}
-          <Marquee pauseOnHover reverse repeat={3} className="[--duration:120s]">
+          <Marquee
+            pauseOnHover
+            reverse
+            repeat={3}
+            className="[--duration:120s]"
+          >
             {testimonials.map((review) => (
               <TestimonialCard key={review.username} {...review} />
             ))}
