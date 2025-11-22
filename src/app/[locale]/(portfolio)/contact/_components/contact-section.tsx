@@ -6,12 +6,7 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-  IconMail,
-  IconPhone,
-  IconMapPin,
-  IconSend,
-} from "@tabler/icons-react";
+import { IconMail, IconPhone, IconMapPin, IconSend } from "@tabler/icons-react";
 import {
   Form,
   FormControl,
@@ -251,4 +246,3 @@ export function ContactSection() {
     </section>
   );
 }
-
