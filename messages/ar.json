@@ -6,7 +6,17 @@
         "allProjects":"جميع المشاريع",
         "createProject":"إنشاء مشروع",
         "quickCreate":"إنشاء سريع",
-        "inbox":"صندوق الوارد"
+        "inbox":"صندوق الوارد",
+        "inquiryTypes":"أنواع الاستفسارات",
+        "allInquiryTypes":"جميع أنواع الاستفسارات",
+        "createInquiryType":"إنشاء نوع استفسار",
+        "contacts":"جهات الاتصال",
+        "testimonials":"الشهادات",
+        "allTestimonials":"جميع الشهادات",
+        "createTestimonial":"إنشاء شهادة",
+        "services":"الخدمات",
+        "allServices":"جميع الخدمات",
+        "createService":"إنشاء خدمة"
     },
     "common":{
         "backToHome":"الرئيسية",
@@ -600,6 +610,339 @@
                 "commentDeleteSuccess":"تم حذف التعليق بنجاح",
                 "commentDeleteError":"فشل حذف التعليق"
             }
+        },
+        "inquiryTypes":{
+            "title":"أنواع الاستفسارات",
+            "description":"إدارة أنواع الاستفسارات لنماذج الاتصال",
+            "createButton":"إنشاء نوع استفسار",
+            "metadata":{
+                "title":"أنواع الاستفسارات - الإدارة",
+                "description":"إدارة أنواع الاستفسارات المستخدمة في نماذج الاتصال",
+                "keywords":"أنواع الاستفسارات، نماذج الاتصال، الإدارة"
+            },
+            "create":{
+                "metadata":{
+                    "title":"إنشاء نوع استفسار",
+                    "description":"إنشاء نوع استفسار جديد"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"تعديل نوع الاستفسار",
+                    "description":"تعديل تفاصيل نوع الاستفسار"
+                }
+            },
+            "detail":{
+                "title":"تفاصيل نوع الاستفسار",
+                "description":"عرض معلومات نوع الاستفسار",
+                "slug":"الرابط",
+                "status":"الحالة",
+                "icon":"الأيقونة",
+                "color":"اللون",
+                "orderIndex":"الترتيب",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "translations":"الترجمات",
+                "edit":"تعديل",
+                "active":"نشط",
+                "inactive":"غير نشط"
+            },
+            "columns":{
+                "name":"الاسم",
+                "slug":"الرابط",
+                "icon":"الأيقونة",
+                "status":"الحالة",
+                "order":"الترتيب",
+                "createdAt":"تاريخ الإنشاء",
+                "active":"نشط",
+                "inactive":"غير نشط"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في أنواع الاستفسارات...",
+                "statusFilter":"الحالة",
+                "allStatuses":"جميع الحالات",
+                "active":"نشط",
+                "inactive":"غير نشط",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "delete":{
+                "title":"حذف نوع الاستفسار",
+                "description":"هل أنت متأكد من حذف نوع الاستفسار \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            },
+            "form":{
+                "slugLabel":"الرابط",
+                "slugPlaceholder":"مثال: استفسار-عام",
+                "orderIndexLabel":"ترتيب الفهرس",
+                "orderIndexPlaceholder":"0",
+                "iconLabel":"الأيقونة",
+                "iconPlaceholder":"اسم الأيقونة أو الرمز التعبيري",
+                "colorLabel":"اللون",
+                "colorPlaceholder":"#000000",
+                "isActiveLabel":"نشط",
+                "nameLabel":"الاسم",
+                "namePlaceholder":"اسم نوع الاستفسار",
+                "descriptionLabel":"الوصف",
+                "descriptionPlaceholder":"وصف مختصر",
+                "cancel":"إلغاء",
+                "submit":"إرسال"
+            }
+        },
+        "contacts":{
+            "title":"جهات الاتصال",
+            "description":"إدارة طلبات نموذج الاتصال",
+            "metadata":{
+                "title":"جهات الاتصال - الإدارة",
+                "description":"عرض وإدارة طلبات نموذج الاتصال",
+                "keywords":"جهات الاتصال، الرسائل، الاستفسارات، الإدارة"
+            },
+            "columns":{
+                "name":"الاسم",
+                "email":"البريد الإلكتروني",
+                "phone":"الهاتف",
+                "subject":"الموضوع",
+                "status":"الحالة",
+                "createdAt":"تاريخ الإنشاء"
+            },
+            "status":{
+                "new":"جديد",
+                "read":"مقروء",
+                "replied":"تم الرد",
+                "archived":"مؤرشف"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في جهات الاتصال...",
+                "statusFilter":"الحالة",
+                "allStatuses":"جميع الحالات",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "delete":{
+                "title":"حذف جهة الاتصال",
+                "description":"هل أنت متأكد من حذف جهة الاتصال من \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            }
+        },
+        "testimonials":{
+            "title":"الشهادات",
+            "description":"إدارة شهادات العملاء",
+            "createButton":"إنشاء شهادة",
+            "metadata":{
+                "title":"الشهادات - الإدارة",
+                "description":"إدارة شهادات ومراجعات العملاء",
+                "keywords":"الشهادات، المراجعات، الإدارة"
+            },
+            "columns":{
+                "avatar":"الصورة الشخصية",
+                "author":"المؤلف",
+                "content":"المحتوى",
+                "rating":"التقييم",
+                "status":"الحالة",
+                "featured":"مميز",
+                "createdAt":"تاريخ الإنشاء",
+                "noAvatar":"لا توجد صورة",
+                "approved":"موافق عليه",
+                "pending":"قيد الانتظار",
+                "yes":"نعم"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في الشهادات...",
+                "approvedFilter":"موافق عليه",
+                "featuredFilter":"مميز",
+                "all":"الكل",
+                "approved":"موافق عليه",
+                "pending":"قيد الانتظار",
+                "featured":"مميز",
+                "notFeatured":"غير مميز",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "delete":{
+                "title":"حذف الشهادة",
+                "description":"هل أنت متأكد من حذف الشهادة من \"{author}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"إنشاء شهادة",
+                    "description":"إنشاء شهادة جديدة"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"تعديل الشهادة",
+                    "description":"تعديل تفاصيل الشهادة"
+                }
+            },
+            "detail":{
+                "title":"تفاصيل الشهادة",
+                "description":"عرض معلومات الشهادة",
+                "avatar":"الصورة الشخصية",
+                "rating":"التقييم",
+                "status":"الحالة",
+                "orderIndex":"الترتيب",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "content":"المحتوى",
+                "translations":"الترجمات",
+                "edit":"تعديل",
+                "approved":"موافق عليه",
+                "pending":"قيد الانتظار",
+                "featured":"مميز"
+            },
+            "form":{
+                "avatarUrlLabel":"رابط الصورة الشخصية",
+                "avatarUrlPlaceholder":"https://example.com/avatar.jpg",
+                "ratingLabel":"التقييم",
+                "ratingPlaceholder":"اختر التقييم",
+                "noRating":"لا يوجد تقييم",
+                "orderIndexLabel":"ترتيب الفهرس",
+                "orderIndexPlaceholder":"0",
+                "isFeaturedLabel":"مميز",
+                "isApprovedLabel":"موافق عليه",
+                "contentLabel":"المحتوى",
+                "contentPlaceholder":"محتوى الشهادة",
+                "authorNameLabel":"اسم المؤلف",
+                "authorNamePlaceholder":"اسم المؤلف",
+                "authorPositionLabel":"منصب المؤلف",
+                "authorPositionPlaceholder":"مثال: الرئيس التنفيذي، مطور",
+                "companyLabel":"الشركة",
+                "companyPlaceholder":"اسم الشركة",
+                "cancel":"إلغاء",
+                "submit":"إرسال"
+            }
+        },
+        "services":{
+            "title":"الخدمات",
+            "description":"إدارة الخدمات المقدمة",
+            "createButton":"إنشاء خدمة",
+            "metadata":{
+                "title":"الخدمات - الإدارة",
+                "description":"إدارة الخدمات والعروض",
+                "keywords":"الخدمات، العروض، الإدارة"
+            },
+            "columns":{
+                "image":"الصورة",
+                "name":"الاسم",
+                "slug":"الرابط",
+                "status":"الحالة",
+                "featured":"مميز",
+                "order":"الترتيب",
+                "createdAt":"تاريخ الإنشاء",
+                "noImage":"لا توجد صورة",
+                "active":"نشط",
+                "inactive":"غير نشط",
+                "yes":"نعم"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في الخدمات...",
+                "statusFilter":"الحالة",
+                "featuredFilter":"مميز",
+                "allStatuses":"جميع الحالات",
+                "active":"نشط",
+                "inactive":"غير نشط",
+                "all":"الكل",
+                "featured":"مميز",
+                "notFeatured":"غير مميز",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "delete":{
+                "title":"حذف الخدمة",
+                "description":"هل أنت متأكد من حذف الخدمة \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"إنشاء خدمة",
+                    "description":"إنشاء خدمة جديدة"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"تعديل الخدمة",
+                    "description":"تعديل تفاصيل الخدمة"
+                }
+            },
+            "detail":{
+                "title":"تفاصيل الخدمة",
+                "description":"عرض معلومات الخدمة",
+                "image":"الصورة",
+                "icon":"الأيقونة",
+                "slug":"الرابط",
+                "color":"اللون",
+                "status":"الحالة",
+                "orderIndex":"الترتيب",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "content":"المحتوى",
+                "translations":"الترجمات",
+                "edit":"تعديل",
+                "active":"نشط",
+                "inactive":"غير نشط",
+                "featured":"مميز"
+            },
+            "form":{
+                "slugLabel":"الرابط",
+                "slugPlaceholder":"رابط-الخدمة",
+                "iconLabel":"الأيقونة",
+                "iconPlaceholder":"أيقونة أو نص",
+                "imageUrlLabel":"رابط الصورة",
+                "imageUrlPlaceholder":"https://example.com/image.jpg",
+                "colorLabel":"اللون",
+                "colorPlaceholder":"#000000",
+                "orderIndexLabel":"ترتيب الفهرس",
+                "orderIndexPlaceholder":"0",
+                "isActiveLabel":"نشط",
+                "isFeaturedLabel":"مميز",
+                "nameLabel":"الاسم",
+                "namePlaceholder":"اسم الخدمة",
+                "shortDescriptionLabel":"وصف مختصر",
+                "shortDescriptionPlaceholder":"وصف مختصر (حد أقصى 500 حرف)",
+                "descriptionLabel":"الوصف",
+                "descriptionPlaceholder":"الوصف الكامل",
+                "contentLabel":"المحتوى",
+                "contentPlaceholder":"المحتوى الكامل (يدعم HTML)",
+                "metaTitleLabel":"عنوان Meta",
+                "metaTitlePlaceholder":"عنوان SEO",
+                "metaDescriptionLabel":"وصف Meta",
+                "metaDescriptionPlaceholder":"وصف SEO",
+                "cancel":"إلغاء",
+                "submit":"إرسال"
+            }
         }
     },
     "portfolio": {
@@ -783,6 +1126,15 @@
                     "placeholder": "your.email@example.com",
                     "validation": "يرجى إدخال عنوان بريد إلكتروني صالح"
                 },
+                "phone": {
+                    "label": "الهاتف",
+                    "placeholder": "رقم هاتفك (اختياري)",
+                    "validation": "يرجى إدخال رقم هاتف صالح"
+                },
+                "inquiryType": {
+                    "label": "نوع الاستفسار",
+                    "placeholder": "اختر نوع الاستفسار (اختياري)"
+                },
                 "subject": {
                     "label": "الموضوع",
                     "placeholder": "ما هذا الموضوع؟",
@@ -794,7 +1146,28 @@
                     "validation": "يجب أن تكون الرسالة على الأقل 10 أحرف"
                 },
                 "submit": "إرسال الرسالة",
-                "submitting": "جاري الإرسال..."
+                "submitting": "جاري الإرسال...",
+                "success": "تم إرسال الرسالة بنجاح!",
+                "error": "فشل إرسال الرسالة. يرجى المحاولة مرة أخرى."
+            }
+        },
+        "services": {
+            "title": "خدماتي",
+            "description": "حلول شاملة لاحتياجاتك الرقمية",
+            "noServices": "لا توجد خدمات متاحة في الوقت الحالي.",
+            "metadata": {
+                "title": "الخدمات - معرض الأعمال",
+                "description": "استكشف الخدمات التي أقدمها",
+                "keywords": "الخدمات، العروض، الحلول"
+            },
+            "detail": {
+                "notFound": "الخدمة غير موجودة",
+                "backToServices": "العودة إلى الخدمات",
+                "featured": "مميز",
+                "metadata": {
+                    "title": "{slug} - الخدمات",
+                    "description": "تفاصيل الخدمة"
+                }
             }
         },
         "footer": {

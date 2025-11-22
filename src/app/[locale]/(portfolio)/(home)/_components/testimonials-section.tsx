@@ -1,103 +1,59 @@
 "use client";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
-
-// Unique reviews data
-const testimonials = [
-  {
-    name: "Ava Green",
-    username: "@ava",
-    body: "Cascade AI made my workflow 10x faster!",
-    img: "https://randomuser.me/api/portraits/women/32.jpg",
-    country: "🇦🇺 Australia",
-  },
-  {
-    name: "Ana Miller",
-    username: "@ana",
-    body: "Vertical marquee is a game changer!",
-    img: "https://randomuser.me/api/portraits/women/68.jpg",
-    country: "🇩🇪 Germany",
-  },
-  {
-    name: "Mateo Rossi",
-    username: "@mat",
-    body: "Animations are buttery smooth!",
-    img: "https://randomuser.me/api/portraits/men/51.jpg",
-    country: "🇮🇹 Italy",
-  },
-  {
-    name: "Maya Patel",
-    username: "@maya",
-    body: "Setup was a breeze!",
-    img: "https://randomuser.me/api/portraits/women/53.jpg",
-    country: "🇮🇳 India",
-  },
-  {
-    name: "Noah Smith",
-    username: "@noah",
-    body: "Best marquee component!",
-    img: "https://randomuser.me/api/portraits/men/33.jpg",
-    country: "🇺🇸 USA",
-  },
-  {
-    name: "Lucas Stone",
-    username: "@luc",
-    body: "Very customizable and smooth.",
-    img: "https://randomuser.me/api/portraits/men/22.jpg",
-    country: "🇫🇷 France",
-  },
-  {
-    name: "Haruto Sato",
-    username: "@haru",
-    body: "Impressive performance on mobile!",
-    img: "https://randomuser.me/api/portraits/men/85.jpg",
-    country: "🇯🇵 Japan",
-  },
-  {
-    name: "Emma Lee",
-    username: "@emma",
-    body: "Love the pause on hover feature!",
-    img: "https://randomuser.me/api/portraits/women/45.jpg",
-    country: "🇨🇦 Canada",
-  },
-  {
-    name: "Carlos Ray",
-    username: "@carl",
-    body: "Great for testimonials and logos.",
-    img: "https://randomuser.me/api/portraits/men/61.jpg",
-    country: "🇪🇸 Spain",
-  },
-];
+import { useTestimonialsQuery } from "@/modules/testimonials/testimonials-hook";
+import { ITestimonial } from "@/modules/testimonials/testimonials-type";
 
 function TestimonialCard({
-  img,
-  name,
-  username,
-  body,
-  country,
-}: (typeof testimonials)[number]) {
+  testimonial,
+  locale,
+}: {
+  testimonial: ITestimonial;
+  locale: string;
+}) {
+  const translation = testimonial.translations?.find((t) => t.locale === locale);
+  const fallbackTranslation = testimonial.translations?.[0];
+  const authorName =
+    translation?.authorName || fallbackTranslation?.authorName || "Anonymous";
+  const authorPosition =
+    translation?.authorPosition || fallbackTranslation?.authorPosition || "";
+  const company = translation?.company || fallbackTranslation?.company || "";
+  const content =
+    translation?.content || fallbackTranslation?.content || "";
+
   return (
     <Card className="w-64">
       <CardContent>
         <div className="flex items-center gap-2.5">
           <Avatar className="size-9">
-            <AvatarImage src={img} alt="@reui_io" />
-            <AvatarFallback>{name[0]}</AvatarFallback>
+            <AvatarImage src={testimonial.avatarUrl || undefined} alt={authorName} />
+            <AvatarFallback>{authorName[0]}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <figcaption className="text-sm font-medium text-foreground flex items-center gap-1">
-              {name} <span className="text-xs">{country}</span>
+            <figcaption className="text-sm font-medium text-foreground">
+              {authorName}
             </figcaption>
-            <p className="text-xs font-medium text-muted-foreground">
-              {username}
-            </p>
+            {(authorPosition || company) && (
+              <p className="text-xs font-medium text-muted-foreground">
+                {authorPosition}
+                {authorPosition && company ? " at " : ""}
+                {company}
+              </p>
+            )}
           </div>
         </div>
-        <blockquote className="mt-3 text-sm text-econdary-foreground">
-          {body}
+        {testimonial.rating && (
+          <div className="mt-2 flex items-center gap-1">
+            {[...Array(testimonial.rating)].map((_, i) => (
+              <span key={i}>⭐</span>
+            ))}
+          </div>
+        )}
+        <blockquote className="mt-3 text-sm text-secondary-foreground line-clamp-3">
+          {content}
         </blockquote>
       </CardContent>
     </Card>
@@ -106,6 +62,43 @@ function TestimonialCard({
 
 export function TestimonialsSection() {
   const t = useTranslations("portfolio.home.testimonials");
+  const locale = useLocale();
+
+  const { data, isLoading } = useTestimonialsQuery({
+    isApproved: true,
+    locale,
+    limit: 20,
+    sortBy: "order_index",
+    sortOrder: "asc",
+  });
+
+  const testimonials = data?.data?.data || [];
+
+  if (isLoading) {
+    return (
+      <section className="py-16">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              {t("title")}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {t("description")}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-48 bg-muted animate-pulse rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-16">
@@ -130,8 +123,12 @@ export function TestimonialsSection() {
         <div className="relative flex w-full flex-col items-center justify-center gap-1 overflow-hidden">
           {/* Marquee moving left to right (default) */}
           <Marquee pauseOnHover repeat={3} className="[--duration:120s]">
-            {testimonials.map((review) => (
-              <TestimonialCard key={review.username} {...review} />
+            {testimonials.map((testimonial) => (
+              <TestimonialCard
+                key={testimonial.id}
+                testimonial={testimonial}
+                locale={locale}
+              />
             ))}
           </Marquee>
           {/* Marquee moving right to left (reverse) */}
@@ -141,8 +138,12 @@ export function TestimonialsSection() {
             repeat={3}
             className="[--duration:120s]"
           >
-            {testimonials.map((review) => (
-              <TestimonialCard key={review.username} {...review} />
+            {testimonials.map((testimonial) => (
+              <TestimonialCard
+                key={testimonial.id}
+                testimonial={testimonial}
+                locale={locale}
+              />
             ))}
           </Marquee>
           {/* Stylish gradient overlays */}
@@ -155,3 +156,4 @@ export function TestimonialsSection() {
     </section>
   );
 }
+

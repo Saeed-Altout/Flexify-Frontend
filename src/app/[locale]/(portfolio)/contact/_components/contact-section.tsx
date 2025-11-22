@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useInquiryTypesQuery } from "@/modules/inquiry-types/inquiry-types-hook";
+import { useCreateContactMutation } from "@/modules/contacts/contacts-hook";
+import { toast } from "sonner";
 
 const contactInfo = [
   {
@@ -37,11 +47,20 @@ const contactInfo = [
 
 export function ContactSection() {
   const t = useTranslations("portfolio.contact");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const locale = useLocale();
+  const createContactMutation = useCreateContactMutation();
+  const { data: inquiryTypesData } = useInquiryTypesQuery({
+    isActive: true,
+    locale,
+  });
+
+  const inquiryTypes = inquiryTypesData?.data?.data || [];
 
   const formSchema = z.object({
     name: z.string().min(2, t("form.name.validation")),
     email: z.string().email(t("form.email.validation")),
+    phone: z.string().optional(),
+    inquiryTypeId: z.string().optional(),
     subject: z.string().min(3, t("form.subject.validation")),
     message: z.string().min(10, t("form.message.validation")),
   });
@@ -51,19 +70,28 @@ export function ContactSection() {
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
+      inquiryTypeId: "",
       subject: "",
       message: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
-    // TODO: Implement form submission
-    console.log(values);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await createContactMutation.mutateAsync({
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        inquiryTypeId: values.inquiryTypeId,
+        subject: values.subject,
+        message: values.message,
+      });
       form.reset();
-    }, 1000);
+      toast.success(t("form.success"));
+    } catch (error) {
+      toast.error(t("form.error"));
+    }
   };
 
   const getContactLabel = (id: string): string => {
@@ -187,7 +215,87 @@ export function ContactSection() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("form.phone.label")}</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="tel"
+                                placeholder={t("form.phone.placeholder")}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
+
+                    {inquiryTypes.length > 0 && (
+                      <FormField
+                        control={form.control}
+                        name="inquiryTypeId"
+                        render={({ field }) => {
+                          const selectedType = inquiryTypes.find(
+                            (type) => type.id === field.value
+                          );
+                          const translation = selectedType?.translations?.find(
+                            (t) => t.locale === locale
+                          );
+                          const fallbackTranslation =
+                            selectedType?.translations?.[0];
+                          const selectedName =
+                            translation?.name ||
+                            fallbackTranslation?.name ||
+                            "";
+
+                          return (
+                            <FormItem>
+                              <FormLabel>{t("form.inquiryType.label")}</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      placeholder={t("form.inquiryType.placeholder")}
+                                    >
+                                      {selectedName}
+                                    </SelectValue>
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {inquiryTypes.map((type) => {
+                                    const typeTranslation =
+                                      type.translations?.find(
+                                        (t) => t.locale === locale
+                                      );
+                                    const typeFallback =
+                                      type.translations?.[0];
+                                    const typeName =
+                                      typeTranslation?.name ||
+                                      typeFallback?.name ||
+                                      type.slug;
+
+                                    return (
+                                      <SelectItem key={type.id} value={type.id}>
+                                        {typeName}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    )}
+
                     <FormField
                       control={form.control}
                       name="subject"
@@ -224,10 +332,10 @@ export function ContactSection() {
                     <Button
                       type="submit"
                       size="lg"
-                      disabled={isSubmitting}
+                      disabled={createContactMutation.isPending}
                       className="w-full rounded-lg"
                     >
-                      {isSubmitting ? (
+                      {createContactMutation.isPending ? (
                         t("form.submitting")
                       ) : (
                         <>

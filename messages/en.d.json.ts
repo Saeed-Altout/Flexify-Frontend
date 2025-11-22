@@ -9,7 +9,17 @@ declare const messages: {
         "allProjects":"All Projects",
         "createProject":"Create Project",
         "quickCreate":"Quick Create",
-        "inbox":"Inbox"
+        "inbox":"Inbox",
+        "inquiryTypes":"Inquiry Types",
+        "allInquiryTypes":"All Inquiry Types",
+        "createInquiryType":"Create Inquiry Type",
+        "contacts":"Contacts",
+        "testimonials":"Testimonials",
+        "allTestimonials":"All Testimonials",
+        "createTestimonial":"Create Testimonial",
+        "services":"Services",
+        "allServices":"All Services",
+        "createService":"Create Service"
     },
     "common":{
         "backToHome":"Back to home",
@@ -603,6 +613,339 @@ declare const messages: {
                 "commentDeleteSuccess":"Comment deleted successfully",
                 "commentDeleteError":"Failed to delete comment"
             }
+        },
+        "inquiryTypes":{
+            "title":"Inquiry Types",
+            "description":"Manage inquiry types for contact forms",
+            "createButton":"Create Inquiry Type",
+            "metadata":{
+                "title":"Inquiry Types - Management",
+                "description":"Manage inquiry types used in contact forms",
+                "keywords":"inquiry types, contact forms, management"
+            },
+            "create":{
+                "metadata":{
+                    "title":"Create Inquiry Type",
+                    "description":"Create a new inquiry type"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"Edit Inquiry Type",
+                    "description":"Edit inquiry type details"
+                }
+            },
+            "detail":{
+                "title":"Inquiry Type Details",
+                "description":"View inquiry type information",
+                "slug":"Slug",
+                "status":"Status",
+                "icon":"Icon",
+                "color":"Color",
+                "orderIndex":"Order",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "translations":"Translations",
+                "edit":"Edit",
+                "active":"Active",
+                "inactive":"Inactive"
+            },
+            "columns":{
+                "name":"Name",
+                "slug":"Slug",
+                "icon":"Icon",
+                "status":"Status",
+                "order":"Order",
+                "createdAt":"Created At",
+                "active":"Active",
+                "inactive":"Inactive"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search inquiry types...",
+                "statusFilter":"Status",
+                "allStatuses":"All Statuses",
+                "active":"Active",
+                "inactive":"Inactive",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open Menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "delete":{
+                "title":"Delete Inquiry Type",
+                "description":"Are you sure you want to delete inquiry type \"{name}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            },
+            "form":{
+                "slugLabel":"Slug",
+                "slugPlaceholder":"e.g., general-inquiry",
+                "orderIndexLabel":"Order Index",
+                "orderIndexPlaceholder":"0",
+                "iconLabel":"Icon",
+                "iconPlaceholder":"Icon name or emoji",
+                "colorLabel":"Color",
+                "colorPlaceholder":"#000000",
+                "isActiveLabel":"Active",
+                "nameLabel":"Name",
+                "namePlaceholder":"Inquiry type name",
+                "descriptionLabel":"Description",
+                "descriptionPlaceholder":"Brief description",
+                "cancel":"Cancel",
+                "submit":"Submit"
+            }
+        },
+        "contacts":{
+            "title":"Contacts",
+            "description":"Manage contact form submissions",
+            "metadata":{
+                "title":"Contacts - Management",
+                "description":"View and manage contact form submissions",
+                "keywords":"contacts, messages, inquiries, management"
+            },
+            "columns":{
+                "name":"Name",
+                "email":"Email",
+                "phone":"Phone",
+                "subject":"Subject",
+                "status":"Status",
+                "createdAt":"Created At"
+            },
+            "status":{
+                "new":"New",
+                "read":"Read",
+                "replied":"Replied",
+                "archived":"Archived"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search contacts...",
+                "statusFilter":"Status",
+                "allStatuses":"All Statuses",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open Menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "delete":{
+                "title":"Delete Contact",
+                "description":"Are you sure you want to delete contact from \"{name}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            }
+        },
+        "testimonials":{
+            "title":"Testimonials",
+            "description":"Manage client testimonials",
+            "createButton":"Create Testimonial",
+            "metadata":{
+                "title":"Testimonials - Management",
+                "description":"Manage client testimonials and reviews",
+                "keywords":"testimonials, reviews, management"
+            },
+            "columns":{
+                "avatar":"Avatar",
+                "author":"Author",
+                "content":"Content",
+                "rating":"Rating",
+                "status":"Status",
+                "featured":"Featured",
+                "createdAt":"Created At",
+                "noAvatar":"No Avatar",
+                "approved":"Approved",
+                "pending":"Pending",
+                "yes":"Yes"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search testimonials...",
+                "approvedFilter":"Approved",
+                "featuredFilter":"Featured",
+                "all":"All",
+                "approved":"Approved",
+                "pending":"Pending",
+                "featured":"Featured",
+                "notFeatured":"Not Featured",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open Menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "delete":{
+                "title":"Delete Testimonial",
+                "description":"Are you sure you want to delete testimonial from \"{author}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"Create Testimonial",
+                    "description":"Create a new testimonial"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"Edit Testimonial",
+                    "description":"Edit testimonial details"
+                }
+            },
+            "detail":{
+                "title":"Testimonial Details",
+                "description":"View testimonial information",
+                "avatar":"Avatar",
+                "rating":"Rating",
+                "status":"Status",
+                "orderIndex":"Order",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "content":"Content",
+                "translations":"Translations",
+                "edit":"Edit",
+                "approved":"Approved",
+                "pending":"Pending",
+                "featured":"Featured"
+            },
+            "form":{
+                "avatarUrlLabel":"Avatar URL",
+                "avatarUrlPlaceholder":"https://example.com/avatar.jpg",
+                "ratingLabel":"Rating",
+                "ratingPlaceholder":"Select rating",
+                "noRating":"No Rating",
+                "orderIndexLabel":"Order Index",
+                "orderIndexPlaceholder":"0",
+                "isFeaturedLabel":"Featured",
+                "isApprovedLabel":"Approved",
+                "contentLabel":"Content",
+                "contentPlaceholder":"Testimonial content",
+                "authorNameLabel":"Author Name",
+                "authorNamePlaceholder":"Author name",
+                "authorPositionLabel":"Author Position",
+                "authorPositionPlaceholder":"e.g., CEO, Developer",
+                "companyLabel":"Company",
+                "companyPlaceholder":"Company name",
+                "cancel":"Cancel",
+                "submit":"Submit"
+            }
+        },
+        "services":{
+            "title":"Services",
+            "description":"Manage services offered",
+            "createButton":"Create Service",
+            "metadata":{
+                "title":"Services - Management",
+                "description":"Manage services and offerings",
+                "keywords":"services, offerings, management"
+            },
+            "columns":{
+                "image":"Image",
+                "name":"Name",
+                "slug":"Slug",
+                "status":"Status",
+                "featured":"Featured",
+                "order":"Order",
+                "createdAt":"Created At",
+                "noImage":"No Image",
+                "active":"Active",
+                "inactive":"Inactive",
+                "yes":"Yes"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search services...",
+                "statusFilter":"Status",
+                "featuredFilter":"Featured",
+                "allStatuses":"All Statuses",
+                "active":"Active",
+                "inactive":"Inactive",
+                "all":"All",
+                "featured":"Featured",
+                "notFeatured":"Not Featured",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open Menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "delete":{
+                "title":"Delete Service",
+                "description":"Are you sure you want to delete service \"{name}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"Create Service",
+                    "description":"Create a new service"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"Edit Service",
+                    "description":"Edit service details"
+                }
+            },
+            "detail":{
+                "title":"Service Details",
+                "description":"View service information",
+                "image":"Image",
+                "icon":"Icon",
+                "slug":"Slug",
+                "color":"Color",
+                "status":"Status",
+                "orderIndex":"Order",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "content":"Content",
+                "translations":"Translations",
+                "edit":"Edit",
+                "active":"Active",
+                "inactive":"Inactive",
+                "featured":"Featured"
+            },
+            "form":{
+                "slugLabel":"Slug",
+                "slugPlaceholder":"service-slug",
+                "iconLabel":"Icon",
+                "iconPlaceholder":"Icon emoji or text",
+                "imageUrlLabel":"Image URL",
+                "imageUrlPlaceholder":"https://example.com/image.jpg",
+                "colorLabel":"Color",
+                "colorPlaceholder":"#000000",
+                "orderIndexLabel":"Order Index",
+                "orderIndexPlaceholder":"0",
+                "isActiveLabel":"Active",
+                "isFeaturedLabel":"Featured",
+                "nameLabel":"Name",
+                "namePlaceholder":"Service name",
+                "shortDescriptionLabel":"Short Description",
+                "shortDescriptionPlaceholder":"Brief description (max 500 chars)",
+                "descriptionLabel":"Description",
+                "descriptionPlaceholder":"Full description",
+                "contentLabel":"Content",
+                "contentPlaceholder":"Full content (HTML supported)",
+                "metaTitleLabel":"Meta Title",
+                "metaTitlePlaceholder":"SEO meta title",
+                "metaDescriptionLabel":"Meta Description",
+                "metaDescriptionPlaceholder":"SEO meta description",
+                "cancel":"Cancel",
+                "submit":"Submit"
+            }
         }
     },
     "portfolio": {
@@ -786,6 +1129,15 @@ declare const messages: {
                     "placeholder": "your.email@example.com",
                     "validation": "Please enter a valid email address"
                 },
+                "phone": {
+                    "label": "Phone",
+                    "placeholder": "Your phone number (optional)",
+                    "validation": "Please enter a valid phone number"
+                },
+                "inquiryType": {
+                    "label": "Inquiry Type",
+                    "placeholder": "Select inquiry type (optional)"
+                },
                 "subject": {
                     "label": "Subject",
                     "placeholder": "What is this about?",
@@ -797,7 +1149,28 @@ declare const messages: {
                     "validation": "Message must be at least 10 characters"
                 },
                 "submit": "Send Message",
-                "submitting": "Sending..."
+                "submitting": "Sending...",
+                "success": "Message sent successfully!",
+                "error": "Failed to send message. Please try again."
+            }
+        },
+        "services": {
+            "title": "My Services",
+            "description": "Comprehensive solutions for your digital needs",
+            "noServices": "No services available at the moment.",
+            "metadata": {
+                "title": "Services - Portfolio",
+                "description": "Explore the services I offer",
+                "keywords": "services, offerings, solutions"
+            },
+            "detail": {
+                "notFound": "Service not found",
+                "backToServices": "Back to Services",
+                "featured": "Featured",
+                "metadata": {
+                    "title": "{slug} - Services",
+                    "description": "Service details"
+                }
             }
         },
         "footer": {
