@@ -1,6 +1,6 @@
 "use client";
 
-import { use } from "react";
+import { use, useState } from "react";
 import { useProjectQuery } from "@/modules/projects/projects-hook";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -9,6 +9,7 @@ import { ErrorState } from "@/components/shared/error-state";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ImageViewer } from "@/components/ui/image-viewer";
 import {
   ArrowLeft,
   Edit,
@@ -35,6 +36,8 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const tType = useTranslations("dashboard.projects.type");
 
   const { data, isLoading, error } = useProjectQuery(id);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [initialIndex, setInitialIndex] = useState(0);
 
   if (isLoading) {
     return (
@@ -58,6 +61,30 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const currentTranslation = project.translations?.find(
     (t) => t.locale === locale
   );
+
+  // Prepare images for viewer (include thumbnail if exists, then gallery images)
+  const allImages = [];
+  if (project.thumbnailUrl) {
+    allImages.push({
+      id: "thumbnail",
+      url: project.thumbnailUrl,
+      alt: currentTranslation?.title || "Project thumbnail",
+    });
+  }
+  if (project.images && project.images.length > 0) {
+    project.images.forEach((img) => {
+      allImages.push({
+        id: img.id,
+        url: img.imageUrl,
+        alt: img.altText || currentTranslation?.title || "Project image",
+      });
+    });
+  }
+
+  const handleImageClick = (index: number) => {
+    setInitialIndex(index);
+    setViewerOpen(true);
+  };
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -138,15 +165,20 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
         <div className="space-y-6 lg:col-span-2">
           {/* Thumbnail */}
           {project.thumbnailUrl && (
-            <Card>
+            <Card className="p-2">
               <CardContent className="p-0">
-                <Image
-                  src={project.thumbnailUrl}
-                  alt={currentTranslation?.title || "Project"}
-                  width={800}
-                  height={400}
-                  className="h-[400px] w-full rounded-lg object-cover"
-                />
+                <div
+                  className="relative h-[400px] w-full cursor-pointer overflow-hidden rounded-lg group"
+                  onClick={() => handleImageClick(0)}
+                >
+                  <Image
+                    src={project.thumbnailUrl}
+                    alt={currentTranslation?.title || "Project"}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                </div>
               </CardContent>
             </Card>
           )}
@@ -199,16 +231,26 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                  {project.images.map((image) => (
-                    <Image
-                      key={image.id}
-                      src={image.imageUrl}
-                      alt={image.altText || "Project image"}
-                      width={300}
-                      height={200}
-                      className="h-40 w-full rounded-lg object-cover"
-                    />
-                  ))}
+                  {project.images.map((image, index) => {
+                    const viewerIndex = project.thumbnailUrl
+                      ? index + 1
+                      : index;
+                    return (
+                      <div
+                        key={image.id}
+                        className="relative h-40 w-full cursor-pointer overflow-hidden rounded-lg group"
+                        onClick={() => handleImageClick(viewerIndex)}
+                      >
+                        <Image
+                          src={image.imageUrl}
+                          alt={image.altText || "Project image"}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -334,6 +376,16 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
           )}
         </div>
       </div>
+
+      {/* Image Viewer */}
+      {allImages.length > 0 && (
+        <ImageViewer
+          images={allImages}
+          initialIndex={initialIndex}
+          isOpen={viewerOpen}
+          onClose={() => setViewerOpen(false)}
+        />
+      )}
     </div>
   );
 }

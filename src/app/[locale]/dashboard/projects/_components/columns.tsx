@@ -6,12 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { DataTableActions } from "./data-table-actions";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import Image from "next/image";
 
 export const useColumns = (): ColumnDef<IProject>[] => {
@@ -30,33 +25,17 @@ export const useColumns = (): ColumnDef<IProject>[] => {
           (t) => t.locale === locale
         );
         const fallbackTranslation = row.original.translations?.[0];
-        const title = translation?.title || fallbackTranslation?.title || "Project Image";
+        const title =
+          translation?.title || fallbackTranslation?.title || "Project Image";
 
         return thumbnailUrl ? (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="cursor-pointer">
-                  <Image
-                    src={thumbnailUrl}
-                    alt={title}
-                    width={60}
-                    height={40}
-                    className="rounded object-cover"
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <Image
-                  src={thumbnailUrl}
-                  alt={title}
-                  width={300}
-                  height={200}
-                  className="rounded object-cover"
-                />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Image
+            src={thumbnailUrl}
+            alt={title}
+            width={60}
+            height={40}
+            className="rounded object-cover size-10"
+          />
         ) : (
           <div className="flex h-10 w-15 items-center justify-center rounded bg-muted text-xs">
             No Image
@@ -73,7 +52,8 @@ export const useColumns = (): ColumnDef<IProject>[] => {
         );
         // Fallback to other language if current locale not found
         const fallbackTranslation = row.original.translations?.[0];
-        const title = translation?.title || fallbackTranslation?.title || row.original.slug;
+        const title =
+          translation?.title || fallbackTranslation?.title || row.original.slug;
         return <span className="font-medium">{title}</span>;
       },
     },
@@ -103,7 +83,10 @@ export const useColumns = (): ColumnDef<IProject>[] => {
       header: t("status"),
       cell: ({ row }) => {
         const status = row.original.status;
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+        const variants: Record<
+          string,
+          "default" | "secondary" | "destructive" | "outline"
+        > = {
           draft: "secondary",
           in_progress: "default",
           published: "default",
@@ -148,4 +131,3 @@ export const useColumns = (): ColumnDef<IProject>[] => {
     },
   ];
 };
-
