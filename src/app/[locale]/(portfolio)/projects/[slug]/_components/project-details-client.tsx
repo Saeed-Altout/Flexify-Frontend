@@ -5,9 +5,13 @@ import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useProjectBySlugQuery, useToggleInteractionMutation } from "@/modules/projects/projects-hook";
+import { useAuthStore } from "@/stores/use-auth-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ProjectGallery } from "@/components/projects/project-gallery";
+import { ProjectComments } from "@/components/projects/project-comments";
+import { toast } from "sonner";
 import {
   IconCalendar,
   IconEye,
@@ -32,6 +36,7 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
 
   const { data, isLoading } = useProjectBySlugQuery(resolvedParams.slug);
   const toggleInteraction = useToggleInteractionMutation();
+  const user = useAuthStore((state) => state.user);
 
   const project = data?.data?.data?.project;
   const userInteraction = data?.data?.data?.userInteraction;
@@ -60,6 +65,10 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
   }
 
   const handleLike = () => {
+    if (!user) {
+      toast.error(t("loginRequired"));
+      return;
+    }
     toggleInteraction.mutate({
       projectId: project.id,
       interactionType: "like",
@@ -252,26 +261,24 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
             >
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-2xl font-bold mb-4">{t("gallery")}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {project.images.map((image) => (
-                      <div
-                        key={image.id}
-                        className="relative aspect-video rounded-lg overflow-hidden"
-                      >
-                        <Image
-                          src={image.imageUrl}
-                          alt={image.altText || translation.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <ProjectGallery
+                    images={project.images}
+                    title={t("gallery")}
+                    maxVisible={3}
+                  />
                 </CardContent>
               </Card>
             </motion.div>
           )}
+
+          {/* Comments Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <ProjectComments projectId={project.id} />
+          </motion.div>
         </div>
 
         {/* Sidebar */}

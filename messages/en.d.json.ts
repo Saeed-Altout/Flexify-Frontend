@@ -746,7 +746,17 @@ declare const messages: {
             "startDate": "Start Date",
             "endDate": "End Date",
             "views": "Views",
-            "likes": "Likes"
+            "likes": "Likes",
+            "loginRequired": "Please login to like this project",
+            "comments": {
+                "title": "Comments",
+                "placeholder": "Write a comment...",
+                "submit": "Post Comment",
+                "submitting": "Posting...",
+                "loginRequired": "Please login to comment",
+                "login": "Login",
+                "noComments": "No comments yet. Be the first to comment!"
+            }
         },
         "contact": {
             "title": "Get In Touch",
