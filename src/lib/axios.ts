@@ -7,7 +7,7 @@ import { useAuthStore } from "@/stores/use-auth-store";
 
 // Get API base URL from environment or default to localhost
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3000/api";
 
 // Create axios instance
 export const apiClient: AxiosInstance = axios.create({
