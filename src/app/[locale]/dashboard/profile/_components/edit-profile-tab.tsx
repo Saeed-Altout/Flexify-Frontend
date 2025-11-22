@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { useUpdateProfileMutation } from "@/modules/users/users-hook";
-import type { IUser } from "@/modules/auth/auth-type";
+import type { IUser } from "@/modules/users/users-type";
 
 import {
   Form,

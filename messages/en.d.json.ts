@@ -2,6 +2,15 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
+    "sidebar":{
+        "dashboard":"Dashboard",
+        "users":"Users",
+        "projects":"Projects",
+        "allProjects":"All Projects",
+        "createProject":"Create Project",
+        "quickCreate":"Quick Create",
+        "inbox":"Inbox"
+    },
     "common":{
         "backToHome":"Back to home",
         "backToPrevious":"Back to previous",
@@ -321,6 +330,278 @@ declare const messages: {
                     "title":"User Details - {id}",
                     "description":"View detailed information about the user"
                 }
+            }
+        },
+        "projects":{
+            "title":"Projects",
+            "description":"Manage your portfolio projects",
+            "createButton":"Create Project",
+            "metadata":{
+                "title":"Projects - Portfolio Management",
+                "description":"Manage and organize your portfolio projects. View, create, edit, and delete projects with ease.",
+                "keywords":"projects, portfolio, management, create project, edit project, project management"
+            },
+            "create":{
+                "metadata":{
+                    "title":"Create New Project - Portfolio",
+                    "description":"Create a new project for your portfolio. Add details, images, technologies, and links.",
+                    "keywords":"create project, new project, portfolio, add project, project creation"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"Edit Project - Portfolio",
+                    "description":"Edit project details, translations, images, technologies, and links.",
+                    "keywords":"edit project, update project, modify project, project editing"
+                },
+                "loading":{
+                    "title":"Loading Project",
+                    "description":"Please wait while we load the project details..."
+                },
+                "error":{
+                    "title":"Project Not Found",
+                    "description":"The project you're looking for doesn't exist or has been deleted."
+                }
+            },
+            "images":{
+                "metadata":{
+                    "title":"Manage Project Images - Portfolio",
+                    "description":"Upload, reorder, and manage images for your project gallery.",
+                    "keywords":"project images, image gallery, upload images, manage images, project photos"
+                },
+                "loading":{
+                    "title":"Loading Project Images",
+                    "description":"Please wait while we load the project images..."
+                },
+                "error":{
+                    "title":"Project Not Found",
+                    "description":"The project you're looking for doesn't exist or has been deleted."
+                }
+            },
+            "columns":{
+                "thumbnail":"Thumbnail",
+                "title":"Title",
+                "slug":"Slug",
+                "type":"Type",
+                "status":"Status",
+                "featured":"Featured",
+                "stats":"Stats",
+                "createdAt":"Created At"
+            },
+            "status":{
+                "draft":"Draft",
+                "in_progress":"In Progress",
+                "published":"Published",
+                "archived":"Archived"
+            },
+            "type":{
+                "personal":"Personal",
+                "client":"Client",
+                "open_source":"Open Source"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search projects...",
+                "statusFilter":"Status",
+                "typeFilter":"Type",
+                "allStatuses":"All Statuses",
+                "allTypes":"All Types",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "deleteModal":{
+                "title":"Delete Project",
+                "description":"Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            },
+            "form":{
+                "tabs":{
+                    "basic":"Basic Info",
+                    "translations":"Translations",
+                    "relations":"Relations",
+                    "links":"Links",
+                    "settings":"Settings"
+                },
+                "basicInfo":{
+                    "title":"Basic Information",
+                    "description":"Enter the basic details of your project"
+                },
+                "slug":{
+                    "label":"Slug",
+                    "placeholder":"my-awesome-project",
+                    "description":"URL-friendly identifier (lowercase, hyphens only)"
+                },
+                "thumbnail":{
+                    "label":"Thumbnail Image",
+                    "description":"Upload a thumbnail image (max 5MB)",
+                    "uploadTitle":"Upload Thumbnail",
+                    "uploadDescription":"Click or drag image to upload (max 5MB)"
+                },
+                "images":{
+                    "title":"Project Images",
+                    "existing":"Existing Images",
+                    "addNew":"Add New Images",
+                    "uploadTitle":"Upload Images",
+                    "uploadDescription":"Click or drag images to upload (max 10MB each)",
+                    "selected":"Selected Images",
+                    "uploading":"Uploading...",
+                    "uploadAll":"Upload All",
+                    "dragToReorder":"Drag images to reorder them",
+                    "editAltText":"Edit Image Alt Text",
+                    "altTextDescription":"Add descriptive text for accessibility and SEO",
+                    "altTextLabel":"Alt Text",
+                    "altTextPlaceholder":"Describe this image...",
+                    "cancel":"Cancel",
+                    "save":"Save",
+                    "uploadHint":"Click or drag images to upload (max 10MB each)"
+                },
+                "startDate":{
+                    "label":"Start Date"
+                },
+                "endDate":{
+                    "label":"End Date"
+                },
+                "translations":{
+                    "english":"English Translation",
+                    "arabic":"Arabic Translation"
+                },
+                "title":{
+                    "label":"Title",
+                    "placeholder":"Enter project title"
+                },
+                "shortDescription":{
+                    "label":"Short Description",
+                    "placeholder":"Brief description (max 500 characters)"
+                },
+                "description":{
+                    "label":"Description",
+                    "placeholder":"Detailed description"
+                },
+                "content":{
+                    "label":"Content",
+                    "placeholder":"Full project content (supports markdown)"
+                },
+                "technologies":{
+                    "title":"Technologies",
+                    "description":"Select technologies used in this project"
+                },
+                "categories":{
+                    "title":"Categories",
+                    "description":"Select project categories"
+                },
+                "links":{
+                    "title":"Project Links",
+                    "description":"Add links to your project (GitHub, Demo, Documentation, etc.)",
+                    "existingLinks":"Existing Links",
+                    "addNewLink":"Add New Link",
+                    "addNewLinkDescription":"Add external links related to your project",
+                    "linkType":"Link Type",
+                    "selectLinkType":"Select link type",
+                    "url":"URL",
+                    "urlPlaceholder":"https://example.com",
+                    "label":"Label",
+                    "labelPlaceholder":"e.g., Live Demo, Source Code",
+                    "optional":"Optional",
+                    "addLink":"Add Link"
+                },
+                "settings":{
+                    "title":"Project Settings",
+                    "description":"Configure project visibility and metadata"
+                },
+                "projectType":{
+                    "label":"Project Type",
+                    "placeholder":"Select type",
+                    "personal":"Personal Project",
+                    "client":"Client Project",
+                    "openSource":"Open Source"
+                },
+                "status":{
+                    "label":"Status",
+                    "placeholder":"Select status",
+                    "draft":"Draft",
+                    "inProgress":"In Progress",
+                    "published":"Published",
+                    "archived":"Archived"
+                },
+                "orderIndex":{
+                    "label":"Order Index",
+                    "description":"Lower numbers appear first"
+                },
+                "isFeatured":{
+                    "label":"Featured Project",
+                    "description":"Display this project prominently"
+                },
+                "cancel":"Cancel",
+                "create":"Create Project",
+                "update":"Update Project"
+            },
+            "detail":{
+                "metadata":{
+                    "title":"Project Details - Portfolio",
+                    "description":"View detailed information about the project including images, technologies, and links.",
+                    "keywords":"project details, project view, portfolio project, project information"
+                },
+                "loading":{
+                    "title":"Loading Project Details",
+                    "description":"Please wait while we load the project information..."
+                },
+                "error":{
+                    "title":"Project Not Found",
+                    "description":"The project you're looking for doesn't exist or has been deleted."
+                },
+                "manageImages":"Manage Images",
+                "edit":"Edit Project",
+                "createdAt":"Created",
+                "views":"Views",
+                "likes":"Likes",
+                "shares":"Shares",
+                "comments":"Comments",
+                "englishContent":"English Content",
+                "arabicContent":"Arabic Content",
+                "shortDescription":"Short Description",
+                "description":"Description",
+                "content":"Content",
+                "gallery":"Image Gallery",
+                "projectInfo":"Project Information",
+                "slug":"Slug",
+                "status":"Status",
+                "type":"Type",
+                "featured":"Featured",
+                "startDate":"Start Date",
+                "endDate":"End Date",
+                "technologies":"Technologies",
+                "categories":"Categories",
+                "links":"Project Links"
+            },
+            "message":{
+                "createSuccess":"Project created successfully",
+                "createError":"Failed to create project",
+                "updateSuccess":"Project updated successfully",
+                "updateError":"Failed to update project",
+                "deleteSuccess":"Project deleted successfully",
+                "deleteError":"Failed to delete project",
+                "thumbnailUploadSuccess":"Thumbnail uploaded successfully",
+                "thumbnailUploadError":"Failed to upload thumbnail",
+                "imageUploadSuccess":"Image uploaded successfully",
+                "imageUploadError":"Failed to upload image",
+                "imageDeleteSuccess":"Image deleted successfully",
+                "imageDeleteError":"Failed to delete image",
+                "likeAdded":"Project liked",
+                "likeRemoved":"Like removed",
+                "shareAdded":"Project shared",
+                "shareRemoved":"Share removed",
+                "interactionError":"Failed to update interaction",
+                "commentCreateSuccess":"Comment added successfully",
+                "commentCreateError":"Failed to add comment",
+                "commentDeleteSuccess":"Comment deleted successfully",
+                "commentDeleteError":"Failed to delete comment"
             }
         }
     }

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { MailIcon, PhoneIcon, ShieldIcon, UserIcon } from "lucide-react";
 
-import { IUser } from "@/modules/auth/auth-type";
+import { IUser } from "@/modules/users/users-type";
 
 import {
   Card,

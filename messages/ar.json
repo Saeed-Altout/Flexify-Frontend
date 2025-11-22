@@ -1,4 +1,13 @@
 {
+    "sidebar":{
+        "dashboard":"لوحة التحكم",
+        "users":"المستخدمين",
+        "projects":"المشاريع",
+        "allProjects":"جميع المشاريع",
+        "createProject":"إنشاء مشروع",
+        "quickCreate":"إنشاء سريع",
+        "inbox":"صندوق الوارد"
+    },
     "common":{
         "backToHome":"الرئيسية",
         "backToPrevious":"السابق",
@@ -318,6 +327,278 @@
                     "title":"تفاصيل المستخدم - {id}",
                     "description":"عرض معلومات مفصلة عن المستخدم"
                 }
+            }
+        },
+        "projects":{
+            "title":"المشاريع",
+            "description":"إدارة مشاريع معرض الأعمال",
+            "createButton":"إنشاء مشروع",
+            "metadata":{
+                "title":"المشاريع - إدارة المحفظة",
+                "description":"إدارة وتنظيم مشاريع محفظتك. عرض وإنشاء وتعديل وحذف المشاريع بسهولة.",
+                "keywords":"مشاريع, محفظة, إدارة, إنشاء مشروع, تعديل مشروع, إدارة المشاريع"
+            },
+            "create":{
+                "metadata":{
+                    "title":"إنشاء مشروع جديد - المحفظة",
+                    "description":"إنشاء مشروع جديد لمحفظتك. أضف التفاصيل والصور والتقنيات والروابط.",
+                    "keywords":"إنشاء مشروع, مشروع جديد, محفظة, إضافة مشروع, إنشاء مشروع"
+                }
+            },
+            "edit":{
+                "metadata":{
+                    "title":"تعديل المشروع - المحفظة",
+                    "description":"تعديل تفاصيل المشروع والترجمات والصور والتقنيات والروابط.",
+                    "keywords":"تعديل المشروع, تحديث المشروع, تعديل المشروع, تحرير المشروع"
+                },
+                "loading":{
+                    "title":"جاري تحميل المشروع",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل تفاصيل المشروع..."
+                },
+                "error":{
+                    "title":"المشروع غير موجود",
+                    "description":"المشروع الذي تبحث عنه غير موجود أو تم حذفه."
+                }
+            },
+            "images":{
+                "metadata":{
+                    "title":"إدارة صور المشروع - المحفظة",
+                    "description":"رفع وإعادة ترتيب وإدارة الصور لمعرض مشروعك.",
+                    "keywords":"صور المشروع, معرض الصور, رفع الصور, إدارة الصور, صور المشروع"
+                },
+                "loading":{
+                    "title":"جاري تحميل صور المشروع",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل صور المشروع..."
+                },
+                "error":{
+                    "title":"المشروع غير موجود",
+                    "description":"المشروع الذي تبحث عنه غير موجود أو تم حذفه."
+                }
+            },
+            "columns":{
+                "thumbnail":"الصورة المصغرة",
+                "title":"العنوان",
+                "slug":"الرابط",
+                "type":"النوع",
+                "status":"الحالة",
+                "featured":"مميز",
+                "stats":"الإحصائيات",
+                "createdAt":"تاريخ الإنشاء"
+            },
+            "status":{
+                "draft":"مسودة",
+                "in_progress":"قيد التنفيذ",
+                "published":"منشور",
+                "archived":"مؤرشف"
+            },
+            "type":{
+                "personal":"شخصي",
+                "client":"عميل",
+                "open_source":"مفتوح المصدر"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في المشاريع...",
+                "statusFilter":"الحالة",
+                "typeFilter":"النوع",
+                "allStatuses":"جميع الحالات",
+                "allTypes":"جميع الأنواع",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "deleteModal":{
+                "title":"حذف المشروع",
+                "description":"هل أنت متأكد من حذف \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            },
+            "form":{
+                "tabs":{
+                    "basic":"المعلومات الأساسية",
+                    "translations":"الترجمات",
+                    "relations":"العلاقات",
+                    "links":"الروابط",
+                    "settings":"الإعدادات"
+                },
+                "basicInfo":{
+                    "title":"المعلومات الأساسية",
+                    "description":"أدخل التفاصيل الأساسية للمشروع"
+                },
+                "slug":{
+                    "label":"الرابط",
+                    "placeholder":"my-awesome-project",
+                    "description":"معرف صديق للرابط (أحرف صغيرة وشرطات فقط)"
+                },
+                "thumbnail":{
+                    "label":"الصورة المصغرة",
+                    "description":"رفع صورة مصغرة (5 ميجابايت كحد أقصى)",
+                    "uploadTitle":"رفع الصورة المصغرة",
+                    "uploadDescription":"انقر أو اسحب الصورة للرفع (5 ميجابايت كحد أقصى)"
+                },
+                "images":{
+                    "title":"صور المشروع",
+                    "existing":"الصور الموجودة",
+                    "addNew":"إضافة صور جديدة",
+                    "uploadTitle":"رفع الصور",
+                    "uploadDescription":"انقر أو اسحب الصور للرفع (10 ميجابايت لكل صورة)",
+                    "selected":"الصور المحددة",
+                    "uploading":"جاري الرفع...",
+                    "uploadAll":"رفع الكل",
+                    "dragToReorder":"اسحب الصور لإعادة ترتيبها",
+                    "editAltText":"تعديل النص البديل للصورة",
+                    "altTextDescription":"أضف نصاً وصفياً لإمكانية الوصول وتحسين محركات البحث",
+                    "altTextLabel":"النص البديل",
+                    "altTextPlaceholder":"صف هذه الصورة...",
+                    "cancel":"إلغاء",
+                    "save":"حفظ",
+                    "uploadHint":"انقر أو اسحب الصور للرفع (10 ميجابايت لكل صورة)"
+                },
+                "startDate":{
+                    "label":"تاريخ البدء"
+                },
+                "endDate":{
+                    "label":"تاريخ الانتهاء"
+                },
+                "translations":{
+                    "english":"الترجمة الإنجليزية",
+                    "arabic":"الترجمة العربية"
+                },
+                "title":{
+                    "label":"العنوان",
+                    "placeholder":"أدخل عنوان المشروع"
+                },
+                "shortDescription":{
+                    "label":"وصف مختصر",
+                    "placeholder":"وصف موجز (500 حرف كحد أقصى)"
+                },
+                "description":{
+                    "label":"الوصف",
+                    "placeholder":"وصف تفصيلي"
+                },
+                "content":{
+                    "label":"المحتوى",
+                    "placeholder":"محتوى المشروع الكامل (يدعم markdown)"
+                },
+                "technologies":{
+                    "title":"التقنيات",
+                    "description":"اختر التقنيات المستخدمة في هذا المشروع"
+                },
+                "categories":{
+                    "title":"الفئات",
+                    "description":"اختر فئات المشروع"
+                },
+                "links":{
+                    "title":"روابط المشروع",
+                    "description":"أضف روابط لمشروعك (GitHub، Demo، Documentation، إلخ)",
+                    "existingLinks":"الروابط الموجودة",
+                    "addNewLink":"إضافة رابط جديد",
+                    "addNewLinkDescription":"أضف روابط خارجية متعلقة بمشروعك",
+                    "linkType":"نوع الرابط",
+                    "selectLinkType":"اختر نوع الرابط",
+                    "url":"الرابط",
+                    "urlPlaceholder":"https://example.com",
+                    "label":"التسمية",
+                    "labelPlaceholder":"مثال: العرض المباشر، الكود المصدري",
+                    "optional":"اختياري",
+                    "addLink":"إضافة رابط"
+                },
+                "settings":{
+                    "title":"إعدادات المشروع",
+                    "description":"تكوين ظهور المشروع والبيانات الوصفية"
+                },
+                "projectType":{
+                    "label":"نوع المشروع",
+                    "placeholder":"اختر النوع",
+                    "personal":"مشروع شخصي",
+                    "client":"مشروع عميل",
+                    "openSource":"مفتوح المصدر"
+                },
+                "status":{
+                    "label":"الحالة",
+                    "placeholder":"اختر الحالة",
+                    "draft":"مسودة",
+                    "inProgress":"قيد التنفيذ",
+                    "published":"منشور",
+                    "archived":"مؤرشف"
+                },
+                "orderIndex":{
+                    "label":"ترتيب العرض",
+                    "description":"الأرقام الأقل تظهر أولاً"
+                },
+                "isFeatured":{
+                    "label":"مشروع مميز",
+                    "description":"عرض هذا المشروع بشكل بارز"
+                },
+                "cancel":"إلغاء",
+                "create":"إنشاء مشروع",
+                "update":"تحديث المشروع"
+            },
+            "detail":{
+                "metadata":{
+                    "title":"تفاصيل المشروع - المحفظة",
+                    "description":"عرض معلومات تفصيلية عن المشروع بما في ذلك الصور والتقنيات والروابط.",
+                    "keywords":"تفاصيل المشروع, عرض المشروع, مشروع المحفظة, معلومات المشروع"
+                },
+                "loading":{
+                    "title":"جاري تحميل تفاصيل المشروع",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل معلومات المشروع..."
+                },
+                "error":{
+                    "title":"المشروع غير موجود",
+                    "description":"المشروع الذي تبحث عنه غير موجود أو تم حذفه."
+                },
+                "manageImages":"إدارة الصور",
+                "edit":"تعديل المشروع",
+                "createdAt":"تاريخ الإنشاء",
+                "views":"المشاهدات",
+                "likes":"الإعجابات",
+                "shares":"المشاركات",
+                "comments":"التعليقات",
+                "englishContent":"المحتوى الإنجليزي",
+                "arabicContent":"المحتوى العربي",
+                "shortDescription":"وصف مختصر",
+                "description":"الوصف",
+                "content":"المحتوى",
+                "gallery":"معرض الصور",
+                "projectInfo":"معلومات المشروع",
+                "slug":"الرابط",
+                "status":"الحالة",
+                "type":"النوع",
+                "featured":"مميز",
+                "startDate":"تاريخ البدء",
+                "endDate":"تاريخ الانتهاء",
+                "technologies":"التقنيات",
+                "categories":"الفئات",
+                "links":"روابط المشروع"
+            },
+            "message":{
+                "createSuccess":"تم إنشاء المشروع بنجاح",
+                "createError":"فشل إنشاء المشروع",
+                "updateSuccess":"تم تحديث المشروع بنجاح",
+                "updateError":"فشل تحديث المشروع",
+                "deleteSuccess":"تم حذف المشروع بنجاح",
+                "deleteError":"فشل حذف المشروع",
+                "thumbnailUploadSuccess":"تم رفع الصورة المصغرة بنجاح",
+                "thumbnailUploadError":"فشل رفع الصورة المصغرة",
+                "imageUploadSuccess":"تم رفع الصورة بنجاح",
+                "imageUploadError":"فشل رفع الصورة",
+                "imageDeleteSuccess":"تم حذف الصورة بنجاح",
+                "imageDeleteError":"فشل حذف الصورة",
+                "likeAdded":"تم الإعجاب بالمشروع",
+                "likeRemoved":"تم إلغاء الإعجاب",
+                "shareAdded":"تمت مشاركة المشروع",
+                "shareRemoved":"تم إلغاء المشاركة",
+                "interactionError":"فشل تحديث التفاعل",
+                "commentCreateSuccess":"تم إضافة التعليق بنجاح",
+                "commentCreateError":"فشل إضافة التعليق",
+                "commentDeleteSuccess":"تم حذف التعليق بنجاح",
+                "commentDeleteError":"فشل حذف التعليق"
             }
         }
     }
