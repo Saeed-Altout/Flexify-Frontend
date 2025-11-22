@@ -745,6 +745,29 @@ declare const messages: {
                 "submit": "Send Message",
                 "submitting": "Sending..."
             }
+        },
+        "footer": {
+            "description": "Full Stack Developer building modern web applications with cutting-edge technologies.",
+            "quickLinks": "Quick Links",
+            "links": {
+                "home": "Home",
+                "about": "About",
+                "projects": "Projects",
+                "contact": "Contact"
+            },
+            "resources": {
+                "title": "Resources",
+                "blog": "Blog",
+                "other": "Other"
+            },
+            "contact": {
+                "title": "Contact",
+                "email": "your.email@example.com",
+                "phone": "+1 (555) 123-4567",
+                "location": "Your City, Country"
+            },
+            "copyright": "All rights reserved.",
+            "rights": "Built with Next.js, NestJS & TypeScript"
         }
     }
 };

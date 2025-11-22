@@ -742,6 +742,29 @@
                 "submit": "إرسال الرسالة",
                 "submitting": "جاري الإرسال..."
             }
+        },
+        "footer": {
+            "description": "مطور Full Stack يبني تطبيقات ويب حديثة باستخدام أحدث التقنيات.",
+            "quickLinks": "روابط سريعة",
+            "links": {
+                "home": "الرئيسية",
+                "about": "نبذة عني",
+                "projects": "المشاريع",
+                "contact": "تواصل معي"
+            },
+            "resources": {
+                "title": "الموارد",
+                "blog": "المدونة",
+                "other": "أخرى"
+            },
+            "contact": {
+                "title": "تواصل معي",
+                "email": "your.email@example.com",
+                "phone": "+1 (555) 123-4567",
+                "location": "مدينتك، بلدك"
+            },
+            "copyright": "جميع الحقوق محفوظة.",
+            "rights": "مبني باستخدام Next.js و NestJS و TypeScript"
         }
     }
 }
