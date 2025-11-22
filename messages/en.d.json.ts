@@ -604,6 +604,58 @@ declare const messages: {
                 "commentDeleteError":"Failed to delete comment"
             }
         }
+    },
+    "portfolio": {
+        "home": {
+            "hero": {
+                "badge": "Full Stack Developer",
+                "title": "Full Stack Developer",
+                "description": "Building modern web applications with **Next.js**, **NestJS**, **TypeScript**, **Prisma**, **MySQL**, and **Supabase**. Creating scalable solutions from frontend to backend.",
+                "cta": "Get Started - It's free"
+            },
+            "statistics": {
+                "title": "By The Numbers",
+                "description": "A glimpse into my journey and achievements",
+                "items": {
+                    "years": {
+                        "label": "Years of Experience"
+                    },
+                    "projects": {
+                        "label": "Projects Completed"
+                    },
+                    "technologies": {
+                        "label": "Technologies Mastered"
+                    },
+                    "clients": {
+                        "label": "Happy Clients"
+                    }
+                }
+            },
+            "about": {
+                "title": "About Me",
+                "description1": "I'm a passionate **Full Stack Developer** with a love for creating innovative web solutions. My journey in software development has been driven by curiosity and a commitment to building applications that make a difference.",
+                "description2": "I specialize in modern web technologies, focusing on creating scalable, maintainable, and user-friendly applications. From **frontend interfaces** to **backend APIs**, I bring ideas to life with clean code and best practices.",
+                "cta": "Learn More",
+                "highlights": {
+                    "code": {
+                        "title": "Clean Code",
+                        "description": "Writing maintainable and scalable code following best practices"
+                    },
+                    "rocket": {
+                        "title": "Fast Delivery",
+                        "description": "Efficient development process with quick turnaround times"
+                    },
+                    "heart": {
+                        "title": "Passion Driven",
+                        "description": "Genuine love for technology and continuous learning"
+                    },
+                    "target": {
+                        "title": "Goal Oriented",
+                        "description": "Focused on delivering solutions that meet business objectives"
+                    }
+                }
+            }
+        }
     }
 };
 export default messages;
