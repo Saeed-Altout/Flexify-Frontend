@@ -699,7 +699,51 @@
                 "description": "دعنا نعمل معاً لتحويل أفكارك إلى واقع. تواصل معي ودعنا نناقش كيف يمكنني مساعدتك في تحقيق أهدافك.",
                 "primaryButton": "تواصل معي",
                 "secondaryButton": "عرض المشاريع"
+            },
+            "featuredProjects": {
+                "title": "المشاريع المميزة",
+                "description": "استكشف بعض من أفضل أعمالي والحلول الإبداعية",
+                "viewAll": "عرض جميع المشاريع"
             }
+        },
+        "projects": {
+            "title": "مشاريعي",
+            "description": "مجموعة من أعمالي التي تعرض الإبداع والابتكار والخبرة التقنية",
+            "searchPlaceholder": "البحث في المشاريع...",
+            "filters": "المرشحات",
+            "projectType": "نوع المشروع",
+            "category": "الفئة",
+            "allTypes": "جميع الأنواع",
+            "allCategories": "جميع الفئات",
+            "personal": "شخصي",
+            "client": "عميل",
+            "openSource": "مفتوح المصدر",
+            "clearFilters": "مسح المرشحات",
+            "activeFilters": "المرشحات النشطة",
+            "search": "بحث",
+            "type": "النوع",
+            "showing": "عرض",
+            "of": "من",
+            "projects": "مشاريع",
+            "noProjects": "لم يتم العثور على مشاريع. جرب تعديل المرشحات.",
+            "previous": "السابق",
+            "next": "التالي"
+        },
+        "projectDetails": {
+            "notFound": "المشروع غير موجود",
+            "backToProjects": "العودة إلى المشاريع",
+            "featured": "مميز",
+            "share": "مشاركة",
+            "description": "الوصف",
+            "gallery": "المعرض",
+            "technologies": "التقنيات",
+            "links": "الروابط",
+            "info": "معلومات المشروع",
+            "status": "الحالة",
+            "startDate": "تاريخ البدء",
+            "endDate": "تاريخ الانتهاء",
+            "views": "المشاهدات",
+            "likes": "الإعجابات"
         },
         "contact": {
             "title": "تواصل معي",

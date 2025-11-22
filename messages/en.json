@@ -699,7 +699,51 @@
                 "description": "Let's work together to bring your ideas to life. Get in touch and let's discuss how I can help you achieve your goals.",
                 "primaryButton": "Contact Me",
                 "secondaryButton": "View Projects"
+            },
+            "featuredProjects": {
+                "title": "Featured Projects",
+                "description": "Explore some of my best work and creative solutions",
+                "viewAll": "View All Projects"
             }
+        },
+        "projects": {
+            "title": "My Projects",
+            "description": "A collection of my work showcasing creativity, innovation, and technical expertise",
+            "searchPlaceholder": "Search projects...",
+            "filters": "Filters",
+            "projectType": "Project Type",
+            "category": "Category",
+            "allTypes": "All Types",
+            "allCategories": "All Categories",
+            "personal": "Personal",
+            "client": "Client",
+            "openSource": "Open Source",
+            "clearFilters": "Clear Filters",
+            "activeFilters": "Active Filters",
+            "search": "Search",
+            "type": "Type",
+            "showing": "Showing",
+            "of": "of",
+            "projects": "projects",
+            "noProjects": "No projects found. Try adjusting your filters.",
+            "previous": "Previous",
+            "next": "Next"
+        },
+        "projectDetails": {
+            "notFound": "Project not found",
+            "backToProjects": "Back to Projects",
+            "featured": "Featured",
+            "share": "Share",
+            "description": "Description",
+            "gallery": "Gallery",
+            "technologies": "Technologies",
+            "links": "Links",
+            "info": "Project Information",
+            "status": "Status",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "views": "Views",
+            "likes": "Likes"
         },
         "contact": {
             "title": "Get In Touch",
