@@ -1,4 +1,6 @@
 "use client";
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
@@ -103,25 +105,48 @@ function TestimonialCard({
 }
 
 export function TestimonialsSection() {
+  const t = useTranslations("portfolio.home.testimonials");
+
   return (
-    <div className="relative flex w-full flex-col items-center justify-center gap-1 overflow-hidden py-8">
-      {/* Marquee moving left to right (default) */}
-      <Marquee pauseOnHover repeat={3} className="[--duration:120s]">
-        {testimonials.map((review) => (
-          <TestimonialCard key={review.username} {...review} />
-        ))}
-      </Marquee>
-      {/* Marquee moving right to left (reverse) */}
-      <Marquee pauseOnHover reverse repeat={3} className="[--duration:120s]">
-        {testimonials.map((review) => (
-          <TestimonialCard key={review.username} {...review} />
-        ))}
-      </Marquee>
-      {/* Stylish gradient overlays */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-background/95 to-transparent"></div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-background/95 to-transparent"></div>
-      <div className="pointer-events-none absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-background/90 to-transparent"></div>
-      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-background/90 to-transparent"></div>
-    </div>
+    <section className="py-16 px-4">
+      <div className="container">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+            {t("title")}
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            {t("description")}
+          </p>
+        </motion.div>
+
+        {/* Testimonials Marquee */}
+        <div className="relative flex w-full flex-col items-center justify-center gap-1 overflow-hidden">
+          {/* Marquee moving left to right (default) */}
+          <Marquee pauseOnHover repeat={3} className="[--duration:120s]">
+            {testimonials.map((review) => (
+              <TestimonialCard key={review.username} {...review} />
+            ))}
+          </Marquee>
+          {/* Marquee moving right to left (reverse) */}
+          <Marquee pauseOnHover reverse repeat={3} className="[--duration:120s]">
+            {testimonials.map((review) => (
+              <TestimonialCard key={review.username} {...review} />
+            ))}
+          </Marquee>
+          {/* Stylish gradient overlays */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-background/95 to-transparent"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-background/95 to-transparent"></div>
+          <div className="pointer-events-none absolute top-0 left-0 w-full h-12 bg-gradient-to-b from-background/90 to-transparent"></div>
+          <div className="pointer-events-none absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-background/90 to-transparent"></div>
+        </div>
+      </div>
+    </section>
   );
 }

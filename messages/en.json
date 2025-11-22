@@ -689,6 +689,58 @@
                         ]
                     }
                 }
+            },
+            "testimonials": {
+                "title": "What Clients Say",
+                "description": "Hear from the people I've worked with"
+            },
+            "cta": {
+                "title": "Ready to Start Your Project?",
+                "description": "Let's work together to bring your ideas to life. Get in touch and let's discuss how I can help you achieve your goals.",
+                "primaryButton": "Contact Me",
+                "secondaryButton": "View Projects"
+            }
+        },
+        "contact": {
+            "title": "Get In Touch",
+            "description": "Have a project in mind? I'd love to hear from you. Send me a message and I'll respond as soon as possible.",
+            "info": {
+                "email": {
+                    "label": "Email",
+                    "value": "your.email@example.com"
+                },
+                "phone": {
+                    "label": "Phone",
+                    "value": "+1 (555) 123-4567"
+                },
+                "location": {
+                    "label": "Location",
+                    "value": "Your City, Country"
+                }
+            },
+            "form": {
+                "name": {
+                    "label": "Name",
+                    "placeholder": "Your name",
+                    "validation": "Name must be at least 2 characters"
+                },
+                "email": {
+                    "label": "Email",
+                    "placeholder": "your.email@example.com",
+                    "validation": "Please enter a valid email address"
+                },
+                "subject": {
+                    "label": "Subject",
+                    "placeholder": "What is this about?",
+                    "validation": "Subject must be at least 3 characters"
+                },
+                "message": {
+                    "label": "Message",
+                    "placeholder": "Tell me about your project...",
+                    "validation": "Message must be at least 10 characters"
+                },
+                "submit": "Send Message",
+                "submitting": "Sending..."
             }
         }
     }
