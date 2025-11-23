@@ -7,7 +7,7 @@ import {
   EmptyMedia,
   EmptyDescription,
   EmptyTitle,
-  EmptyActions,
+  EmptyContent,
 } from "@/components/ui/empty";
 
 interface EmptyStateProps {
@@ -59,14 +59,13 @@ export function EmptyState({
           <EmptyDescription>{config.description}</EmptyDescription>
         )}
         {onAction && actionLabel && (
-          <EmptyActions>
+          <EmptyContent>
             <Button onClick={onAction} variant="outline">
               {actionLabel}
             </Button>
-          </EmptyActions>
+          </EmptyContent>
         )}
       </EmptyHeader>
     </Empty>
   );
 }
-

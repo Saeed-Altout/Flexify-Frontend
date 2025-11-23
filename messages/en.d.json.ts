@@ -20,8 +20,11 @@ declare const messages: {
         "services":"Services",
         "allServices":"All Services",
         "createService":"Create Service",
+        "technologies":"Technologies",
+        "categories":"Categories",
         "account":"Account",
-        "create":"Create"
+        "create":"Create",
+        "edit":"Edit"
     },
     "common":{
         "backToHome":"Back to home",
@@ -1016,6 +1019,233 @@ declare const messages: {
                 "metaDescriptionPlaceholder":"SEO meta description",
                 "cancel":"Cancel",
                 "submit":"Submit"
+            }
+        },
+        "technologies":{
+            "title":"Technologies",
+            "description":"Manage technologies used in projects",
+            "createButton":"Create Technology",
+            "metadata":{
+                "title":"Technologies - Management",
+                "description":"Manage technologies and tools",
+                "keywords":"technologies, tools, management"
+            },
+            "columns":{
+                "name":"Name",
+                "slug":"Slug",
+                "icon":"Icon",
+                "description":"Description",
+                "category":"Category",
+                "order":"Order",
+                "createdAt":"Created At"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search technologies...",
+                "categoryFilter":"Category",
+                "allCategories":"All Categories",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open Menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "delete":{
+                "title":"Delete Technology",
+                "description":"Are you sure you want to delete technology \"{name}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"Create Technology",
+                    "description":"Create a new technology"
+                }
+            },
+            "edit":{
+                "title":"Edit Technology",
+                "description":"Edit technology details",
+                "metadata":{
+                    "title":"Edit Technology",
+                    "description":"Edit technology details"
+                },
+                "loading":{
+                    "title":"Loading Technology",
+                    "description":"Please wait while we load the technology details..."
+                },
+                "error":{
+                    "title":"Technology Not Found",
+                    "description":"The technology you're looking for doesn't exist or has been deleted."
+                }
+            },
+            "detail":{
+                "title":"Technology Details",
+                "description":"View technology information",
+                "loading":{
+                    "title":"Loading Technology Details",
+                    "description":"Please wait while we load the technology information..."
+                },
+                "error":{
+                    "title":"Technology Not Found",
+                    "description":"The technology you're looking for doesn't exist or has been deleted."
+                },
+                "technologyInfo":"Technology Information",
+                "technologyInfoDescription":"Basic information about the technology",
+                "slug":"Slug",
+                "name":"Name",
+                "icon":"Icon",
+                "description":"Description",
+                "category":"Category",
+                "orderIndex":"Order Index",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "metadataLabel":"Metadata",
+                "metadataDescription":"Additional information",
+                "edit":"Edit",
+                "metadata":{
+                    "title":"Technology Details - Dashboard",
+                    "description":"View detailed information about the technology"
+                }
+            },
+            "form":{
+                "slugLabel":"Slug",
+                "slugPlaceholder":"technology-slug",
+                "slugDescription":"URL-friendly identifier (lowercase, hyphens only)",
+                "nameLabel":"Name",
+                "namePlaceholder":"Technology name",
+                "iconLabel":"Icon",
+                "descriptionLabel":"Description",
+                "descriptionPlaceholder":"Enter description",
+                "categoryLabel":"Category",
+                "categoryPlaceholder":"Select category",
+                "noCategory":"None",
+                "orderIndexLabel":"Order Index",
+                "orderIndexPlaceholder":"0",
+                "orderIndexDescription":"Lower numbers appear first",
+                "cancel":"Cancel",
+                "create":"Create Technology",
+                "update":"Update Technology"
+            },
+            "message":{
+                "createSuccess":"Technology created successfully",
+                "createError":"Failed to create technology",
+                "updateSuccess":"Technology updated successfully",
+                "updateError":"Failed to update technology",
+                "deleteSuccess":"Technology deleted successfully",
+                "deleteError":"Failed to delete technology"
+            }
+        },
+        "categories":{
+            "title":"Categories",
+            "description":"Manage project categories",
+            "createButton":"Create Category",
+            "metadata":{
+                "title":"Categories - Management",
+                "description":"Manage project categories",
+                "keywords":"categories, management"
+            },
+            "columns":{
+                "name":"Name",
+                "slug":"Slug",
+                "description":"Description",
+                "icon":"Icon",
+                "order":"Order",
+                "createdAt":"Created At"
+            },
+            "toolbar":{
+                "searchPlaceholder":"Search categories...",
+                "reset":"Reset"
+            },
+            "actions":{
+                "openMenu":"Open Menu",
+                "actions":"Actions",
+                "view":"View",
+                "edit":"Edit",
+                "delete":"Delete"
+            },
+            "delete":{
+                "title":"Delete Category",
+                "description":"Are you sure you want to delete category \"{name}\"? This action cannot be undone.",
+                "cancel":"Cancel",
+                "delete":"Delete",
+                "deleting":"Deleting..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"Create Category",
+                    "description":"Create a new category"
+                }
+            },
+            "edit":{
+                "title":"Edit Category",
+                "description":"Edit category details",
+                "metadata":{
+                    "title":"Edit Category",
+                    "description":"Edit category details"
+                },
+                "loading":{
+                    "title":"Loading Category",
+                    "description":"Please wait while we load the category details..."
+                },
+                "error":{
+                    "title":"Category Not Found",
+                    "description":"The category you're looking for doesn't exist or has been deleted."
+                }
+            },
+            "detail":{
+                "title":"Category Details",
+                "description":"View category information",
+                "loading":{
+                    "title":"Loading Category Details",
+                    "description":"Please wait while we load the category information..."
+                },
+                "error":{
+                    "title":"Category Not Found",
+                    "description":"The category you're looking for doesn't exist or has been deleted."
+                },
+                "categoryInfo":"Category Information",
+                "categoryInfoDescription":"Basic information about the category",
+                "slug":"Slug",
+                "name":"Name",
+                "description":"Description",
+                "icon":"Icon",
+                "orderIndex":"Order Index",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "metadataLabel":"Metadata",
+                "metadataDescription":"Additional information",
+                "edit":"Edit",
+                "metadata":{
+                    "title":"Category Details - Dashboard",
+                    "description":"View detailed information about the category"
+                }
+            },
+            "form":{
+                "slugLabel":"Slug",
+                "slugPlaceholder":"category-slug",
+                "slugDescription":"URL-friendly identifier (lowercase, hyphens only)",
+                "nameLabel":"Name",
+                "namePlaceholder":"Category name",
+                "descriptionLabel":"Description",
+                "descriptionPlaceholder":"Category description",
+                "iconLabel":"Icon",
+                "orderIndexLabel":"Order Index",
+                "orderIndexPlaceholder":"0",
+                "orderIndexDescription":"Lower numbers appear first",
+                "cancel":"Cancel",
+                "create":"Create Category",
+                "update":"Update Category"
+            },
+            "message":{
+                "createSuccess":"Category created successfully",
+                "createError":"Failed to create category",
+                "updateSuccess":"Category updated successfully",
+                "updateError":"Failed to update category",
+                "deleteSuccess":"Category deleted successfully",
+                "deleteError":"Failed to delete category"
             }
         }
     },

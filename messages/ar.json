@@ -17,8 +17,11 @@
         "services":"الخدمات",
         "allServices":"جميع الخدمات",
         "createService":"إنشاء خدمة",
+        "technologies":"التقنيات",
+        "categories":"الفئات",
         "account":"الحساب",
-        "create":"إنشاء"
+        "create":"إنشاء",
+        "edit":"تعديل"
     },
     "common":{
         "backToHome":"الرئيسية",
@@ -1013,6 +1016,233 @@
                 "metaDescriptionPlaceholder":"وصف SEO",
                 "cancel":"إلغاء",
                 "submit":"إرسال"
+            }
+        },
+        "technologies":{
+            "title":"التقنيات",
+            "description":"إدارة التقنيات المستخدمة في المشاريع",
+            "createButton":"إنشاء تقنية",
+            "metadata":{
+                "title":"التقنيات - الإدارة",
+                "description":"إدارة التقنيات والأدوات",
+                "keywords":"التقنيات، الأدوات، الإدارة"
+            },
+            "columns":{
+                "name":"الاسم",
+                "slug":"الرابط",
+                "icon":"الأيقونة",
+                "description":"الوصف",
+                "category":"الفئة",
+                "order":"الترتيب",
+                "createdAt":"تاريخ الإنشاء"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في التقنيات...",
+                "categoryFilter":"الفئة",
+                "allCategories":"جميع الفئات",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "delete":{
+                "title":"حذف التقنية",
+                "description":"هل أنت متأكد من حذف التقنية \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"إنشاء تقنية",
+                    "description":"إنشاء تقنية جديدة"
+                }
+            },
+            "edit":{
+                "title":"تعديل التقنية",
+                "description":"تعديل تفاصيل التقنية",
+                "metadata":{
+                    "title":"تعديل التقنية",
+                    "description":"تعديل تفاصيل التقنية"
+                },
+                "loading":{
+                    "title":"جاري تحميل التقنية",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل تفاصيل التقنية..."
+                },
+                "error":{
+                    "title":"التقنية غير موجودة",
+                    "description":"التقنية التي تبحث عنها غير موجودة أو تم حذفها."
+                }
+            },
+            "detail":{
+                "title":"تفاصيل التقنية",
+                "description":"عرض معلومات التقنية",
+                "loading":{
+                    "title":"جاري تحميل تفاصيل التقنية",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل معلومات التقنية..."
+                },
+                "error":{
+                    "title":"التقنية غير موجودة",
+                    "description":"التقنية التي تبحث عنها غير موجودة أو تم حذفها."
+                },
+                "technologyInfo":"معلومات التقنية",
+                "technologyInfoDescription":"معلومات أساسية عن التقنية",
+                "slug":"الرابط",
+                "name":"الاسم",
+                "icon":"الأيقونة",
+                "description":"الوصف",
+                "category":"الفئة",
+                "orderIndex":"ترتيب العرض",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "metadataLabel":"البيانات الوصفية",
+                "metadataDescription":"معلومات إضافية",
+                "edit":"تعديل",
+                "metadata":{
+                    "title":"تفاصيل التقنية - لوحة التحكم",
+                    "description":"عرض معلومات مفصلة عن التقنية"
+                }
+            },
+            "form":{
+                "slugLabel":"الرابط",
+                "slugPlaceholder":"technology-slug",
+                "slugDescription":"معرف صديق للرابط (أحرف صغيرة وشرطات فقط)",
+                "nameLabel":"الاسم",
+                "namePlaceholder":"اسم التقنية",
+                "iconLabel":"الأيقونة",
+                "descriptionLabel":"الوصف",
+                "descriptionPlaceholder":"أدخل الوصف",
+                "categoryLabel":"الفئة",
+                "categoryPlaceholder":"اختر الفئة",
+                "noCategory":"لا شيء",
+                "orderIndexLabel":"ترتيب العرض",
+                "orderIndexPlaceholder":"0",
+                "orderIndexDescription":"الأرقام الأقل تظهر أولاً",
+                "cancel":"إلغاء",
+                "create":"إنشاء تقنية",
+                "update":"تحديث التقنية"
+            },
+            "message":{
+                "createSuccess":"تم إنشاء التقنية بنجاح",
+                "createError":"فشل إنشاء التقنية",
+                "updateSuccess":"تم تحديث التقنية بنجاح",
+                "updateError":"فشل تحديث التقنية",
+                "deleteSuccess":"تم حذف التقنية بنجاح",
+                "deleteError":"فشل حذف التقنية"
+            }
+        },
+        "categories":{
+            "title":"الفئات",
+            "description":"إدارة فئات المشاريع",
+            "createButton":"إنشاء فئة",
+            "metadata":{
+                "title":"الفئات - الإدارة",
+                "description":"إدارة فئات المشاريع",
+                "keywords":"الفئات، الإدارة"
+            },
+            "columns":{
+                "name":"الاسم",
+                "slug":"الرابط",
+                "description":"الوصف",
+                "icon":"الأيقونة",
+                "order":"الترتيب",
+                "createdAt":"تاريخ الإنشاء"
+            },
+            "toolbar":{
+                "searchPlaceholder":"البحث في الفئات...",
+                "reset":"إعادة تعيين"
+            },
+            "actions":{
+                "openMenu":"فتح القائمة",
+                "actions":"الإجراءات",
+                "view":"عرض",
+                "edit":"تعديل",
+                "delete":"حذف"
+            },
+            "delete":{
+                "title":"حذف الفئة",
+                "description":"هل أنت متأكد من حذف الفئة \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+                "cancel":"إلغاء",
+                "delete":"حذف",
+                "deleting":"جاري الحذف..."
+            },
+            "create":{
+                "metadata":{
+                    "title":"إنشاء فئة",
+                    "description":"إنشاء فئة جديدة"
+                }
+            },
+            "edit":{
+                "title":"تعديل الفئة",
+                "description":"تعديل تفاصيل الفئة",
+                "metadata":{
+                    "title":"تعديل الفئة",
+                    "description":"تعديل تفاصيل الفئة"
+                },
+                "loading":{
+                    "title":"جاري تحميل الفئة",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل تفاصيل الفئة..."
+                },
+                "error":{
+                    "title":"الفئة غير موجودة",
+                    "description":"الفئة التي تبحث عنها غير موجودة أو تم حذفها."
+                }
+            },
+            "detail":{
+                "title":"تفاصيل الفئة",
+                "description":"عرض معلومات الفئة",
+                "loading":{
+                    "title":"جاري تحميل تفاصيل الفئة",
+                    "description":"يرجى الانتظار بينما نقوم بتحميل معلومات الفئة..."
+                },
+                "error":{
+                    "title":"الفئة غير موجودة",
+                    "description":"الفئة التي تبحث عنها غير موجودة أو تم حذفها."
+                },
+                "categoryInfo":"معلومات الفئة",
+                "categoryInfoDescription":"معلومات أساسية عن الفئة",
+                "slug":"الرابط",
+                "name":"الاسم",
+                "description":"الوصف",
+                "icon":"الأيقونة",
+                "orderIndex":"ترتيب العرض",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "metadataLabel":"البيانات الوصفية",
+                "metadataDescription":"معلومات إضافية",
+                "edit":"تعديل",
+                "metadata":{
+                    "title":"تفاصيل الفئة - لوحة التحكم",
+                    "description":"عرض معلومات مفصلة عن الفئة"
+                }
+            },
+            "form":{
+                "slugLabel":"الرابط",
+                "slugPlaceholder":"category-slug",
+                "slugDescription":"معرف صديق للرابط (أحرف صغيرة وشرطات فقط)",
+                "nameLabel":"الاسم",
+                "namePlaceholder":"اسم الفئة",
+                "descriptionLabel":"الوصف",
+                "descriptionPlaceholder":"وصف الفئة",
+                "iconLabel":"الأيقونة",
+                "orderIndexLabel":"ترتيب العرض",
+                "orderIndexPlaceholder":"0",
+                "orderIndexDescription":"الأرقام الأقل تظهر أولاً",
+                "cancel":"إلغاء",
+                "create":"إنشاء فئة",
+                "update":"تحديث الفئة"
+            },
+            "message":{
+                "createSuccess":"تم إنشاء الفئة بنجاح",
+                "createError":"فشل إنشاء الفئة",
+                "updateSuccess":"تم تحديث الفئة بنجاح",
+                "updateError":"فشل تحديث الفئة",
+                "deleteSuccess":"تم حذف الفئة بنجاح",
+                "deleteError":"فشل حذف الفئة"
             }
         }
     },

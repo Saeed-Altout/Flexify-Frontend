@@ -157,7 +157,7 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
               </Badge>
               {project.categories?.map((category) => (
                 <Badge key={category.id} variant="secondary">
-                  {locale === "ar" ? category.nameAr : category.nameEn}
+                  {category.name}
                 </Badge>
               ))}
             </div>

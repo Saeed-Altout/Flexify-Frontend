@@ -169,7 +169,7 @@ export function ProjectsPageClient() {
               <SelectItem value="all">{t("allCategories")}</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
-                  {locale === "ar" ? category.nameAr : category.nameEn}
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -224,9 +224,7 @@ export function ProjectsPageClient() {
             {categoryId !== "all" && (
               <Badge variant="secondary" className="gap-1">
                 {t("category")}:{" "}
-                {locale === "ar"
-                  ? categories.find((c) => c.id === categoryId)?.nameAr
-                  : categories.find((c) => c.id === categoryId)?.nameEn}
+                {categories.find((c) => c.id === categoryId)?.name}
                 <button
                   onClick={() => {
                     setCategoryId("all");

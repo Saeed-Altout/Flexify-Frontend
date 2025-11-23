@@ -44,7 +44,6 @@ const serviceFormSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Invalid slug format"),
   icon: z.string().optional(),
   imageUrl: z.string().optional(), // Not used in form, kept for compatibility
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format").optional().or(z.literal("")),
   orderIndex: z.number().int().min(0).optional(),
   isFeatured: z.boolean().optional(),
   isActive: z.boolean().optional(),
@@ -91,7 +90,6 @@ export function ServiceForm({
       slug: service?.slug || "",
       icon: service?.icon || "",
       imageUrl: service?.imageUrl || "", // Keep for form, but we'll upload separately
-      color: service?.color || "",
       orderIndex: service?.orderIndex || 0,
       isFeatured: service?.isFeatured || false,
       isActive: service?.isActive !== undefined ? service.isActive : true,
@@ -149,7 +147,6 @@ export function ServiceForm({
     const baseData = {
       icon: values.icon || undefined,
       // imageUrl is uploaded separately, don't include it here
-      color: values.color || undefined,
       orderIndex: values.orderIndex,
       isFeatured: values.isFeatured,
       isActive: values.isActive,
@@ -280,24 +277,6 @@ export function ServiceForm({
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="color"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("colorLabel")}</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="color"
-                    placeholder={t("colorPlaceholder")}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         <div className="flex gap-6">

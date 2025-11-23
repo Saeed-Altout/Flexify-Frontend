@@ -19,7 +19,6 @@ export type IService = {
   slug: string;
   icon: string | null;
   imageUrl: string | null;
-  color: string | null;
   orderIndex: number;
   isFeatured: boolean;
   isActive: boolean;
@@ -42,7 +41,6 @@ export type ICreateServiceRequest = {
   slug: string;
   icon?: string;
   imageUrl?: string;
-  color?: string;
   orderIndex?: number;
   isFeatured?: boolean;
   isActive?: boolean;

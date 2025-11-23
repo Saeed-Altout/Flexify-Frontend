@@ -70,7 +70,6 @@ export function InquiryTypeForm({
     defaultValues: {
       slug: inquiryType?.slug || "",
       icon: inquiryType?.icon || "",
-      color: inquiryType?.color || "",
       orderIndex: inquiryType?.orderIndex || 0,
       isActive: inquiryType?.isActive !== undefined ? inquiryType.isActive : true,
       nameEn: existingTranslations.find((t) => t.locale === "en")?.name || "",
@@ -102,7 +101,6 @@ export function InquiryTypeForm({
 
     const baseData = {
       icon: values.icon || undefined,
-      color: values.color || undefined,
       orderIndex: values.orderIndex,
       isActive: values.isActive,
       translations,
@@ -185,24 +183,6 @@ export function InquiryTypeForm({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="color"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("colorLabel")}</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="color"
-                    placeholder={t("colorPlaceholder")}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
         </div>
 
         <FormField

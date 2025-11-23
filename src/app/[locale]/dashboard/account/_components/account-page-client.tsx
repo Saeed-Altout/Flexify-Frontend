@@ -3,7 +3,13 @@
 import { useTranslations } from "next-intl";
 import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 import { Heading } from "@/components/ui/heading";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -53,9 +59,9 @@ export function AccountPageClient() {
 
   return (
     <div className="space-y-4 p-4 md:space-y-6 md:p-6">
-      <Heading 
-        title={t("title") || "Account"} 
-        description={t("description") || "View your account information"} 
+      <Heading
+        title={t("title") || "Account"}
+        description={t("description") || "View your account information"}
       />
 
       <Card>
@@ -69,9 +75,15 @@ export function AccountPageClient() {
           {/* Avatar Section */}
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user.avatarUrl || undefined} alt={`${user.firstName} ${user.lastName}`} />
+              <AvatarImage
+                src={user.avatarUrl || undefined}
+                alt={`${user.firstName} ${user.lastName}`}
+              />
               <AvatarFallback className="text-lg">
-                {getInitials(user.firstName, user.lastName)}
+                {getInitials(
+                  user.firstName || undefined,
+                  user.lastName || undefined
+                )}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -90,7 +102,9 @@ export function AccountPageClient() {
               <label className="text-sm font-medium text-muted-foreground">
                 {t("firstNameLabel") || "First Name"}
               </label>
-              <p className="mt-1 text-sm font-medium">{user.firstName || "-"}</p>
+              <p className="mt-1 text-sm font-medium">
+                {user.firstName || "-"}
+              </p>
             </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">
@@ -115,14 +129,18 @@ export function AccountPageClient() {
                 {t("accountStatus") || "Account Status"}
               </label>
               <p className="mt-1 text-sm font-medium">
-                {user.isVerified ? t("verified") || "Verified" : t("unverified") || "Unverified"}
+                {user.isEmailVerified
+                  ? t("verified") || "Verified"
+                  : t("unverified") || "Unverified"}
               </p>
             </div>
             <div>
               <label className="text-sm font-medium text-muted-foreground">
                 Role
               </label>
-              <p className="mt-1 text-sm font-medium capitalize">{user.role || "-"}</p>
+              <p className="mt-1 text-sm font-medium capitalize">
+                {user.role || "-"}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -130,4 +148,3 @@ export function AccountPageClient() {
     </div>
   );
 }
-

@@ -14,7 +14,6 @@ export type IInquiryType = {
   id: string;
   slug: string;
   icon: string | null;
-  color: string | null;
   orderIndex: number;
   isActive: boolean;
   createdAt: string;
@@ -31,7 +30,6 @@ export type ICreateInquiryTypeTranslationRequest = {
 export type ICreateInquiryTypeRequest = {
   slug: string;
   icon?: string;
-  color?: string;
   orderIndex?: number;
   isActive?: boolean;
   translations: ICreateInquiryTypeTranslationRequest[];

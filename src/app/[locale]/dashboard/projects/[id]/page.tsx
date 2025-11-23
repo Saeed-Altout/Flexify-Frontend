@@ -322,7 +322,6 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                     <Badge
                       key={tech.id}
                       variant="secondary"
-                      style={{ backgroundColor: tech.color || undefined }}
                     >
                       {tech.name}
                     </Badge>
@@ -342,7 +341,7 @@ export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
                 <div className="flex flex-wrap gap-2">
                   {project.categories.map((category) => (
                     <Badge key={category.id} variant="outline">
-                      {category.nameEn}
+                      {category.name}
                     </Badge>
                   ))}
                 </div>

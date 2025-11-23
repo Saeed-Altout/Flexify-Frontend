@@ -91,10 +91,9 @@ export type ITechnology = {
 export type ICategory = {
   id: string;
   slug: string;
-  nameEn: string;
-  nameAr: string;
+  name: string;
+  description: string | null;
   icon: string | null;
-  color: string | null;
   orderIndex: number;
   createdAt: string;
   updatedAt: string;

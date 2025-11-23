@@ -122,20 +122,6 @@ export function ServiceDetailClient({ id }: ServiceDetailClientProps) {
           </div>
         </div>
         <div className="space-y-4">
-          {service.color && (
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                {t("color")}
-              </h3>
-              <div className="flex items-center gap-2">
-                <div
-                  className="h-6 w-6 rounded border"
-                  style={{ backgroundColor: service.color }}
-                />
-                <span className="font-mono text-sm">{service.color}</span>
-              </div>
-            </div>
-          )}
           <div>
             <h3 className="text-sm font-medium text-muted-foreground mb-2">
               {t("orderIndex")}

@@ -9,6 +9,8 @@ import {
   IconMail,
   IconStar,
   IconSettings,
+  IconCode,
+  IconTags,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -80,6 +82,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t("services"),
       url: "/dashboard/services",
       icon: IconSettings,
+    },
+    {
+      title: t("technologies"),
+      url: "/dashboard/technologies",
+      icon: IconCode,
+    },
+    {
+      title: t("categories"),
+      url: "/dashboard/categories",
+      icon: IconTags,
     },
   ];
 

@@ -82,20 +82,6 @@ export function InquiryTypeDetailClient({ id }: InquiryTypeDetailClientProps) {
               <p className="mt-1 text-lg">{inquiryType.icon}</p>
             </div>
           )}
-          {inquiryType.color && (
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">
-                {t("color")}
-              </h3>
-              <div className="mt-1 flex items-center gap-2">
-                <div
-                  className="h-6 w-6 rounded border"
-                  style={{ backgroundColor: inquiryType.color }}
-                />
-                <span className="font-mono text-sm">{inquiryType.color}</span>
-              </div>
-            </div>
-          )}
         </div>
         <div className="space-y-4">
           <div>

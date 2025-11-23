@@ -10,9 +10,9 @@ import {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useUploadProjectThumbnailMutation,
-  useTechnologiesQuery,
-  useCategoriesQuery,
 } from "@/modules/projects/projects-hook";
+import { useTechnologiesQuery } from "@/modules/technologies/technologies-hook";
+import { useCategoriesQuery } from "@/modules/categories/categories-hook";
 import { ThumbnailUpload } from "./thumbnail-upload";
 import { ProjectLinksManager } from "./project-links-manager";
 import {
@@ -101,8 +101,11 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
   const { data: technologiesData } = useTechnologiesQuery();
   const { data: categoriesData } = useCategoriesQuery();
 
-  const technologies = technologiesData?.data?.data?.technologies || [];
-  const categories = categoriesData?.data?.data?.categories || [];
+  // Extract technologies and categories from the response
+  // Technologies response: { data: { data: ITechnology[] } }
+  // Categories response: { data: { data: ICategory[] } }
+  const technologies = technologiesData?.data?.data || [];
+  const categories = categoriesData?.data?.data || [];
 
   // Get translations
   const enTranslation = project?.translations?.find((t) => t.locale === "en");
@@ -550,7 +553,7 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                                 field.onChange(newValue);
                               }}
                             >
-                              {category.nameEn}
+                              {category.name}
                             </Badge>
                           );
                         })}
