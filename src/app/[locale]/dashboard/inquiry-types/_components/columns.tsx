@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { DataTableActions } from "./data-table-actions";
+import { getIconComponent } from "@/utils/icon-utils";
 
 export const useColumns = (): ColumnDef<IInquiryType>[] => {
   const t = useTranslations("dashboard.inquiryTypes.columns");
@@ -37,12 +38,14 @@ export const useColumns = (): ColumnDef<IInquiryType>[] => {
     {
       accessorKey: "icon",
       header: t("icon"),
-      cell: ({ row }) =>
-        row.original.icon ? (
-          <span className="text-lg">{row.original.icon}</span>
+      cell: ({ row }) => {
+        const IconComponent = getIconComponent(row.original.icon);
+        return IconComponent ? (
+          <IconComponent className="h-5 w-5" />
         ) : (
           <span className="text-muted-foreground text-xs">-</span>
-        ),
+        );
+      },
     },
     {
       accessorKey: "isActive",

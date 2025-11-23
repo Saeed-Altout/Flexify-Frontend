@@ -12,9 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
+import { MoreHorizontal, Eye, Edit, Trash2, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { DeleteContactModal } from "./delete-contact-modal";
+import { ContactReplyModal } from "../[id]/_components/contact-reply-modal";
 
 interface DataTableActionsProps {
   contact: IContact;
@@ -24,6 +25,7 @@ export function DataTableActions({ contact }: DataTableActionsProps) {
   const router = useRouter();
   const t = useTranslations("dashboard.contacts.actions");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showReplyModal, setShowReplyModal] = useState(false);
 
   return (
     <>
@@ -51,6 +53,13 @@ export function DataTableActions({ contact }: DataTableActionsProps) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
+            onClick={() => setShowReplyModal(true)}
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            {t("reply")}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
             onClick={() => setShowDeleteModal(true)}
             className="text-destructive"
           >
@@ -64,6 +73,11 @@ export function DataTableActions({ contact }: DataTableActionsProps) {
         contact={contact}
         open={showDeleteModal}
         onOpenChange={setShowDeleteModal}
+      />
+      <ContactReplyModal
+        contact={contact}
+        open={showReplyModal}
+        onOpenChange={setShowReplyModal}
       />
     </>
   );

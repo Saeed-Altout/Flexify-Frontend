@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/axios";
+import { IApiResponse } from "@/types/api-type";
 import {
   ICreateTestimonialRequest,
   IUpdateTestimonialRequest,
@@ -6,6 +7,8 @@ import {
   ITestimonialResponse,
   ITestimonialsResponse,
 } from "./testimonials-type";
+
+export type IUploadAvatarResponse = IApiResponse<{ avatarUrl: string }>;
 
 export const getTestimonials = async (
   params?: IQueryTestimonialParams
@@ -53,5 +56,28 @@ export const updateTestimonial = async (
 
 export const deleteTestimonial = async (id: string): Promise<void> => {
   await apiClient.delete(`/testimonials/${id}`);
+};
+
+// ========================================
+// TESTIMONIAL AVATAR UPLOAD
+// ========================================
+
+export const uploadTestimonialAvatar = async (
+  testimonialId: string,
+  file: File
+): Promise<IUploadAvatarResponse> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await apiClient.post<IUploadAvatarResponse>(
+    `/testimonials/${testimonialId}/avatar`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
 };
 

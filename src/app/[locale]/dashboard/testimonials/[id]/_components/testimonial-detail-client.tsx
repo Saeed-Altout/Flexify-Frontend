@@ -65,17 +65,25 @@ export function TestimonialDetailClient({ id }: TestimonialDetailClientProps) {
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-4">
-          {testimonial.avatarUrl && (
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                {t("avatar")}
-              </h3>
-              <Avatar className="h-24 w-24">
-                <AvatarImage src={testimonial.avatarUrl} alt={authorName} />
-                <AvatarFallback>{authorName[0]}</AvatarFallback>
-              </Avatar>
-            </div>
-          )}
+          <div>
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">
+              {t("avatar")}
+            </h3>
+            <Avatar className="h-24 w-24">
+              <AvatarImage src={testimonial.avatarUrl || undefined} alt={authorName} />
+              <AvatarFallback>
+                {(() => {
+                  if (!authorName) return "??";
+                  const words = authorName.trim().split(/\s+/);
+                  if (words.length >= 2) {
+                    return (words[0][0] + words[1][0]).toUpperCase();
+                  } else {
+                    return authorName.slice(0, 2).toUpperCase();
+                  }
+                })()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
           {testimonial.rating && (
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">

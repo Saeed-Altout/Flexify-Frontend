@@ -630,6 +630,8 @@ declare const messages: {
                 }
             },
             "edit":{
+                "title":"Edit Inquiry Type",
+                "description":"Edit inquiry type details",
                 "metadata":{
                     "title":"Edit Inquiry Type",
                     "description":"Edit inquiry type details"
@@ -638,6 +640,10 @@ declare const messages: {
             "detail":{
                 "title":"Inquiry Type Details",
                 "description":"View inquiry type information",
+                "metadata":{
+                    "title":"Inquiry Type Details",
+                    "description":"View inquiry type information"
+                },
                 "slug":"Slug",
                 "status":"Status",
                 "icon":"Icon",
@@ -733,7 +739,8 @@ declare const messages: {
                 "actions":"Actions",
                 "view":"View",
                 "edit":"Edit",
-                "delete":"Delete"
+                "delete":"Delete",
+                "reply":"Reply"
             },
             "delete":{
                 "title":"Delete Contact",
@@ -741,6 +748,41 @@ declare const messages: {
                 "cancel":"Cancel",
                 "delete":"Delete",
                 "deleting":"Deleting..."
+            },
+            "detail":{
+                "title":"Contact Details",
+                "description":"View contact information",
+                "metadata":{
+                    "title":"Contact Details - Dashboard",
+                    "description":"View detailed information about the contact"
+                },
+                "email":"Email",
+                "phone":"Phone",
+                "subject":"Subject",
+                "inquiryType":"Inquiry Type",
+                "statusLabel":"Status",
+                "createdAt":"Created At",
+                "updatedAt":"Updated At",
+                "message":"Message",
+                "edit":"Edit",
+                "status":{
+                    "new":"New",
+                    "read":"Read",
+                    "replied":"Replied",
+                    "archived":"Archived"
+                }
+            },
+            "reply":{
+                "button":"Reply",
+                "title":"Reply to Contact",
+                "description":"Send a reply email to {name} ({email})",
+                "subjectLabel":"Subject",
+                "subjectPlaceholder":"Re: Your Inquiry",
+                "originalMessageLabel":"Original Message",
+                "messageLabel":"Reply Message",
+                "messagePlaceholder":"Type your reply message here...",
+                "cancel":"Cancel",
+                "send":"Send Reply"
             }
         },
         "testimonials":{
@@ -797,6 +839,8 @@ declare const messages: {
                 }
             },
             "edit":{
+                "title":"Edit Testimonial",
+                "description":"Edit testimonial details",
                 "metadata":{
                     "title":"Edit Testimonial",
                     "description":"Edit testimonial details"
@@ -805,6 +849,10 @@ declare const messages: {
             "detail":{
                 "title":"Testimonial Details",
                 "description":"View testimonial information",
+                "metadata":{
+                    "title":"Testimonial Details",
+                    "description":"View testimonial information"
+                },
                 "avatar":"Avatar",
                 "rating":"Rating",
                 "status":"Status",
@@ -819,8 +867,16 @@ declare const messages: {
                 "featured":"Featured"
             },
             "form":{
+                "avatarLabel":"Avatar",
                 "avatarUrlLabel":"Avatar URL",
                 "avatarUrlPlaceholder":"https://example.com/avatar.jpg",
+                "avatarUploadTitle":"Upload Avatar",
+                "avatarUploadDescription":"Click or drag image to upload (max 5MB)",
+                "removeAvatar":"Remove",
+                "chooseFile":"Choose File",
+                "uploading":"Uploading...",
+                "avatarUploadSuccess":"Avatar uploaded successfully",
+                "avatarUploadError":"Failed to upload avatar",
                 "ratingLabel":"Rating",
                 "ratingPlaceholder":"Select rating",
                 "noRating":"No Rating",
@@ -853,6 +909,7 @@ declare const messages: {
                 "image":"Image",
                 "name":"Name",
                 "slug":"Slug",
+                "icon":"Icon",
                 "status":"Status",
                 "featured":"Featured",
                 "order":"Order",
@@ -895,6 +952,8 @@ declare const messages: {
                 }
             },
             "edit":{
+                "title":"Edit Service",
+                "description":"Edit service details",
                 "metadata":{
                     "title":"Edit Service",
                     "description":"Edit service details"
@@ -903,6 +962,10 @@ declare const messages: {
             "detail":{
                 "title":"Service Details",
                 "description":"View service information",
+                "metadata":{
+                    "title":"Service Details - Dashboard",
+                    "description":"View detailed information about the service"
+                },
                 "image":"Image",
                 "icon":"Icon",
                 "slug":"Slug",
@@ -1001,6 +1064,7 @@ declare const messages: {
             "services": {
                 "title": "My Services",
                 "description": "Comprehensive solutions for your digital needs",
+                "noServices": "No services available at the moment.",
                 "seeMore": "See More",
                 "seeLess": "See Less",
                 "items": {

@@ -30,7 +30,17 @@ function TestimonialCard({
         <div className="flex items-center gap-2.5">
           <Avatar className="size-9">
             <AvatarImage src={testimonial.avatarUrl || undefined} alt={authorName} />
-            <AvatarFallback>{authorName[0]}</AvatarFallback>
+            <AvatarFallback>
+              {(() => {
+                if (!authorName) return "??";
+                const words = authorName.trim().split(/\s+/);
+                if (words.length >= 2) {
+                  return (words[0][0] + words[1][0]).toUpperCase();
+                } else {
+                  return authorName.slice(0, 2).toUpperCase();
+                }
+              })()}
+            </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <figcaption className="text-sm font-medium text-foreground">

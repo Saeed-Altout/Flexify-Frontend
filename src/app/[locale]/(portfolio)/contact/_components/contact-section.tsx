@@ -29,6 +29,7 @@ import {
 import { useInquiryTypesQuery } from "@/modules/inquiry-types/inquiry-types-hook";
 import { useCreateContactMutation } from "@/modules/contacts/contacts-hook";
 import { toast } from "sonner";
+import { getIconComponent } from "@/utils/icon-utils";
 
 const contactInfo = [
   {
@@ -261,11 +262,20 @@ export function ContactSection() {
                               >
                                 <FormControl>
                                   <SelectTrigger>
-                                    <SelectValue
-                                      placeholder={t("form.inquiryType.placeholder")}
-                                    >
-                                      {selectedName}
-                                    </SelectValue>
+                                    {selectedType && (() => {
+                                      const SelectedIcon = getIconComponent(selectedType.icon);
+                                      return (
+                                        <>
+                                          {SelectedIcon && (
+                                            <SelectedIcon className="h-4 w-4" />
+                                          )}
+                                          <SelectValue placeholder={t("form.inquiryType.placeholder")} />
+                                        </>
+                                      );
+                                    })()}
+                                    {!selectedType && (
+                                      <SelectValue placeholder={t("form.inquiryType.placeholder")} />
+                                    )}
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
@@ -280,10 +290,16 @@ export function ContactSection() {
                                       typeTranslation?.name ||
                                       typeFallback?.name ||
                                       type.slug;
+                                    const IconComponent = getIconComponent(type.icon);
 
                                     return (
                                       <SelectItem key={type.id} value={type.id}>
-                                        {typeName}
+                                        <div className="flex items-center gap-2">
+                                          {IconComponent && (
+                                            <IconComponent className="h-4 w-4" />
+                                          )}
+                                          <span>{typeName}</span>
+                                        </div>
                                       </SelectItem>
                                     );
                                   })}

@@ -33,7 +33,7 @@ export function InquiryTypeDetailClient({ id }: InquiryTypeDetailClientProps) {
   );
   const fallbackTranslation = inquiryType.translations?.[0];
   const name = translation?.name || fallbackTranslation?.name || inquiryType.slug;
-  const description = translation?.description || fallbackTranslation?.description;
+  const description = translation?.description || fallbackTranslation?.description || undefined;
 
   return (
     <div className="space-y-4 p-4 md:space-y-6 md:p-6">
@@ -46,7 +46,7 @@ export function InquiryTypeDetailClient({ id }: InquiryTypeDetailClientProps) {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <Heading title={name} description={description || undefined} />
+          <Heading title={name} description={description} />
         </div>
         <Button
           onClick={() => router.push(`/dashboard/inquiry-types/${id}/edit`)}

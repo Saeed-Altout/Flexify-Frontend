@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IconPicker } from "@/components/ui/icon-picker";
+import { TranslationInputs } from "@/components/ui/translation-inputs";
 import { Loader2 } from "lucide-react";
 
 interface InquiryTypeFormProps {
@@ -40,11 +42,10 @@ const inquiryTypeFormSchema = z.object({
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format").optional().or(z.literal("")),
   orderIndex: z.number().int().min(0).optional(),
   isActive: z.boolean().optional(),
-  // English Translation
-  nameEn: z.string().min(1, "English name is required"),
+  // Translations (optional, added dynamically)
+  nameEn: z.string().optional(),
   descriptionEn: z.string().optional(),
-  // Arabic Translation
-  nameAr: z.string().min(1, "Arabic name is required"),
+  nameAr: z.string().optional(),
   descriptionAr: z.string().optional(),
 });
 
@@ -60,13 +61,9 @@ export function InquiryTypeForm({
   const createMutation = useCreateInquiryTypeMutation();
   const updateMutation = useUpdateInquiryTypeMutation();
 
-  // Get translations
-  const enTranslation = inquiryType?.translations?.find(
-    (t) => t.locale === "en"
-  );
-  const arTranslation = inquiryType?.translations?.find(
-    (t) => t.locale === "ar"
-  );
+  // Get translations for initial state
+  const existingTranslations = inquiryType?.translations || [];
+  const initialLocales = existingTranslations.map((t) => t.locale);
 
   const form = useForm<InquiryTypeFormValues>({
     resolver: zodResolver(inquiryTypeFormSchema),
@@ -76,31 +73,39 @@ export function InquiryTypeForm({
       color: inquiryType?.color || "",
       orderIndex: inquiryType?.orderIndex || 0,
       isActive: inquiryType?.isActive !== undefined ? inquiryType.isActive : true,
-      nameEn: enTranslation?.name || "",
-      descriptionEn: enTranslation?.description || "",
-      nameAr: arTranslation?.name || "",
-      descriptionAr: arTranslation?.description || "",
+      nameEn: existingTranslations.find((t) => t.locale === "en")?.name || "",
+      descriptionEn: existingTranslations.find((t) => t.locale === "en")?.description || "",
+      nameAr: existingTranslations.find((t) => t.locale === "ar")?.name || "",
+      descriptionAr: existingTranslations.find((t) => t.locale === "ar")?.description || "",
     },
   });
 
   const onSubmit = async (values: InquiryTypeFormValues) => {
+    // Build translations array from form values
+    const translations: Array<{ locale: string; name: string; description?: string }> = [];
+    
+    if (values.nameEn) {
+      translations.push({
+        locale: "en",
+        name: values.nameEn,
+        description: values.descriptionEn,
+      });
+    }
+    
+    if (values.nameAr) {
+      translations.push({
+        locale: "ar",
+        name: values.nameAr,
+        description: values.descriptionAr,
+      });
+    }
+
     const baseData = {
       icon: values.icon || undefined,
       color: values.color || undefined,
       orderIndex: values.orderIndex,
       isActive: values.isActive,
-      translations: [
-        {
-          locale: "en",
-          name: values.nameEn,
-          description: values.descriptionEn,
-        },
-        {
-          locale: "ar",
-          name: values.nameAr,
-          description: values.descriptionAr,
-        },
-      ],
+      translations,
     };
 
     if (mode === "create") {
@@ -169,9 +174,9 @@ export function InquiryTypeForm({
               <FormItem>
                 <FormLabel>{t("iconLabel")}</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={t("iconPlaceholder")}
+                  <IconPicker
+                    value={field.value || undefined}
+                    onSelect={field.onChange}
                     disabled={isLoading}
                   />
                 </FormControl>
@@ -219,86 +224,50 @@ export function InquiryTypeForm({
           )}
         />
 
-        <Tabs defaultValue="en" className="w-full">
-          <TabsList>
-            <TabsTrigger value="en">English</TabsTrigger>
-            <TabsTrigger value="ar">Arabic</TabsTrigger>
-          </TabsList>
-          <TabsContent value="en" className="space-y-4">
-            <FormField
-              control={form.control}
-              name="nameEn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("nameLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("namePlaceholder")}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="descriptionEn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("descriptionLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("descriptionPlaceholder")}
-                      disabled={isLoading}
-                      rows={4}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-          <TabsContent value="ar" className="space-y-4">
-            <FormField
-              control={form.control}
-              name="nameAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("nameLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("namePlaceholder")}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="descriptionAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("descriptionLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("descriptionPlaceholder")}
-                      disabled={isLoading}
-                      rows={4}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-        </Tabs>
+        <TranslationInputs
+          initialLocales={initialLocales}
+          isLoading={isLoading}
+        >
+          {(locale, localeKey) => (
+            <>
+              <FormField
+                control={form.control}
+                name={`name${localeKey}` as any}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("nameLabel")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder={t("namePlaceholder")}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`description${localeKey}` as any}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("descriptionLabel")}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder={t("descriptionPlaceholder")}
+                        disabled={isLoading}
+                        rows={4}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
+        </TranslationInputs>
 
         <div className="flex justify-end gap-4">
           <Button

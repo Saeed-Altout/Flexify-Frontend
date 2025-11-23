@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { DataTableActions } from "./data-table-actions";
 import Image from "next/image";
+import { getIconComponent } from "@/utils/icon-utils";
 
 export const useColumns = (): ColumnDef<IService>[] => {
   const t = useTranslations("dashboard.services.columns");
@@ -25,6 +26,19 @@ export const useColumns = (): ColumnDef<IService>[] => {
         const name =
           translation?.name || fallbackTranslation?.name || row.original.slug;
 
+        const getInitials = (name: string): string => {
+          if (!name) return "??";
+          const words = name.trim().split(/\s+/);
+          if (words.length >= 2) {
+            // Multiple words: take first char of first two words
+            return (words[0][0] + words[1][0]).toUpperCase();
+          } else {
+            // Single word: take first two characters
+            return name.slice(0, 2).toUpperCase();
+          }
+        };
+        const initials = getInitials(name);
+
         return imageUrl ? (
           <Image
             src={imageUrl}
@@ -34,8 +48,8 @@ export const useColumns = (): ColumnDef<IService>[] => {
             className="rounded object-cover size-10"
           />
         ) : (
-          <div className="flex h-10 w-15 items-center justify-center rounded bg-muted text-xs">
-            {t("noImage")}
+          <div className="flex h-10 w-15 items-center justify-center rounded bg-muted text-xs font-medium">
+            {initials}
           </div>
         );
       },
@@ -61,6 +75,18 @@ export const useColumns = (): ColumnDef<IService>[] => {
           {row.original.slug}
         </code>
       ),
+    },
+    {
+      accessorKey: "icon",
+      header: t("icon") || "Icon",
+      cell: ({ row }) => {
+        const IconComponent = getIconComponent(row.original.icon);
+        return IconComponent ? (
+          <IconComponent className="h-5 w-5" />
+        ) : (
+          <span className="text-muted-foreground text-xs">-</span>
+        );
+      },
     },
     {
       accessorKey: "isActive",

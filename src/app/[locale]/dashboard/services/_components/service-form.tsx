@@ -5,11 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { useState } from "react";
 import {
   useCreateServiceMutation,
   useUpdateServiceMutation,
+  useUploadServiceImageMutation,
 } from "@/modules/services/services-hook";
 import { IService } from "@/modules/services/services-type";
+import { ThumbnailUpload } from "../../projects/_components/thumbnail-upload";
 
 import {
   Form,
@@ -24,6 +27,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { IconPicker } from "@/components/ui/icon-picker";
+import { TranslationInputs } from "@/components/ui/translation-inputs";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Loader2 } from "lucide-react";
 
 interface ServiceFormProps {
@@ -37,20 +43,19 @@ const serviceFormSchema = z.object({
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Invalid slug format"),
   icon: z.string().optional(),
-  imageUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+  imageUrl: z.string().optional(), // Not used in form, kept for compatibility
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Invalid color format").optional().or(z.literal("")),
   orderIndex: z.number().int().min(0).optional(),
   isFeatured: z.boolean().optional(),
   isActive: z.boolean().optional(),
-  // English Translation
-  nameEn: z.string().min(1, "English name is required"),
+  // Translations (optional, added dynamically)
+  nameEn: z.string().optional(),
   descriptionEn: z.string().optional(),
   shortDescriptionEn: z.string().max(500).optional(),
   contentEn: z.string().optional(),
   metaTitleEn: z.string().max(255).optional(),
   metaDescriptionEn: z.string().max(500).optional(),
-  // Arabic Translation
-  nameAr: z.string().min(1, "Arabic name is required"),
+  nameAr: z.string().optional(),
   descriptionAr: z.string().optional(),
   shortDescriptionAr: z.string().max(500).optional(),
   contentAr: z.string().optional(),
@@ -69,86 +74,128 @@ export function ServiceForm({
 
   const createMutation = useCreateServiceMutation();
   const updateMutation = useUpdateServiceMutation();
+  const uploadImageMutation = useUploadServiceImageMutation();
 
-  // Get translations
-  const enTranslation = service?.translations?.find(
-    (t) => t.locale === "en"
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    service?.imageUrl || null
   );
-  const arTranslation = service?.translations?.find(
-    (t) => t.locale === "ar"
-  );
+
+  // Get translations for initial state
+  const existingTranslations = service?.translations || [];
+  const initialLocales = existingTranslations.map((t) => t.locale);
 
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       slug: service?.slug || "",
       icon: service?.icon || "",
-      imageUrl: service?.imageUrl || "",
+      imageUrl: service?.imageUrl || "", // Keep for form, but we'll upload separately
       color: service?.color || "",
       orderIndex: service?.orderIndex || 0,
       isFeatured: service?.isFeatured || false,
       isActive: service?.isActive !== undefined ? service.isActive : true,
-      nameEn: enTranslation?.name || "",
-      descriptionEn: enTranslation?.description || "",
-      shortDescriptionEn: enTranslation?.shortDescription || "",
-      contentEn: enTranslation?.content || "",
-      metaTitleEn: enTranslation?.metaTitle || "",
-      metaDescriptionEn: enTranslation?.metaDescription || "",
-      nameAr: arTranslation?.name || "",
-      descriptionAr: arTranslation?.description || "",
-      shortDescriptionAr: arTranslation?.shortDescription || "",
-      contentAr: arTranslation?.content || "",
-      metaTitleAr: arTranslation?.metaTitle || "",
-      metaDescriptionAr: arTranslation?.metaDescription || "",
+      nameEn: existingTranslations.find((t) => t.locale === "en")?.name || "",
+      descriptionEn: existingTranslations.find((t) => t.locale === "en")?.description || "",
+      shortDescriptionEn: existingTranslations.find((t) => t.locale === "en")?.shortDescription || "",
+      contentEn: existingTranslations.find((t) => t.locale === "en")?.content || "",
+      metaTitleEn: existingTranslations.find((t) => t.locale === "en")?.metaTitle || "",
+      metaDescriptionEn: existingTranslations.find((t) => t.locale === "en")?.metaDescription || "",
+      nameAr: existingTranslations.find((t) => t.locale === "ar")?.name || "",
+      descriptionAr: existingTranslations.find((t) => t.locale === "ar")?.description || "",
+      shortDescriptionAr: existingTranslations.find((t) => t.locale === "ar")?.shortDescription || "",
+      contentAr: existingTranslations.find((t) => t.locale === "ar")?.content || "",
+      metaTitleAr: existingTranslations.find((t) => t.locale === "ar")?.metaTitle || "",
+      metaDescriptionAr: existingTranslations.find((t) => t.locale === "ar")?.metaDescription || "",
     },
   });
 
   const onSubmit = async (values: ServiceFormValues) => {
+    // Build translations array from form values
+    const translations: Array<{
+      locale: string;
+      name: string;
+      description?: string;
+      shortDescription?: string;
+      content?: string;
+      metaTitle?: string;
+      metaDescription?: string;
+    }> = [];
+    
+    if (values.nameEn) {
+      translations.push({
+        locale: "en",
+        name: values.nameEn,
+        description: values.descriptionEn,
+        shortDescription: values.shortDescriptionEn,
+        content: values.contentEn,
+        metaTitle: values.metaTitleEn,
+        metaDescription: values.metaDescriptionEn,
+      });
+    }
+    
+    if (values.nameAr) {
+      translations.push({
+        locale: "ar",
+        name: values.nameAr,
+        description: values.descriptionAr,
+        shortDescription: values.shortDescriptionAr,
+        content: values.contentAr,
+        metaTitle: values.metaTitleAr,
+        metaDescription: values.metaDescriptionAr,
+      });
+    }
+
     const baseData = {
       icon: values.icon || undefined,
-      imageUrl: values.imageUrl || undefined,
+      // imageUrl is uploaded separately, don't include it here
       color: values.color || undefined,
       orderIndex: values.orderIndex,
       isFeatured: values.isFeatured,
       isActive: values.isActive,
-      translations: [
-        {
-          locale: "en",
-          name: values.nameEn,
-          description: values.descriptionEn,
-          shortDescription: values.shortDescriptionEn,
-          content: values.contentEn,
-          metaTitle: values.metaTitleEn,
-          metaDescription: values.metaDescriptionEn,
-        },
-        {
-          locale: "ar",
-          name: values.nameAr,
-          description: values.descriptionAr,
-          shortDescription: values.shortDescriptionAr,
-          content: values.contentAr,
-          metaTitle: values.metaTitleAr,
-          metaDescription: values.metaDescriptionAr,
-        },
-      ],
+      translations,
     };
 
     if (mode === "create") {
-      await createMutation.mutateAsync({
+      // Create service first
+      const result = await createMutation.mutateAsync({
         slug: values.slug,
         ...baseData,
       });
+      const serviceId = result.data?.data?.id;
+
+      // Upload image if file was selected
+      if (imageFile && serviceId) {
+        await uploadImageMutation.mutateAsync({
+          serviceId,
+          file: imageFile,
+        });
+      }
+
       router.push("/dashboard/services");
     } else if (service) {
+      // Update service first
       await updateMutation.mutateAsync({
         id: service.id,
         data: baseData,
       });
+
+      // Upload image if file was selected
+      if (imageFile) {
+        await uploadImageMutation.mutateAsync({
+          serviceId: service.id,
+          file: imageFile,
+        });
+      }
+
       router.push("/dashboard/services");
     }
   };
 
-  const isLoading = createMutation.isPending || updateMutation.isPending;
+  const isLoading =
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    uploadImageMutation.isPending;
 
   return (
     <Form {...form}>
@@ -199,9 +246,9 @@ export function ServiceForm({
               <FormItem>
                 <FormLabel>{t("iconLabel")}</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    placeholder={t("iconPlaceholder")}
+                  <IconPicker
+                    value={field.value || undefined}
+                    onSelect={field.onChange}
                     disabled={isLoading}
                   />
                 </FormControl>
@@ -210,24 +257,28 @@ export function ServiceForm({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("imageUrlLabel")}</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="url"
-                    placeholder={t("imageUrlPlaceholder")}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div>
+            <FormLabel className="mb-4 block">
+              {t("imageUrlLabel") || "Service Image"}
+            </FormLabel>
+            <ThumbnailUpload
+              currentThumbnail={service?.imageUrl}
+              onFileSelect={(file) => {
+                setImageFile(file);
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  setImagePreview(reader.result as string);
+                };
+                reader.readAsDataURL(file);
+              }}
+              onRemove={() => {
+                setImageFile(null);
+                setImagePreview(null);
+              }}
+              isUploading={uploadImageMutation.isPending}
+              disabled={isLoading}
+            />
+          </div>
 
           <FormField
             control={form.control}
@@ -289,16 +340,16 @@ export function ServiceForm({
           />
         </div>
 
-        <Tabs defaultValue="en" className="w-full">
-          <TabsList>
-            <TabsTrigger value="en">English</TabsTrigger>
-            <TabsTrigger value="ar">Arabic</TabsTrigger>
-          </TabsList>
-          <TabsContent value="en" className="space-y-4">
-            <FormField
-              control={form.control}
-              name="nameEn"
-              render={({ field }) => (
+        <TranslationInputs
+          initialLocales={initialLocales}
+          isLoading={isLoading}
+        >
+          {(locale, localeKey) => (
+            <>
+              <FormField
+                control={form.control}
+                name={`name${localeKey}` as any}
+                render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("nameLabel")}</FormLabel>
                   <FormControl>
@@ -314,7 +365,7 @@ export function ServiceForm({
             />
             <FormField
               control={form.control}
-              name="shortDescriptionEn"
+              name={`shortDescription${localeKey}` as any}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("shortDescriptionLabel")}</FormLabel>
@@ -332,7 +383,7 @@ export function ServiceForm({
             />
             <FormField
               control={form.control}
-              name="descriptionEn"
+              name={`description${localeKey}` as any}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("descriptionLabel")}</FormLabel>
@@ -350,16 +401,16 @@ export function ServiceForm({
             />
             <FormField
               control={form.control}
-              name="contentEn"
+              name={`content${localeKey}` as any}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("contentLabel")}</FormLabel>
                   <FormControl>
-                    <Textarea
-                      {...field}
+                    <RichTextEditor
+                      content={field.value || ""}
+                      onChange={field.onChange}
                       placeholder={t("contentPlaceholder")}
                       disabled={isLoading}
-                      rows={8}
                     />
                   </FormControl>
                   <FormMessage />
@@ -369,7 +420,7 @@ export function ServiceForm({
             <div className="grid gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="metaTitleEn"
+                name={`metaTitle${localeKey}` as any}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("metaTitleLabel")}</FormLabel>
@@ -386,7 +437,7 @@ export function ServiceForm({
               />
               <FormField
                 control={form.control}
-                name="metaDescriptionEn"
+                name={`metaDescription${localeKey}` as any}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t("metaDescriptionLabel")}</FormLabel>
@@ -403,118 +454,9 @@ export function ServiceForm({
                 )}
               />
             </div>
-          </TabsContent>
-          <TabsContent value="ar" className="space-y-4">
-            <FormField
-              control={form.control}
-              name="nameAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("nameLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("namePlaceholder")}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="shortDescriptionAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("shortDescriptionLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("shortDescriptionPlaceholder")}
-                      disabled={isLoading}
-                      rows={3}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="descriptionAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("descriptionLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("descriptionPlaceholder")}
-                      disabled={isLoading}
-                      rows={4}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contentAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("contentLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("contentPlaceholder")}
-                      disabled={isLoading}
-                      rows={8}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="metaTitleAr"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("metaTitleLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder={t("metaTitlePlaceholder")}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="metaDescriptionAr"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("metaDescriptionLabel")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder={t("metaDescriptionPlaceholder")}
-                        disabled={isLoading}
-                        rows={3}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
+            </>
+          )}
+        </TranslationInputs>
 
         <div className="flex justify-end gap-4">
           <Button

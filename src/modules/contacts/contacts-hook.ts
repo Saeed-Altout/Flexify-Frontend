@@ -5,6 +5,7 @@ import {
   createContact,
   updateContact,
   deleteContact,
+  replyContact,
 } from "./contacts-api";
 import { IQueryContactParams } from "./contacts-type";
 import { toast } from "sonner";
@@ -67,6 +68,23 @@ export const useDeleteContactMutation = () => {
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Failed to delete contact");
+    },
+  });
+};
+
+export const useReplyContactMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ contactId, data }: { contactId: string; data: any }) =>
+      replyContact(contactId, data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      queryClient.invalidateQueries({ queryKey: ["contact", variables.contactId] });
+      toast.success("Reply sent successfully");
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Failed to send reply");
     },
   });
 };

@@ -627,6 +627,8 @@
                 }
             },
             "edit":{
+                "title":"تعديل نوع الاستفسار",
+                "description":"تعديل تفاصيل نوع الاستفسار",
                 "metadata":{
                     "title":"تعديل نوع الاستفسار",
                     "description":"تعديل تفاصيل نوع الاستفسار"
@@ -635,6 +637,10 @@
             "detail":{
                 "title":"تفاصيل نوع الاستفسار",
                 "description":"عرض معلومات نوع الاستفسار",
+                "metadata":{
+                    "title":"تفاصيل نوع الاستفسار",
+                    "description":"عرض معلومات نوع الاستفسار"
+                },
                 "slug":"الرابط",
                 "status":"الحالة",
                 "icon":"الأيقونة",
@@ -730,7 +736,8 @@
                 "actions":"الإجراءات",
                 "view":"عرض",
                 "edit":"تعديل",
-                "delete":"حذف"
+                "delete":"حذف",
+                "reply":"رد"
             },
             "delete":{
                 "title":"حذف جهة الاتصال",
@@ -738,6 +745,41 @@
                 "cancel":"إلغاء",
                 "delete":"حذف",
                 "deleting":"جاري الحذف..."
+            },
+            "detail":{
+                "title":"تفاصيل جهة الاتصال",
+                "description":"عرض معلومات جهة الاتصال",
+                "metadata":{
+                    "title":"تفاصيل جهة الاتصال - لوحة التحكم",
+                    "description":"عرض معلومات مفصلة عن جهة الاتصال"
+                },
+                "email":"البريد الإلكتروني",
+                "phone":"الهاتف",
+                "subject":"الموضوع",
+                "inquiryType":"نوع الاستفسار",
+                "statusLabel":"الحالة",
+                "createdAt":"تاريخ الإنشاء",
+                "updatedAt":"تاريخ التحديث",
+                "message":"الرسالة",
+                "edit":"تعديل",
+                "status":{
+                    "new":"جديد",
+                    "read":"مقروء",
+                    "replied":"تم الرد",
+                    "archived":"مؤرشف"
+                }
+            },
+            "reply":{
+                "button":"رد",
+                "title":"الرد على جهة الاتصال",
+                "description":"إرسال بريد إلكتروني رد إلى {name} ({email})",
+                "subjectLabel":"الموضوع",
+                "subjectPlaceholder":"رد: استفسارك",
+                "originalMessageLabel":"الرسالة الأصلية",
+                "messageLabel":"رسالة الرد",
+                "messagePlaceholder":"اكتب رسالة الرد هنا...",
+                "cancel":"إلغاء",
+                "send":"إرسال الرد"
             }
         },
         "testimonials":{
@@ -794,6 +836,8 @@
                 }
             },
             "edit":{
+                "title":"تعديل الشهادة",
+                "description":"تعديل تفاصيل الشهادة",
                 "metadata":{
                     "title":"تعديل الشهادة",
                     "description":"تعديل تفاصيل الشهادة"
@@ -802,6 +846,10 @@
             "detail":{
                 "title":"تفاصيل الشهادة",
                 "description":"عرض معلومات الشهادة",
+                "metadata":{
+                    "title":"تفاصيل الشهادة",
+                    "description":"عرض معلومات الشهادة"
+                },
                 "avatar":"الصورة الشخصية",
                 "rating":"التقييم",
                 "status":"الحالة",
@@ -816,8 +864,16 @@
                 "featured":"مميز"
             },
             "form":{
+                "avatarLabel":"الصورة الشخصية",
                 "avatarUrlLabel":"رابط الصورة الشخصية",
                 "avatarUrlPlaceholder":"https://example.com/avatar.jpg",
+                "avatarUploadTitle":"رفع الصورة الشخصية",
+                "avatarUploadDescription":"انقر أو اسحب الصورة للرفع (حد أقصى 5MB)",
+                "removeAvatar":"إزالة",
+                "chooseFile":"اختر ملف",
+                "uploading":"جاري الرفع...",
+                "avatarUploadSuccess":"تم رفع الصورة الشخصية بنجاح",
+                "avatarUploadError":"فشل رفع الصورة الشخصية",
                 "ratingLabel":"التقييم",
                 "ratingPlaceholder":"اختر التقييم",
                 "noRating":"لا يوجد تقييم",
@@ -850,6 +906,7 @@
                 "image":"الصورة",
                 "name":"الاسم",
                 "slug":"الرابط",
+                "icon":"الأيقونة",
                 "status":"الحالة",
                 "featured":"مميز",
                 "order":"الترتيب",
@@ -892,6 +949,8 @@
                 }
             },
             "edit":{
+                "title":"تعديل الخدمة",
+                "description":"تعديل تفاصيل الخدمة",
                 "metadata":{
                     "title":"تعديل الخدمة",
                     "description":"تعديل تفاصيل الخدمة"
@@ -900,6 +959,10 @@
             "detail":{
                 "title":"تفاصيل الخدمة",
                 "description":"عرض معلومات الخدمة",
+                "metadata":{
+                    "title":"تفاصيل الخدمة - لوحة التحكم",
+                    "description":"عرض معلومات مفصلة عن الخدمة"
+                },
                 "image":"الصورة",
                 "icon":"الأيقونة",
                 "slug":"الرابط",
@@ -998,6 +1061,7 @@
             "services": {
                 "title": "خدماتي",
                 "description": "حلول شاملة لاحتياجاتك الرقمية",
+                "noServices": "لا توجد خدمات متاحة في الوقت الحالي.",
                 "seeMore": "عرض المزيد",
                 "seeLess": "عرض أقل",
                 "items": {

@@ -18,6 +18,25 @@ export const useColumns = (): ColumnDef<ITestimonial>[] => {
       header: t("avatar"),
       cell: ({ row }) => {
         const avatarUrl = row.original.avatarUrl;
+        const translation = row.original.translations?.find(
+          (t) => t.locale === locale
+        );
+        const fallbackTranslation = row.original.translations?.[0];
+        const authorName =
+          translation?.authorName || fallbackTranslation?.authorName || "";
+        const getInitials = (name: string): string => {
+          if (!name) return "??";
+          const words = name.trim().split(/\s+/);
+          if (words.length >= 2) {
+            // Multiple words: take first char of first two words
+            return (words[0][0] + words[1][0]).toUpperCase();
+          } else {
+            // Single word: take first two characters
+            return name.slice(0, 2).toUpperCase();
+          }
+        };
+        const initials = getInitials(authorName);
+
         return avatarUrl ? (
           <Image
             src={avatarUrl}
@@ -27,8 +46,8 @@ export const useColumns = (): ColumnDef<ITestimonial>[] => {
             className="rounded-full"
           />
         ) : (
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-xs">
-            {t("noAvatar")}
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-xs font-medium">
+            {initials}
           </div>
         );
       },

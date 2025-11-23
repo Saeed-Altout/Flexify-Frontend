@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Edit, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
-import { IconCode } from "@tabler/icons-react";
+import { getIconComponent } from "@/utils/icon-utils";
 
 interface ServiceDetailClientProps {
   id: string;
@@ -80,7 +80,14 @@ export function ServiceDetailClient({ id }: ServiceDetailClientProps) {
                 {t("icon")}
               </h3>
               <div className="p-4 rounded-lg bg-primary/10 text-primary w-fit">
-                <span className="text-4xl">{service.icon}</span>
+                {(() => {
+                  const IconComponent = getIconComponent(service.icon);
+                  return IconComponent ? (
+                    <IconComponent className="w-8 h-8" />
+                  ) : (
+                    <span className="text-4xl">{service.icon}</span>
+                  );
+                })()}
               </div>
             </div>
           )}
@@ -90,7 +97,7 @@ export function ServiceDetailClient({ id }: ServiceDetailClientProps) {
                 {t("icon")}
               </h3>
               <div className="p-4 rounded-lg bg-primary/10 text-primary w-fit">
-                <IconCode className="w-8 h-8" />
+                <span className="text-sm text-muted-foreground">No icon</span>
               </div>
             </div>
           )}

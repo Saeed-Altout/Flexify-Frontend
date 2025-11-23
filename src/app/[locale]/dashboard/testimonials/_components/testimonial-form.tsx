@@ -9,8 +9,10 @@ import { useState } from "react";
 import {
   useCreateTestimonialMutation,
   useUpdateTestimonialMutation,
+  useUploadTestimonialAvatarMutation,
 } from "@/modules/testimonials/testimonials-hook";
 import { ITestimonial } from "@/modules/testimonials/testimonials-type";
+import { AvatarUpload } from "./avatar-upload";
 
 import {
   Form,
@@ -25,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TranslationInputs } from "@/components/ui/translation-inputs";
 import {
   Select,
   SelectContent,
@@ -40,19 +43,17 @@ interface TestimonialFormProps {
 }
 
 const testimonialFormSchema = z.object({
-  avatarUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
   rating: z.number().int().min(1).max(5).optional(),
   isFeatured: z.boolean().optional(),
   isApproved: z.boolean().optional(),
   orderIndex: z.number().int().min(0).optional(),
-  // English Translation
-  contentEn: z.string().min(1, "English content is required"),
-  authorNameEn: z.string().min(1, "English author name is required"),
+  // Translations (optional, added dynamically)
+  contentEn: z.string().optional(),
+  authorNameEn: z.string().optional(),
   authorPositionEn: z.string().optional(),
   companyEn: z.string().optional(),
-  // Arabic Translation
-  contentAr: z.string().min(1, "Arabic content is required"),
-  authorNameAr: z.string().min(1, "Arabic author name is required"),
+  contentAr: z.string().optional(),
+  authorNameAr: z.string().optional(),
   authorPositionAr: z.string().optional(),
   companyAr: z.string().optional(),
 });
@@ -65,96 +66,146 @@ export function TestimonialForm({ testimonial, mode }: TestimonialFormProps) {
 
   const createMutation = useCreateTestimonialMutation();
   const updateMutation = useUpdateTestimonialMutation();
+  const uploadAvatarMutation = useUploadTestimonialAvatarMutation();
 
-  // Get translations
-  const enTranslation = testimonial?.translations?.find(
-    (t) => t.locale === "en"
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(
+    null
   );
-  const arTranslation = testimonial?.translations?.find(
-    (t) => t.locale === "ar"
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    testimonial?.avatarUrl || null
   );
+
+  // Get translations for initial state
+  const existingTranslations = testimonial?.translations || [];
+  const initialLocales = existingTranslations.map((t) => t.locale);
 
   const form = useForm<TestimonialFormValues>({
     resolver: zodResolver(testimonialFormSchema),
     defaultValues: {
-      avatarUrl: testimonial?.avatarUrl || "",
       rating: testimonial?.rating || undefined,
       isFeatured: testimonial?.isFeatured || false,
       isApproved: testimonial?.isApproved || false,
       orderIndex: testimonial?.orderIndex || 0,
-      contentEn: enTranslation?.content || "",
-      authorNameEn: enTranslation?.authorName || "",
-      authorPositionEn: enTranslation?.authorPosition || "",
-      companyEn: enTranslation?.company || "",
-      contentAr: arTranslation?.content || "",
-      authorNameAr: arTranslation?.authorName || "",
-      authorPositionAr: arTranslation?.authorPosition || "",
-      companyAr: arTranslation?.company || "",
+      contentEn: existingTranslations.find((t) => t.locale === "en")?.content || "",
+      authorNameEn: existingTranslations.find((t) => t.locale === "en")?.authorName || "",
+      authorPositionEn: existingTranslations.find((t) => t.locale === "en")?.authorPosition || "",
+      companyEn: existingTranslations.find((t) => t.locale === "en")?.company || "",
+      contentAr: existingTranslations.find((t) => t.locale === "ar")?.content || "",
+      authorNameAr: existingTranslations.find((t) => t.locale === "ar")?.authorName || "",
+      authorPositionAr: existingTranslations.find((t) => t.locale === "ar")?.authorPosition || "",
+      companyAr: existingTranslations.find((t) => t.locale === "ar")?.company || "",
     },
   });
 
+  const handleAvatarFileSelect = (file: File) => {
+    setSelectedAvatarFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAvatarRemove = () => {
+    setSelectedAvatarFile(null);
+    setAvatarPreview(null);
+  };
+
   const onSubmit = async (values: TestimonialFormValues) => {
+    // Build translations array from form values
+    const translations: Array<{
+      locale: string;
+      content: string;
+      authorName: string;
+      authorPosition?: string;
+      company?: string;
+    }> = [];
+    
+    if (values.contentEn) {
+      translations.push({
+        locale: "en",
+        content: values.contentEn,
+        authorName: values.authorNameEn || "",
+        authorPosition: values.authorPositionEn,
+        company: values.companyEn,
+      });
+    }
+    
+    if (values.contentAr) {
+      translations.push({
+        locale: "ar",
+        content: values.contentAr,
+        authorName: values.authorNameAr || "",
+        authorPosition: values.authorPositionAr,
+        company: values.companyAr,
+      });
+    }
+
     const baseData = {
-      avatarUrl: values.avatarUrl || undefined,
       rating: values.rating,
       isFeatured: values.isFeatured,
       isApproved: values.isApproved,
       orderIndex: values.orderIndex,
-      translations: [
-        {
-          locale: "en",
-          content: values.contentEn,
-          authorName: values.authorNameEn,
-          authorPosition: values.authorPositionEn,
-          company: values.companyEn,
-        },
-        {
-          locale: "ar",
-          content: values.contentAr,
-          authorName: values.authorNameAr,
-          authorPosition: values.authorPositionAr,
-          company: values.companyAr,
-        },
-      ],
+      translations,
     };
 
     if (mode === "create") {
-      await createMutation.mutateAsync(baseData);
+      // Create testimonial first
+      const result = await createMutation.mutateAsync(baseData);
+      const testimonialId = result.data?.data?.id;
+
+      // Upload avatar if file was selected
+      if (selectedAvatarFile && testimonialId) {
+        await uploadAvatarMutation.mutateAsync({
+          testimonialId,
+          file: selectedAvatarFile,
+        });
+      }
+
       router.push("/dashboard/testimonials");
     } else if (testimonial) {
+      // Update testimonial first
       await updateMutation.mutateAsync({
         id: testimonial.id,
         data: baseData,
       });
+
+      // Upload avatar if file was selected
+      if (selectedAvatarFile) {
+        await uploadAvatarMutation.mutateAsync({
+          testimonialId: testimonial.id,
+          file: selectedAvatarFile,
+        });
+      }
+
       router.push("/dashboard/testimonials");
     }
   };
 
-  const isLoading = createMutation.isPending || updateMutation.isPending;
+  const isLoading =
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    uploadAvatarMutation.isPending;
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid gap-6 md:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="avatarUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("avatarUrlLabel")}</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="url"
-                    placeholder={t("avatarUrlPlaceholder")}
-                    disabled={isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="space-y-6">
+          <div>
+            <FormLabel className="mb-4 block">
+              {t("avatarLabel") || "Avatar"}
+            </FormLabel>
+            <AvatarUpload
+              currentAvatar={avatarPreview}
+              onFileSelect={handleAvatarFileSelect}
+              onRemove={handleAvatarRemove}
+              isUploading={uploadAvatarMutation.isPending}
+              disabled={isLoading}
+            />
+          </div>
+        </div>
 
+        <div className="grid gap-6 md:grid-cols-2">
           <FormField
             control={form.control}
             name="rating"
@@ -249,41 +300,76 @@ export function TestimonialForm({ testimonial, mode }: TestimonialFormProps) {
           />
         </div>
 
-        <Tabs defaultValue="en" className="w-full">
-          <TabsList>
-            <TabsTrigger value="en">English</TabsTrigger>
-            <TabsTrigger value="ar">Arabic</TabsTrigger>
-          </TabsList>
-          <TabsContent value="en" className="space-y-4">
-            <FormField
-              control={form.control}
-              name="contentEn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("contentLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("contentPlaceholder")}
-                      disabled={isLoading}
-                      rows={6}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid gap-4 md:grid-cols-2">
+        <TranslationInputs
+          initialLocales={initialLocales}
+          isLoading={isLoading}
+        >
+          {(locale, localeKey) => (
+            <>
               <FormField
                 control={form.control}
-                name="authorNameEn"
+                name={`content${localeKey}` as any}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("authorNameLabel")}</FormLabel>
+                    <FormLabel>{t("contentLabel")}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder={t("contentPlaceholder")}
+                        disabled={isLoading}
+                        rows={6}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid gap-4 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name={`authorName${localeKey}` as any}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("authorNameLabel")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder={t("authorNamePlaceholder")}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`authorPosition${localeKey}` as any}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("authorPositionLabel")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder={t("authorPositionPlaceholder")}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name={`company${localeKey}` as any}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("companyLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder={t("authorNamePlaceholder")}
+                        placeholder={t("companyPlaceholder")}
                         disabled={isLoading}
                       />
                     </FormControl>
@@ -291,116 +377,9 @@ export function TestimonialForm({ testimonial, mode }: TestimonialFormProps) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="authorPositionEn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("authorPositionLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder={t("authorPositionPlaceholder")}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="companyEn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("companyLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("companyPlaceholder")}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-          <TabsContent value="ar" className="space-y-4">
-            <FormField
-              control={form.control}
-              name="contentAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("contentLabel")}</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder={t("contentPlaceholder")}
-                      disabled={isLoading}
-                      rows={6}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="authorNameAr"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("authorNameLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder={t("authorNamePlaceholder")}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="authorPositionAr"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("authorPositionLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder={t("authorPositionPlaceholder")}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <FormField
-              control={form.control}
-              name="companyAr"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("companyLabel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder={t("companyPlaceholder")}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </TabsContent>
-        </Tabs>
+            </>
+          )}
+        </TranslationInputs>
 
         <div className="flex justify-end gap-4">
           <Button

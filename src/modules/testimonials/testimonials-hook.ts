@@ -5,9 +5,11 @@ import {
   createTestimonial,
   updateTestimonial,
   deleteTestimonial,
+  uploadTestimonialAvatar,
 } from "./testimonials-api";
 import { IQueryTestimonialParams } from "./testimonials-type";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export const useTestimonialsQuery = (params?: IQueryTestimonialParams) => {
   return useQuery({
@@ -67,6 +69,25 @@ export const useDeleteTestimonialMutation = () => {
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || "Failed to delete testimonial");
+    },
+  });
+};
+
+export const useUploadTestimonialAvatarMutation = () => {
+  const queryClient = useQueryClient();
+  const t = useTranslations("dashboard.testimonials.form");
+
+  return useMutation({
+    mutationFn: ({ testimonialId, file }: { testimonialId: string; file: File }) =>
+      uploadTestimonialAvatar(testimonialId, file),
+    onSuccess: (response, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
+      queryClient.invalidateQueries({ queryKey: ["testimonial", variables.testimonialId] });
+      toast.success(response.message || t("avatarUploadSuccess") || "Avatar uploaded successfully");
+      return response.data?.avatarUrl;
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || t("avatarUploadError") || "Failed to upload avatar");
     },
   });
 };

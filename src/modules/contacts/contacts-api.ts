@@ -1,4 +1,5 @@
 import { apiClient } from "@/lib/axios";
+import type { IApiResponse } from "@/types/api-type";
 import {
   ICreateContactRequest,
   IUpdateContactRequest,
@@ -46,5 +47,23 @@ export const updateContact = async (
 
 export const deleteContact = async (id: string): Promise<void> => {
   await apiClient.delete(`/contacts/${id}`);
+};
+
+export type IReplyContactRequest = {
+  subject: string;
+  message: string;
+};
+
+export type IReplyContactResponse = IApiResponse<null>;
+
+export const replyContact = async (
+  contactId: string,
+  data: IReplyContactRequest
+): Promise<IReplyContactResponse> => {
+  const response = await apiClient.post<IReplyContactResponse>(
+    `/contacts/${contactId}/reply`,
+    data
+  );
+  return response.data;
 };
 
