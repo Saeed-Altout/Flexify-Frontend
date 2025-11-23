@@ -18,17 +18,23 @@ export function UsersPageClient() {
   const columns = useColumns();
 
   const { search, role, page, limit, setPage, setLimit } = useQueryParams();
-  const { data } = useUsersQuery({ search, role, page, limit });
+  const { data, isLoading } = useUsersQuery({ search, role, page, limit });
 
   const users = useMemo(() => data?.data?.data || [], [data]);
   const meta = useMemo(() => data?.data?.meta || null, [data]);
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="space-y-4 p-4 md:space-y-6 md:p-6">
       <Heading title={t("title")} description={t("description")} />
       <div className="overflow-hidden rounded-md border">
-        <DataTableToolbar />
-        <DataTable columns={columns} data={users} />
+        <div className="p-3 md:p-4">
+          <DataTableToolbar />
+        </div>
+        <DataTable 
+          columns={columns} 
+          data={users} 
+          isLoading={isLoading}
+        />
         {meta && (
           <DataTablePagination
             meta={meta}

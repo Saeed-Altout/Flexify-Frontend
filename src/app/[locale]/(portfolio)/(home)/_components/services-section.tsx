@@ -7,6 +7,7 @@ import { IService } from "@/modules/services/services-type";
 import { IconCode } from "@tabler/icons-react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 export function ServicesSection() {
   const t = useTranslations("portfolio.home.services");
@@ -45,11 +46,8 @@ export function ServicesSection() {
         {/* Services Grid - 3 per row */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="h-48 bg-muted animate-pulse rounded-lg"
-              />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} variant="service" />
             ))}
           </div>
         ) : services.length > 0 ? (

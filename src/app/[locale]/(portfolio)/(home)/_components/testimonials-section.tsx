@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
 import { useTestimonialsQuery } from "@/modules/testimonials/testimonials-hook";
 import { ITestimonial } from "@/modules/testimonials/testimonials-type";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 function TestimonialCard({
   testimonial,
@@ -97,8 +98,8 @@ export function TestimonialsSection() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-48 bg-muted animate-pulse rounded-lg" />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} variant="testimonial" />
             ))}
           </div>
         </div>

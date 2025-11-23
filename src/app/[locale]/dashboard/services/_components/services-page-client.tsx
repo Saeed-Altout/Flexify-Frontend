@@ -27,7 +27,7 @@ export function ServicesPageClient() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [featuredFilter, setFeaturedFilter] = useState<string>("all");
 
-  const { data } = useServicesQuery({
+  const { data, isLoading } = useServicesQuery({
     search: search || undefined,
     isActive: statusFilter !== "all" ? statusFilter === "true" : undefined,
     isFeatured:
@@ -64,7 +64,11 @@ export function ServicesPageClient() {
             onFeaturedFilterChange={setFeaturedFilter}
           />
         </div>
-        <DataTable columns={columns} data={services} />
+        <DataTable 
+          columns={columns} 
+          data={services} 
+          isLoading={isLoading}
+        />
         {meta && (
           <DataTablePagination
             meta={meta}

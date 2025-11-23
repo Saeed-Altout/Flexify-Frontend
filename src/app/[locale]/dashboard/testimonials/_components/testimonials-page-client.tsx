@@ -27,7 +27,7 @@ export function TestimonialsPageClient() {
   const [approvedFilter, setApprovedFilter] = useState<string>("all");
   const [featuredFilter, setFeaturedFilter] = useState<string>("all");
 
-  const { data } = useTestimonialsQuery({
+  const { data, isLoading } = useTestimonialsQuery({
     search: search || undefined,
     isApproved:
       approvedFilter !== "all" ? approvedFilter === "true" : undefined,
@@ -65,7 +65,11 @@ export function TestimonialsPageClient() {
             onFeaturedFilterChange={setFeaturedFilter}
           />
         </div>
-        <DataTable columns={columns} data={testimonials} />
+        <DataTable 
+          columns={columns} 
+          data={testimonials} 
+          isLoading={isLoading}
+        />
         {meta && (
           <DataTablePagination
             meta={meta}

@@ -19,7 +19,9 @@ declare const messages: {
         "createTestimonial":"Create Testimonial",
         "services":"Services",
         "allServices":"All Services",
-        "createService":"Create Service"
+        "createService":"Create Service",
+        "account":"Account",
+        "create":"Create"
     },
     "common":{
         "backToHome":"Back to home",
@@ -92,7 +94,10 @@ declare const messages: {
         "delete":"Delete",
         "actions":"Actions",
         "create":"Create",
-        "cancel":"Cancel"
+        "cancel":"Cancel",
+        "noResults":"No results found.",
+        "account":"Account",
+        "logout":"Log out"
     },
     "auth":{
         "title":"Flexify",
@@ -246,6 +251,9 @@ declare const messages: {
             "confirmPasswordLabel":"Confirm Password",
             "confirmPasswordPlaceholder":"Confirm Password",
             "confirmPasswordValidation":"Confirm password must be at least 8 characters",
+            "accountStatus":"Account Status",
+            "verified":"Verified",
+            "unverified":"Unverified",
             "tabs":{
                 "overview":{
                     "title":"Profile",

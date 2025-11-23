@@ -28,7 +28,7 @@ export function ProjectsPageClient() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
 
-  const { data } = useProjectsQuery({
+  const { data, isLoading } = useProjectsQuery({
     search: search || undefined,
     status:
       statusFilter !== "all" ? (statusFilter as ProjectStatus) : undefined,
@@ -65,7 +65,11 @@ export function ProjectsPageClient() {
             onTypeFilterChange={setTypeFilter}
           />
         </div>
-        <DataTable columns={columns} data={projects} />
+        <DataTable 
+          columns={columns} 
+          data={projects} 
+          isLoading={isLoading}
+        />
         {meta && (
           <DataTablePagination
             meta={meta}

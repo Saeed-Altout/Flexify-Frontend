@@ -7,6 +7,7 @@ import { ProjectCard } from "@/components/projects/project-card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { IconArrowRight } from "@tabler/icons-react";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 export function FeaturedProjectsSection() {
   const t = useTranslations("portfolio.home.featuredProjects");
@@ -36,8 +37,8 @@ export function FeaturedProjectsSection() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} variant="project" />
             ))}
           </div>
         </div>

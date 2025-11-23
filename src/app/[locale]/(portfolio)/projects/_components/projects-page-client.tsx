@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 import {
   IconSearch,
   IconFilter,
@@ -255,8 +256,8 @@ export function ProjectsPageClient() {
       {/* Projects Grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(limit)].map((_, i) => (
-            <div key={i} className="h-64 bg-muted animate-pulse rounded-lg" />
+          {Array.from({ length: limit }).map((_, i) => (
+            <SkeletonCard key={i} variant="project" />
           ))}
         </div>
       ) : projects.length === 0 ? (

@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 
 import {
   Table,
@@ -19,12 +20,17 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading?: boolean;
+  emptyMessage?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  isLoading = false,
+  emptyMessage,
 }: DataTableProps<TData, TValue>) {
+  const t = useTranslations("common");
   const table = useReactTable({
     data,
     columns,
@@ -52,7 +58,19 @@ export function DataTable<TData, TValue>({
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows?.length ? (
+        {isLoading ? (
+          <>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <TableRow key={i}>
+                {columns.map((_, colIndex) => (
+                  <TableCell key={colIndex}>
+                    <div className="h-4 w-full bg-muted animate-pulse rounded" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </>
+        ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
@@ -67,8 +85,11 @@ export function DataTable<TData, TValue>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No results.
+            <TableCell
+              colSpan={columns.length}
+              className="h-24 text-center text-muted-foreground"
+            >
+              {emptyMessage || t("noResults")}
             </TableCell>
           </TableRow>
         )}

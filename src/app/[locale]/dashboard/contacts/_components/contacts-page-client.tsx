@@ -22,7 +22,7 @@ export function ContactsPageClient() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const { data } = useContactsQuery({
+  const { data, isLoading } = useContactsQuery({
     search: search || undefined,
     status:
       statusFilter !== "all" ? (statusFilter as ContactStatus) : undefined,
@@ -48,7 +48,11 @@ export function ContactsPageClient() {
             onStatusFilterChange={setStatusFilter}
           />
         </div>
-        <DataTable columns={columns} data={contacts} />
+        <DataTable 
+          columns={columns} 
+          data={contacts} 
+          isLoading={isLoading}
+        />
         {meta && (
           <DataTablePagination
             meta={meta}

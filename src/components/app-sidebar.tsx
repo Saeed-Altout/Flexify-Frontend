@@ -25,18 +25,25 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { getSide } from "@/utils/get-side";
 import { Logo } from "./common/logo";
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-};
+import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const locale = useLocale();
   const t = useTranslations("sidebar");
+  const { data: userData } = useCurrentUserQuery();
+  const user = userData?.data?.data;
+
+  const userInfo = user
+    ? {
+        name: `${user.firstName} ${user.lastName}`.trim() || user.email,
+        email: user.email,
+        avatar: user.avatarUrl || "",
+      }
+    : {
+        name: "User",
+        email: "",
+        avatar: "",
+      };
 
   const navMain = [
     {
@@ -53,31 +60,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t("projects"),
       url: "/dashboard/projects",
       icon: IconFolder,
-      items: [
-        {
-          title: t("allProjects"),
-          url: "/dashboard/projects",
-        },
-        {
-          title: t("createProject"),
-          url: "/dashboard/projects/create",
-        },
-      ],
     },
     {
       title: t("inquiryTypes"),
       url: "/dashboard/inquiry-types",
       icon: IconHelp,
-      items: [
-        {
-          title: t("allInquiryTypes"),
-          url: "/dashboard/inquiry-types",
-        },
-        {
-          title: t("createInquiryType"),
-          url: "/dashboard/inquiry-types/create",
-        },
-      ],
     },
     {
       title: t("contacts"),
@@ -88,31 +75,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: t("testimonials"),
       url: "/dashboard/testimonials",
       icon: IconStar,
-      items: [
-        {
-          title: t("allTestimonials"),
-          url: "/dashboard/testimonials",
-        },
-        {
-          title: t("createTestimonial"),
-          url: "/dashboard/testimonials/create",
-        },
-      ],
     },
     {
       title: t("services"),
       url: "/dashboard/services",
       icon: IconSettings,
-      items: [
-        {
-          title: t("allServices"),
-          url: "/dashboard/services",
-        },
-        {
-          title: t("createService"),
-          url: "/dashboard/services/create",
-        },
-      ],
     },
   ];
 
@@ -134,7 +101,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userInfo} />
       </SidebarFooter>
     </Sidebar>
   );

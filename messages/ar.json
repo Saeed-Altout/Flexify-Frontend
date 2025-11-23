@@ -16,7 +16,9 @@
         "createTestimonial":"إنشاء شهادة",
         "services":"الخدمات",
         "allServices":"جميع الخدمات",
-        "createService":"إنشاء خدمة"
+        "createService":"إنشاء خدمة",
+        "account":"الحساب",
+        "create":"إنشاء"
     },
     "common":{
         "backToHome":"الرئيسية",
@@ -89,7 +91,10 @@
         "delete":"حذف",
         "actions":"الإجراءات",
         "create":"إنشاء",
-        "cancel":"إلغاء"
+        "cancel":"إلغاء",
+        "noResults":"لا توجد نتائج.",
+        "account":"الحساب",
+        "logout":"تسجيل الخروج"
     },
     "auth":{
         "title":"فلكسيفاي",
@@ -243,6 +248,9 @@
             "confirmPasswordLabel":"تأكيد كلمة المرور",
             "confirmPasswordPlaceholder":"تأكيد كلمة المرور",
             "confirmPasswordValidation":"كلمة المرور المأكدة يجب أن تكون على الأقل 8 أحرف",
+            "accountStatus":"حالة الحساب",
+            "verified":"موثوق",
+            "unverified":"غير موثوق",
             "tabs":{
                 "overview":{
                     "title":"الملف الشخصي",
