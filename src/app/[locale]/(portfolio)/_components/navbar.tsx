@@ -1,19 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { Link } from "@/i18n/navigation";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
-
+import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Logo } from "@/components/common/logo";
 import { GithubButton } from "@/components/buttons/github-button";
 import { GITHUB_FOLLOWERS, GITHUB_REPO_URL } from "@/constants/site.constants";
@@ -21,219 +25,117 @@ import { ModeToggleButton } from "@/components/buttons/mode-toggle-button";
 import { Separator } from "@/components/ui/separator";
 import { CVButton } from "@/components/buttons/cv-button";
 import { MenuButton } from "@/components/buttons/menu-button";
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
-  {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
-    description:
-      "For sighted users to preview content available behind a link.",
-  },
-  {
-    title: "Progress",
-    href: "/docs/primitives/progress",
-    description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-  },
-  {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
-  },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
-];
+import { cn } from "@/lib/utils";
+import {
+  IconHome,
+  IconBriefcase,
+  IconMail,
+  IconCode,
+} from "@tabler/icons-react";
 
 export function Navbar() {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+  const tLinks = useTranslations("portfolio.footer.links");
+  const tNav = useTranslations("portfolio.navbar");
+
+  const navItems = [
+    { href: "/", label: tLinks("home"), icon: IconHome },
+    { href: "/projects", label: tLinks("projects"), icon: IconBriefcase },
+    { href: "/services", label: tNav("services"), icon: IconCode },
+    { href: "/contact", label: tLinks("contact"), icon: IconMail },
+  ];
+
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
-    <header className="h-16 flex items-center justify-between container">
-      <NavigationMenu viewport={isMobile}>
-        <Logo className="me-6" />
-        <NavigationMenuList className="flex-wrap hidden lg:flex">
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                <li className="row-span-3">
-                  <NavigationMenuLink asChild>
-                    <Link
-                      className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-4 no-underline outline-hidden transition-all duration-200 select-none focus:shadow-md md:p-6"
-                      href="/"
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-6">
+          <Logo className="me-2" />
+          {!isMobile && (
+            <NavigationMenu>
+              <NavigationMenuList className="gap-1">
+                {navItems.map((item) => (
+                  <NavigationMenuItem key={item.href}>
+                    <NavigationMenuLink
+                      asChild
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        isActive(item.href) &&
+                          "bg-accent text-accent-foreground"
+                      )}
                     >
-                      <div className="mb-2 text-lg font-medium sm:mt-4">
-                        shadcn/ui
-                      </div>
-                      <p className="text-muted-foreground text-sm leading-tight">
-                        Beautifully designed components built with Tailwind CSS.
-                      </p>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                <ListItem href="/docs" title="Introduction">
-                  Re-usable components built using Radix UI and Tailwind CSS.
-                </ListItem>
-                <ListItem href="/docs/installation" title="Installation">
-                  How to install dependencies and structure your app.
-                </ListItem>
-                <ListItem href="/docs/primitives/typography" title="Typography">
-                  Styles for headings, paragraphs, lists...etc
-                </ListItem>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-2 sm:w-[400px] md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                {components.map((component) => (
-                  <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                  >
-                    {component.description}
-                  </ListItem>
+                      <Link href={item.href}>{item.label}</Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
                 ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link href="/docs">Docs</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="hidden md:block">
-            <NavigationMenuTrigger>List</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[300px] gap-4">
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link href="#">
-                      <div className="font-medium">Components</div>
-                      <div className="text-muted-foreground">
-                        Browse all components in the library.
-                      </div>
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link href="#">
-                      <div className="font-medium">Documentation</div>
-                      <div className="text-muted-foreground">
-                        Learn how to use the library.
-                      </div>
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link href="#">
-                      <div className="font-medium">Blog</div>
-                      <div className="text-muted-foreground">
-                        Read our latest blog posts.
-                      </div>
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="hidden md:block">
-            <NavigationMenuTrigger>Simple</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-4">
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link href="#">Components</Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link href="#">Documentation</Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link href="#">Blocks</Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-          <NavigationMenuItem className="hidden md:block">
-            <NavigationMenuTrigger>With Icon</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-4">
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
-                      <CircleHelpIcon />
-                      Backlog
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
-                      <CircleIcon />
-                      To Do
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link href="#" className="flex-row items-center gap-2">
-                      <CircleCheckIcon />
-                      Done
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-      <div className="flex items-center gap-2">
-        <CVButton />
-        <Separator orientation="vertical" className="h-6! hidden lg:block" />
-        <GithubButton
-          followers={GITHUB_FOLLOWERS}
-          repoUrl={GITHUB_REPO_URL}
-          className="hidden lg:flex"
-        />
-        <Separator orientation="vertical" className="h-6! hidden lg:block" />
-        <ModeToggleButton className="hidden lg:flex" />
-        <MenuButton className="lg:hidden" />
+              </NavigationMenuList>
+            </NavigationMenu>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <CVButton className="hidden sm:flex" />
+          <Separator orientation="vertical" className="h-6 hidden lg:block" />
+          <GithubButton
+            followers={GITHUB_FOLLOWERS}
+            repoUrl={GITHUB_REPO_URL}
+            className="hidden lg:flex"
+          />
+          <Separator orientation="vertical" className="h-6 hidden lg:block" />
+          <ModeToggleButton className="hidden lg:flex" />
+
+          {/* Mobile Menu */}
+          {isMobile && (
+            <Sheet>
+              <SheetTrigger asChild>
+                <MenuButton />
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle>{tNav("navigation")}</SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-4 mt-8">
+                  {navItems.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                          isActive(item.href)
+                            ? "bg-accent text-accent-foreground font-medium"
+                            : "hover:bg-accent/50"
+                        )}
+                      >
+                        <IconComponent className="w-5 h-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                  <Separator className="my-2" />
+                  <div className="flex flex-col gap-2">
+                    <CVButton className="w-full justify-start" />
+                    <GithubButton
+                      followers={GITHUB_FOLLOWERS}
+                      repoUrl={GITHUB_REPO_URL}
+                      className="w-full justify-start"
+                    />
+                    <ModeToggleButton className="w-full justify-start" />
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          )}
+        </div>
       </div>
     </header>
-  );
-}
-
-function ListItem({
-  title,
-  children,
-  href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
-  return (
-    <li {...props}>
-      <NavigationMenuLink asChild>
-        <Link href={href}>
-          <div className="text-sm leading-none font-medium">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">
-            {children}
-          </p>
-        </Link>
-      </NavigationMenuLink>
-    </li>
   );
 }

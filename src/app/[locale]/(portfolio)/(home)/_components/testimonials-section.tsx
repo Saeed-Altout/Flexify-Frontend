@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
 import { useTestimonialsQuery } from "@/modules/testimonials/testimonials-hook";
 import { ITestimonial } from "@/modules/testimonials/testimonials-type";
-import { SkeletonCard } from "@/components/ui/skeleton-card";
+import { SkeletonTestimonialsMarquee } from "@/components/ui/skeleton-testimonials-marquee";
 
 function TestimonialCard({
   testimonial,
@@ -86,25 +86,7 @@ export function TestimonialsSection() {
   const testimonials = data?.data?.data || [];
 
   if (isLoading) {
-    return (
-      <section className="py-16">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-              {t("title")}
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t("description")}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <SkeletonCard key={i} variant="testimonial" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
+    return <SkeletonTestimonialsMarquee />;
   }
 
   if (testimonials.length === 0) {

@@ -1247,6 +1247,13 @@
         }
     },
     "portfolio": {
+        "navbar": {
+            "home": "الرئيسية",
+            "projects": "المشاريع",
+            "services": "الخدمات",
+            "contact": "تواصل معي",
+            "navigation": "القائمة"
+        },
         "home": {
             "hero": {
                 "badge": "مطور Full Stack",

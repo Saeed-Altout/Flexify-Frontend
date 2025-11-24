@@ -1250,6 +1250,13 @@ declare const messages: {
         }
     },
     "portfolio": {
+        "navbar": {
+            "home": "Home",
+            "projects": "Projects",
+            "services": "Services",
+            "contact": "Contact",
+            "navigation": "Navigation"
+        },
         "home": {
             "hero": {
                 "badge": "Full Stack Developer",
