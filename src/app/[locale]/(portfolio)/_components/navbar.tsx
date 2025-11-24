@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -50,6 +49,10 @@ export function Navbar() {
     (t: { locale: string }) => t.locale === locale
   )?.value as { label: string } | undefined;
 
+  // Use translation label from API if available, otherwise use default "CV"
+  // The CV button should always show if cvSettings exists, regardless of translations
+  const cvLabel = cvTranslation?.label || "CV";
+
   const navItems = NAVBAR_LINKS.map((link) => {
     const IconComponent = link.icon ? getIconComponent(link.icon) : null;
     return {
@@ -75,7 +78,7 @@ export function Navbar() {
           <Logo className="me-2" />
           {!isMobile && (
             <NavigationMenu>
-              <NavigationMenuList className="gap-1">
+              <NavigationMenuList className="gap-1 hidden md:flex!">
                 {navItems.map((item) => (
                   <NavigationMenuItem key={item.href}>
                     <NavigationMenuLink
@@ -97,23 +100,21 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           {cvLoading ? (
-            <Skeleton className="h-9 w-24 hidden sm:block" />
-          ) : cvSettings && cvTranslation ? (
+            <Skeleton className="h-9 w-14 hidden sm:block" />
+          ) : cvSettings ? (
             <CVButton
-              className="hidden sm:flex"
               cvUrl={cvSettings.url}
               fileName={cvSettings.fileName}
-              label={cvTranslation.label}
+              label={cvLabel}
             />
           ) : null}
           <Separator orientation="vertical" className="h-6 hidden lg:block" />
           {githubLoading ? (
-            <Skeleton className="h-9 w-20 hidden lg:block" />
+            <Skeleton className="h-9 w-16 hidden lg:block" />
           ) : githubSettings ? (
             <GithubButton
               followers={githubSettings.followers}
               repoUrl={githubSettings.repoUrl}
-              className="hidden lg:flex"
             />
           ) : null}
           <Separator orientation="vertical" className="h-6 hidden lg:block" />
@@ -129,7 +130,7 @@ export function Navbar() {
                 <SheetHeader>
                   <SheetTitle>{tNav("navigation")}</SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col gap-4 mt-8">
+                <nav className="flex flex-col gap-4 mt-8 px-4">
                   {navItems.map((item) => {
                     const IconComponent = item.icon;
                     if (!IconComponent) return null;
@@ -149,25 +150,6 @@ export function Navbar() {
                       </Link>
                     );
                   })}
-                  <Separator className="my-2" />
-                  <div className="flex flex-col gap-2">
-                    {cvSettings && cvTranslation ? (
-                      <CVButton
-                        className="w-full justify-start"
-                        cvUrl={cvSettings.url}
-                        fileName={cvSettings.fileName}
-                        label={cvTranslation.label}
-                      />
-                    ) : null}
-                    {githubSettings ? (
-                      <GithubButton
-                        followers={githubSettings.followers}
-                        repoUrl={githubSettings.repoUrl}
-                        className="w-full justify-start"
-                      />
-                    ) : null}
-                    <ModeToggleButton className="w-full justify-start" />
-                  </div>
                 </nav>
               </SheetContent>
             </Sheet>
