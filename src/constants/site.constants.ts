@@ -3,6 +3,41 @@ export const GITHUB_FOLLOWERS = 17;
 export const CV_URL = "/Saeed-Altout-CV.pdf";
 
 /**
+ * Navbar Links Constants
+ *
+ * Centralized constants for navbar navigation items.
+ * These are static and don't need to be managed from the dashboard.
+ */
+export interface NavbarLink {
+  href: string;
+  icon?: string; // Icon name from Lucide Icons
+  translationKey: "home" | "projects" | "services" | "contact"; // Key in portfolio.navbar translations
+}
+
+export const NAVBAR_LINKS = [
+  {
+    href: "/",
+    icon: "Home",
+    translationKey: "home",
+  },
+  {
+    href: "/projects",
+    icon: "Folder",
+    translationKey: "projects",
+  },
+  {
+    href: "/services",
+    icon: "Briefcase",
+    translationKey: "services",
+  },
+  {
+    href: "/contact",
+    icon: "Mail",
+    translationKey: "contact",
+  },
+] as const satisfies readonly NavbarLink[];
+
+/**
  * Statistics Constants
  *
  * Centralized constants for portfolio statistics.

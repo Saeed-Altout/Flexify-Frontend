@@ -1,62 +1,11 @@
 import { apiClient } from "@/lib/axios";
 import type { IApiResponse } from "@/types/api-type";
 import {
-  INavbarLinkResponse,
-  INavbarLinksResponse,
   ISiteSettingResponse,
   ISiteSettingsResponse,
-  ICreateNavbarLinkRequest,
-  IUpdateNavbarLinkRequest,
   IUpdateSiteSettingRequest,
   IUpdateSiteSettingTranslationRequest,
 } from "./site-settings-type";
-
-// =====================================================
-// NAVBAR LINKS
-// =====================================================
-
-export const getNavbarLinks = async (
-  locale?: string
-): Promise<INavbarLinksResponse> => {
-  const params = locale ? { locale } : {};
-  const response = await apiClient.get<INavbarLinksResponse>(
-    "/site-settings/navbar-links",
-    { params }
-  );
-  return response.data;
-};
-
-export const getAllNavbarLinks = async (): Promise<INavbarLinksResponse> => {
-  const response = await apiClient.get<INavbarLinksResponse>(
-    "/site-settings/navbar-links/all"
-  );
-  return response.data;
-};
-
-export const createNavbarLink = async (
-  data: ICreateNavbarLinkRequest
-): Promise<INavbarLinkResponse> => {
-  const response = await apiClient.post<INavbarLinkResponse>(
-    "/site-settings/navbar-links",
-    data
-  );
-  return response.data;
-};
-
-export const updateNavbarLink = async (
-  id: string,
-  data: IUpdateNavbarLinkRequest
-): Promise<INavbarLinkResponse> => {
-  const response = await apiClient.patch<INavbarLinkResponse>(
-    `/site-settings/navbar-links/${id}`,
-    data
-  );
-  return response.data;
-};
-
-export const deleteNavbarLink = async (id: string): Promise<void> => {
-  await apiClient.delete(`/site-settings/navbar-links/${id}`);
-};
 
 // =====================================================
 // SITE SETTINGS

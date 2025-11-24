@@ -8,7 +8,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Heading } from "@/components/ui/heading";
-import { NavbarLinksTab } from "./navbar-links-tab";
 import { GitHubTab } from "./github-tab";
 import { CVTab } from "./cv-tab";
 import { HeroTab } from "./hero-tab";
@@ -27,15 +26,6 @@ export function SettingsPageClient() {
       />
 
       <Accordion type="single" collapsible className="w-full space-y-2">
-        <AccordionItem value="navbar" className="border rounded-lg px-4">
-          <AccordionTrigger className="text-base font-semibold hover:no-underline">
-            {t("tabs.navbar")}
-          </AccordionTrigger>
-          <AccordionContent className="pt-4 pb-6">
-            <NavbarLinksTab />
-          </AccordionContent>
-        </AccordionItem>
-
         <AccordionItem value="github" className="border rounded-lg px-4">
           <AccordionTrigger className="text-base font-semibold hover:no-underline">
             {t("tabs.github")}

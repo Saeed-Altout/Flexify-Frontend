@@ -1,25 +1,5 @@
 import { IApiResponse } from "@/types/api-type";
 
-export type INavbarLinkTranslation = {
-  id: string;
-  navbarLinkId: string;
-  locale: string;
-  label: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type INavbarLink = {
-  id: string;
-  href: string;
-  icon: string | null;
-  orderIndex: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  translations?: INavbarLinkTranslation[];
-};
-
 export type ISiteSettingTranslation = {
   id: string;
   siteSettingId: string;
@@ -39,21 +19,6 @@ export type ISiteSetting = {
 };
 
 // Request/Response Types
-export type ICreateNavbarLinkTranslationRequest = {
-  locale: string;
-  label: string;
-};
-
-export type ICreateNavbarLinkRequest = {
-  href: string;
-  icon?: string;
-  orderIndex?: number;
-  isActive?: boolean;
-  translations: ICreateNavbarLinkTranslationRequest[];
-};
-
-export type IUpdateNavbarLinkRequest = Partial<ICreateNavbarLinkRequest>;
-
 export type IUpdateSiteSettingRequest = {
   value?: Record<string, unknown>;
 };
@@ -62,10 +27,6 @@ export type IUpdateSiteSettingTranslationRequest = {
   locale: string;
   value: Record<string, unknown>;
 };
-
-export type INavbarLinksResponse = IApiResponse<{ data: INavbarLink[] }>;
-
-export type INavbarLinkResponse = IApiResponse<{ data: INavbarLink }>;
 
 export type ISiteSettingResponse = IApiResponse<{ data: ISiteSetting }>;
 

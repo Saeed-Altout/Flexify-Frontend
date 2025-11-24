@@ -1,89 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  getNavbarLinks,
-  getAllNavbarLinks,
-  createNavbarLink,
-  updateNavbarLink,
-  deleteNavbarLink,
   getSiteSetting,
   getAllSiteSettings,
   updateSiteSetting,
   updateSiteSettingTranslation,
 } from "./site-settings-api";
 import { toast } from "sonner";
-
-// =====================================================
-// NAVBAR LINKS HOOKS
-// =====================================================
-
-export const useNavbarLinksQuery = (locale?: string) => {
-  return useQuery({
-    queryKey: ["navbar-links", locale],
-    queryFn: () => getNavbarLinks(locale),
-    retry: 1,
-    retryDelay: 1000,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
-
-export const useAllNavbarLinksQuery = () => {
-  return useQuery({
-    queryKey: ["navbar-links", "all"],
-    queryFn: () => getAllNavbarLinks(),
-  });
-};
-
-export const useCreateNavbarLinkMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: createNavbarLink,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["navbar-links"] });
-      toast.success("Navbar link created successfully");
-    },
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to create navbar link"
-      );
-    },
-  });
-};
-
-export const useUpdateNavbarLinkMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
-      updateNavbarLink(id, data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["navbar-links"] });
-      toast.success("Navbar link updated successfully");
-    },
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to update navbar link"
-      );
-    },
-  });
-};
-
-export const useDeleteNavbarLinkMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteNavbarLink,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["navbar-links"] });
-      toast.success("Navbar link deleted successfully");
-    },
-    onError: (error: any) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to delete navbar link"
-      );
-    },
-  });
-};
 
 // =====================================================
 // SITE SETTINGS HOOKS
