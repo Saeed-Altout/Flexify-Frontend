@@ -53,7 +53,7 @@ export function IconPicker({ value, onSelect, disabled }: IconPickerProps) {
       )
     : allIcons;
 
-  // Since we only have 20 icons, just use filtered icons directly
+  // Filter valid icons that exist in the icon map
   const validIcons = filteredIcons.filter((iconName) => {
     const IconComponent = getIconComponent(iconName);
     return IconComponent !== null;
