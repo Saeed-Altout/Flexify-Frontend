@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IconPicker } from "@/components/ui/icon-picker";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -33,17 +32,24 @@ import type {
 
 const heroSettingsSchema = z.object({
   techIcons: z.array(z.string()).min(1, "At least one tech icon is required"),
-});
-
-const heroTranslationSchema = z.object({
-  badge: z.string().min(1, "Badge is required"),
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  cta: z.string().min(1, "CTA is required"),
+  ctaLink: z
+    .string()
+    .optional()
+    .refine(
+      (val) => !val || val.startsWith("/") || val.startsWith("http"),
+      "URL must start with / or http"
+    ),
+  badgeEn: z.string().min(1, "English badge is required"),
+  badgeAr: z.string().min(1, "Arabic badge is required"),
+  titleEn: z.string().min(1, "English title is required"),
+  titleAr: z.string().min(1, "Arabic title is required"),
+  descriptionEn: z.string().min(1, "English description is required"),
+  descriptionAr: z.string().min(1, "Arabic description is required"),
+  ctaEn: z.string().optional(),
+  ctaAr: z.string().optional(),
 });
 
 type HeroSettingsFormValues = z.infer<typeof heroSettingsSchema>;
-type HeroTranslationFormValues = z.infer<typeof heroTranslationSchema>;
 
 export function HeroTab() {
   const t = useTranslations("dashboard.settings.hero");
@@ -66,127 +72,101 @@ export function HeroTab() {
     (trans: { locale: string }) => trans.locale === "ar"
   )?.value as IHeroTranslation | undefined;
 
+  // Prepare form values from existing data
+  const getFormValues = (): HeroSettingsFormValues => {
+    return {
+      techIcons: heroValue?.techIcons || [],
+      ctaLink: heroValue?.ctaLink || "",
+      badgeEn: enTranslation?.badge || "",
+      badgeAr: arTranslation?.badge || "",
+      titleEn: enTranslation?.title || "",
+      titleAr: arTranslation?.title || "",
+      descriptionEn: enTranslation?.description || "",
+      descriptionAr: arTranslation?.description || "",
+      ctaEn: enTranslation?.cta || "",
+      ctaAr: arTranslation?.cta || "",
+    };
+  };
+
   const {
-    register: registerSettings,
-    handleSubmit: handleSubmitSettings,
-    formState: { errors: settingsErrors },
-    watch: watchSettings,
-    setValue: setSettingsValue,
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
   } = useForm<HeroSettingsFormValues>({
     resolver: zodResolver(heroSettingsSchema),
-    defaultValues: {
-      techIcons: heroValue?.techIcons || [],
-    },
-    values: heroValue
-      ? {
-          techIcons: heroValue.techIcons,
-        }
-      : undefined,
+    defaultValues: getFormValues(),
+    values:
+      heroValue || enTranslation || arTranslation
+        ? getFormValues()
+        : undefined,
   });
 
-  const {
-    register: registerEnTranslation,
-    handleSubmit: handleSubmitEnTranslation,
-    formState: { errors: enTranslationErrors },
-  } = useForm<HeroTranslationFormValues>({
-    resolver: zodResolver(heroTranslationSchema),
-    defaultValues: {
-      badge: enTranslation?.badge || "",
-      title: enTranslation?.title || "",
-      description: enTranslation?.description || "",
-      cta: enTranslation?.cta || "",
-    },
-    values: enTranslation
-      ? {
-          badge: enTranslation.badge,
-          title: enTranslation.title,
-          description: enTranslation.description,
-          cta: enTranslation.cta,
-        }
-      : undefined,
-  });
+  const techIcons = watch("techIcons");
 
-  const {
-    register: registerArTranslation,
-    handleSubmit: handleSubmitArTranslation,
-    formState: { errors: arTranslationErrors },
-  } = useForm<HeroTranslationFormValues>({
-    resolver: zodResolver(heroTranslationSchema),
-    defaultValues: {
-      badge: arTranslation?.badge || "",
-      title: arTranslation?.title || "",
-      description: arTranslation?.description || "",
-      cta: arTranslation?.cta || "",
-    },
-    values: arTranslation
-      ? {
-          badge: arTranslation.badge,
-          title: arTranslation.title,
-          description: arTranslation.description,
-          cta: arTranslation.cta,
-        }
-      : undefined,
-  });
+  const addTechIcon = (iconName: string) => {
+    if (iconName && !techIcons.includes(iconName)) {
+      setValue("techIcons", [...techIcons, iconName]);
+    }
+  };
 
-  const techIcons = watchSettings("techIcons");
+  const removeTechIcon = (icon: string) => {
+    setValue(
+      "techIcons",
+      techIcons.filter((i) => i !== icon)
+    );
+  };
 
-  const onSettingsSubmit = async (values: HeroSettingsFormValues) => {
+  const onSubmit = async (values: HeroSettingsFormValues) => {
     try {
+      // Update settings (techIcons and ctaLink)
       await updateSettingsMutation.mutateAsync({
         key: "hero",
         data: {
           value: {
             techIcons: values.techIcons,
+            ctaLink: values.ctaLink || undefined,
           },
         },
       });
-      toast.success(t("settingsUpdateSuccess"));
-    } catch (error) {
-      // Error handled by mutation
-    }
-  };
 
-  const onEnTranslationSubmit = async (values: HeroTranslationFormValues) => {
-    try {
+      // Update EN translation
+      const enTranslationValue: IHeroTranslation = {
+        badge: values.badgeEn,
+        title: values.titleEn,
+        description: values.descriptionEn,
+        cta: values.ctaEn || undefined,
+      };
+
       await updateTranslationMutation.mutateAsync({
         key: "hero",
         data: {
           locale: "en",
-          value: values,
+          value: enTranslationValue,
         },
       });
-      toast.success(t("translationUpdateSuccess"));
-    } catch (error) {
-      // Error handled by mutation
-    }
-  };
 
-  const onArTranslationSubmit = async (values: HeroTranslationFormValues) => {
-    try {
+      // Update AR translation
+      const arTranslationValue: IHeroTranslation = {
+        badge: values.badgeAr,
+        title: values.titleAr,
+        description: values.descriptionAr,
+        cta: values.ctaAr || undefined,
+      };
+
       await updateTranslationMutation.mutateAsync({
         key: "hero",
         data: {
           locale: "ar",
-          value: values,
+          value: arTranslationValue,
         },
       });
-      toast.success(t("translationUpdateSuccess"));
+
+      toast.success(t("settingsUpdateSuccess"));
     } catch (error) {
       // Error handled by mutation
     }
-  };
-
-  const addTechIcon = (iconName: string) => {
-    if (iconName && !techIcons.includes(iconName)) {
-      setSettingsValue("techIcons", [...techIcons, iconName]);
-    }
-  };
-
-  const removeTechIcon = (icon: string) => {
-    setSettingsValue(
-      "techIcons",
-      techIcons.filter((i) => i !== icon)
-    );
   };
 
   if (settingsLoading || translationLoading) {
@@ -205,231 +185,158 @@ export function HeroTab() {
   }
 
   return (
-    <Tabs defaultValue="settings" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="settings">{t("settingsTab")}</TabsTrigger>
-        <TabsTrigger value="translation-en">
-          {t("translationTab")} (EN)
-        </TabsTrigger>
-        <TabsTrigger value="translation-ar">
-          {t("translationTab")} (AR)
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="settings">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("settingsTitle")}</CardTitle>
-            <CardDescription>{t("settingsDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmitSettings(onSettingsSubmit)}
-              className="space-y-4"
-            >
+    <Card>
+      <CardHeader>
+        <div>
+          <CardTitle>{t("settingsTitle")}</CardTitle>
+          <CardDescription>{t("settingsDescription")}</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Section Content - Badge, Title, Description, CTA */}
+          <div className="space-y-4 p-4 border rounded-lg">
+            <Label className="text-base font-semibold">
+              {t("translationTitle")}
+            </Label>
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>{t("techIconsLabel")}</Label>
-                <div className="flex gap-2">
-                  <IconPicker
-                    value=""
-                    onSelect={addTechIcon}
-                  />
+                <Label>{t("badgeLabel")} (EN)</Label>
+                <Input {...register("badgeEn")} />
+                {errors.badgeEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.badgeEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("badgeLabel")} (AR)</Label>
+                <Input {...register("badgeAr")} />
+                {errors.badgeAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.badgeAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("titleLabel")} (EN)</Label>
+                <Input {...register("titleEn")} />
+                {errors.titleEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.titleEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("titleLabel")} (AR)</Label>
+                <Input {...register("titleAr")} />
+                {errors.titleAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.titleAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("descriptionLabel")} (EN)</Label>
+                <Textarea {...register("descriptionEn")} rows={4} />
+                {errors.descriptionEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.descriptionEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("descriptionLabel")} (AR)</Label>
+                <Textarea {...register("descriptionAr")} rows={4} />
+                {errors.descriptionAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.descriptionAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("ctaLabel")} (EN)</Label>
+                <Input {...register("ctaEn")} />
+                {errors.ctaEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.ctaEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("ctaLabel")} (AR)</Label>
+                <Input {...register("ctaAr")} />
+                {errors.ctaAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.ctaAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{t("ctaUrlLabel")}</Label>
+              <Input
+                {...register("ctaLink")}
+                placeholder="/projects"
+                type="text"
+              />
+              {errors.ctaLink && (
+                <p className="text-sm text-destructive">
+                  {errors.ctaLink.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Tech Icons */}
+          <div className="space-y-2">
+            <Label>{t("techIconsLabel")}</Label>
+            <div className="flex gap-2">
+              <IconPicker value="" onSelect={addTechIcon} />
+            </div>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {techIcons.map((icon) => (
+                <div
+                  key={icon}
+                  className="flex items-center gap-2 px-3 py-1 rounded-md bg-muted"
+                >
+                  <span className="text-sm">{icon}</span>
+                  <button
+                    type="button"
+                    onClick={() => removeTechIcon(icon)}
+                    className="text-destructive hover:underline text-sm"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {techIcons.map((icon) => (
-                    <div
-                      key={icon}
-                      className="flex items-center gap-2 px-3 py-1 rounded-md bg-muted"
-                    >
-                      <span className="text-sm">{icon}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeTechIcon(icon)}
-                        className="text-destructive hover:underline text-sm"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                {settingsErrors.techIcons && (
-                  <p className="text-sm text-destructive">
-                    {settingsErrors.techIcons.message}
-                  </p>
-                )}
-              </div>
+              ))}
+            </div>
+            {errors.techIcons && (
+              <p className="text-sm text-destructive">
+                {errors.techIcons.message}
+              </p>
+            )}
+          </div>
 
-              <Button type="submit" disabled={updateSettingsMutation.isPending}>
-                {updateSettingsMutation.isPending
-                  ? t("saving")
-                  : t("saveButton")}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="translation-en">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("translationTitle")} (EN)</CardTitle>
-            <CardDescription>{t("translationDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmitEnTranslation(onEnTranslationSubmit)}
-              className="space-y-4"
-            >
-              <div className="space-y-2">
-                <Label htmlFor="badge-en">{t("badgeLabel")}</Label>
-                <Input
-                  id="badge-en"
-                  {...registerEnTranslation("badge")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.badge && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.badge.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="title-en">{t("titleLabel")}</Label>
-                <Input
-                  id="title-en"
-                  {...registerEnTranslation("title")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.title && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.title.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description-en">{t("descriptionLabel")}</Label>
-                <Textarea
-                  id="description-en"
-                  {...registerEnTranslation("description")}
-                  rows={4}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.description && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.description.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="cta-en">{t("ctaLabel")}</Label>
-                <Input
-                  id="cta-en"
-                  {...registerEnTranslation("cta")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.cta && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.cta.message}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={updateTranslationMutation.isPending}
-              >
-                {updateTranslationMutation.isPending
-                  ? t("saving")
-                  : t("saveButton")}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="translation-ar">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("translationTitle")} (AR)</CardTitle>
-            <CardDescription>{t("translationDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmitArTranslation(onArTranslationSubmit)}
-              className="space-y-4"
-            >
-              <div className="space-y-2">
-                <Label htmlFor="badge-ar">{t("badgeLabel")}</Label>
-                <Input
-                  id="badge-ar"
-                  {...registerArTranslation("badge")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.badge && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.badge.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="title-ar">{t("titleLabel")}</Label>
-                <Input
-                  id="title-ar"
-                  {...registerArTranslation("title")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.title && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.title.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description-ar">{t("descriptionLabel")}</Label>
-                <Textarea
-                  id="description-ar"
-                  {...registerArTranslation("description")}
-                  rows={4}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.description && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.description.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="cta-ar">{t("ctaLabel")}</Label>
-                <Input
-                  id="cta-ar"
-                  {...registerArTranslation("cta")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.cta && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.cta.message}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={updateTranslationMutation.isPending}
-              >
-                {updateTranslationMutation.isPending
-                  ? t("saving")
-                  : t("saveButton")}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
+          <Button
+            type="submit"
+            disabled={
+              updateSettingsMutation.isPending ||
+              updateTranslationMutation.isPending
+            }
+          >
+            {updateSettingsMutation.isPending || updateTranslationMutation.isPending
+              ? t("saving")
+              : t("saveButton")}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

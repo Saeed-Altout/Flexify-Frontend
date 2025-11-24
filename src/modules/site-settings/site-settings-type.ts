@@ -88,6 +88,7 @@ export type IAboutHighlight = {
 
 export type IAboutSettings = {
   highlights: IAboutHighlight[];
+  ctaLink?: string;
 };
 
 export type IAboutTranslation = {

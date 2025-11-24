@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { useSiteSettingQuery } from "@/modules/site-settings/site-settings-hook";
 import { getIconComponent } from "@/utils/dynamic-icon-loader";
@@ -12,6 +12,7 @@ import type {
 
 export function StatisticsSection() {
   const locale = useLocale();
+  const t = useTranslations("portfolio.home.statistics");
   const { data: settingsData, isLoading: settingsLoading } =
     useSiteSettingQuery("statistics");
   const { data: translationData, isLoading: translationLoading } =
@@ -23,6 +24,10 @@ export function StatisticsSection() {
     | undefined;
   const statisticsTranslation = translationData?.data?.data?.translations?.[0]
     ?.value as IStatisticsTranslation | undefined;
+  
+  // Use API translation if available, otherwise use frontend translation keys as fallback
+  const sectionTitle = statisticsTranslation?.title || t("title");
+  const sectionDescription = statisticsTranslation?.description || t("description");
 
   if (settingsLoading || translationLoading) {
     return (
@@ -42,7 +47,8 @@ export function StatisticsSection() {
     );
   }
 
-  if (!statisticsValue || !statisticsTranslation) {
+  // Show section if statistics data exists, even without translations
+  if (!statisticsValue) {
     return null;
   }
 
@@ -62,11 +68,11 @@ export function StatisticsSection() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-            {statisticsTranslation.title}
+            {sectionTitle}
           </h2>
-          {statisticsTranslation.description && (
+          {sectionDescription && (
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {statisticsTranslation.description}
+              {sectionDescription}
             </p>
           )}
         </motion.div>
@@ -76,8 +82,11 @@ export function StatisticsSection() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {items.map((stat, index) => {
               const IconComponent = getIconComponent(stat.icon);
+              // Use API translation label if available, otherwise use frontend translation or fallback to stat.id
               const label =
-                statisticsTranslation.items?.[stat.id]?.label || stat.id;
+                statisticsTranslation?.items?.[stat.id]?.label ||
+                t(`items.${stat.id}.label`) ||
+                stat.id;
 
               return (
                 <motion.div

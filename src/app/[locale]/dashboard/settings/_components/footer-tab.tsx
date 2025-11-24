@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IconPicker } from "@/components/ui/icon-picker";
 import { toast } from "sonner";
 import type {
@@ -55,26 +54,17 @@ const footerSettingsSchema = z.object({
     phone: z.string(),
     location: z.string(),
   }),
-});
-
-const footerTranslationSchema = z.object({
-  description: z.string().min(1, "Description is required"),
-  contact: z.object({
-    title: z.string().min(1, "Title is required"),
-  }),
-  columns: z.record(
-    z.string(),
-    z.object({
-      title: z.string().min(1, "Column title is required"),
-      links: z.record(z.string(), z.string().min(1, "Link label is required")),
-    })
-  ),
-  copyright: z.string().min(1, "Copyright is required"),
-  rights: z.string().min(1, "Rights is required"),
+  descriptionEn: z.string().min(1, "English description is required"),
+  descriptionAr: z.string().min(1, "Arabic description is required"),
+  contactTitleEn: z.string().min(1, "English contact title is required"),
+  contactTitleAr: z.string().min(1, "Arabic contact title is required"),
+  copyrightEn: z.string().min(1, "English copyright is required"),
+  copyrightAr: z.string().min(1, "Arabic copyright is required"),
+  rightsEn: z.string().min(1, "English rights is required"),
+  rightsAr: z.string().min(1, "Arabic rights is required"),
 });
 
 type FooterSettingsFormValues = z.infer<typeof footerSettingsSchema>;
-type FooterTranslationFormValues = z.infer<typeof footerTranslationSchema>;
 
 export function FooterTab() {
   const t = useTranslations("dashboard.settings.footer");
@@ -97,15 +87,9 @@ export function FooterTab() {
     (trans: { locale: string }) => trans.locale === "ar"
   )?.value as IFooterTranslation | undefined;
 
-  const {
-    register: registerSettings,
-    handleSubmit: handleSubmitSettings,
-    formState: { errors: settingsErrors },
-    watch: watchSettings,
-    setValue: setSettingsValue,
-  } = useForm<FooterSettingsFormValues>({
-    resolver: zodResolver(footerSettingsSchema),
-    defaultValues: {
+  // Prepare form values from existing data
+  const getFormValues = (): FooterSettingsFormValues => {
+    return {
       socialLinks: footerValue?.socialLinks || [],
       columns: (footerValue?.columns || []).map((col) => {
         const colKey = col.key;
@@ -137,134 +121,55 @@ export function FooterTab() {
         phone: "",
         location: "",
       },
-    },
+      descriptionEn: enTranslation?.description || "",
+      descriptionAr: arTranslation?.description || "",
+      contactTitleEn: enTranslation?.contact?.title || "",
+      contactTitleAr: arTranslation?.contact?.title || "",
+      copyrightEn: enTranslation?.copyright || "",
+      copyrightAr: arTranslation?.copyright || "",
+      rightsEn: enTranslation?.rights || "",
+      rightsAr: arTranslation?.rights || "",
+    };
+  };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm<FooterSettingsFormValues>({
+    resolver: zodResolver(footerSettingsSchema),
+    defaultValues: getFormValues(),
     values:
-      footerValue && enTranslation && arTranslation
-        ? {
-            socialLinks: footerValue.socialLinks.map((link) => ({
-              icon: link.icon,
-              href: link.href,
-            })),
-            columns: footerValue.columns.map((col) => ({
-              key: col.key,
-              titleEn:
-                (
-                  enTranslation.columns?.[col.key] as
-                    | { title: string }
-                    | undefined
-                )?.title || "",
-              titleAr:
-                (
-                  arTranslation.columns?.[col.key] as
-                    | { title: string }
-                    | undefined
-                )?.title || "",
-              links: col.links.map((link) => {
-                // Find the label by matching the key
-                const enLinks =
-                  (
-                    enTranslation.columns?.[col.key] as
-                      | { links: Record<string, string> }
-                      | undefined
-                  )?.links || {};
-                const arLinks =
-                  (
-                    arTranslation.columns?.[col.key] as
-                      | { links: Record<string, string> }
-                      | undefined
-                  )?.links || {};
-
-                const linkKey = link.key;
-                const labelEn = enLinks[linkKey] || "";
-                const labelAr = arLinks[linkKey] || "";
-
-                return {
-                  href: link.href,
-                  labelEn: labelEn || "",
-                  labelAr: labelAr || "",
-                };
-              }),
-            })),
-            contact: footerValue.contact,
-          }
+      footerValue || enTranslation || arTranslation
+        ? getFormValues()
         : undefined,
   });
 
-  const {
-    register: registerEnTranslation,
-    handleSubmit: handleSubmitEnTranslation,
-    formState: { errors: enTranslationErrors },
-    watch: watchEnTranslation,
-  } = useForm<FooterTranslationFormValues>({
-    resolver: zodResolver(footerTranslationSchema),
-    defaultValues: {
-      description: enTranslation?.description || "",
-      contact: enTranslation?.contact || { title: "" },
-      columns: enTranslation?.columns || {},
-      copyright: enTranslation?.copyright || "",
-      rights: enTranslation?.rights || "",
-    },
-    values: enTranslation
-      ? {
-          description: enTranslation.description,
-          contact: enTranslation.contact,
-          columns: enTranslation.columns || {},
-          copyright: enTranslation.copyright,
-          rights: enTranslation.rights,
-        }
-      : undefined,
-  });
-
-  const {
-    register: registerArTranslation,
-    handleSubmit: handleSubmitArTranslation,
-    formState: { errors: arTranslationErrors },
-    watch: watchArTranslation,
-  } = useForm<FooterTranslationFormValues>({
-    resolver: zodResolver(footerTranslationSchema),
-    defaultValues: {
-      description: arTranslation?.description || "",
-      contact: arTranslation?.contact || { title: "" },
-      columns: arTranslation?.columns || {},
-      copyright: arTranslation?.copyright || "",
-      rights: arTranslation?.rights || "",
-    },
-    values: arTranslation
-      ? {
-          description: arTranslation.description,
-          contact: arTranslation.contact,
-          columns: arTranslation.columns || {},
-          copyright: arTranslation.copyright,
-          rights: arTranslation.rights,
-        }
-      : undefined,
-  });
-
-  const socialLinks = watchSettings("socialLinks");
-  const columns = watchSettings("columns");
-  const enTranslationColumns = watchEnTranslation("columns");
-  const arTranslationColumns = watchArTranslation("columns");
+  const socialLinks = watch("socialLinks");
+  const columns = watch("columns");
 
   const addSocialLink = () => {
-    setSettingsValue("socialLinks", [...socialLinks, { icon: "", href: "" }]);
+    setValue("socialLinks", [...socialLinks, { icon: "", href: "" }]);
   };
 
   const removeSocialLink = (index: number) => {
-    setSettingsValue(
+    setValue(
       "socialLinks",
       socialLinks.filter((_, i) => i !== index)
     );
   };
 
   const addColumn = () => {
-    setSettingsValue("columns", [
+    setValue("columns", [
       ...columns,
       { titleEn: "", titleAr: "", links: [] },
     ]);
   };
 
   const removeColumn = (index: number) => {
-    setSettingsValue(
+    setValue(
       "columns",
       columns.filter((_, i) => i !== index)
     );
@@ -272,7 +177,7 @@ export function FooterTab() {
 
   const addLinkItem = (columnIndex: number) => {
     const column = columns[columnIndex];
-    setSettingsValue(`columns.${columnIndex}.links`, [
+    setValue(`columns.${columnIndex}.links`, [
       ...column.links,
       { href: "", labelEn: "", labelAr: "" },
     ]);
@@ -280,16 +185,15 @@ export function FooterTab() {
 
   const removeLinkItem = (columnIndex: number, linkIndex: number) => {
     const column = columns[columnIndex];
-    setSettingsValue(
+    setValue(
       `columns.${columnIndex}.links`,
       column.links.filter((_, i) => i !== linkIndex)
     );
   };
 
-  const onSettingsSubmit = async (values: FooterSettingsFormValues) => {
+  const onSubmit = async (values: FooterSettingsFormValues) => {
     try {
-      // Separate settings and translations
-      // Generate keys from English labels (lowercase, replace spaces with underscores)
+      // Generate keys from English labels
       const settingsValue = {
         socialLinks: values.socialLinks,
         columns: values.columns.map((col) => {
@@ -323,10 +227,12 @@ export function FooterTab() {
         },
       });
 
-      // Prepare translations for both languages
-      const enTranslationValue = {
-        description: enTranslation?.description || "",
-        contact: enTranslation?.contact || { title: "" },
+      // Update EN translation
+      const enTranslationValue: IFooterTranslation = {
+        description: values.descriptionEn,
+        contact: {
+          title: values.contactTitleEn,
+        },
         columns: values.columns.reduce((acc, col) => {
           const colKey =
             col.titleEn
@@ -347,13 +253,16 @@ export function FooterTab() {
           };
           return acc;
         }, {} as Record<string, { title: string; links: Record<string, string> }>),
-        copyright: enTranslation?.copyright || "",
-        rights: enTranslation?.rights || "",
+        copyright: values.copyrightEn,
+        rights: values.rightsEn,
       };
 
-      const arTranslationValue = {
-        description: arTranslation?.description || "",
-        contact: arTranslation?.contact || { title: "" },
+      // Update AR translation
+      const arTranslationValue: IFooterTranslation = {
+        description: values.descriptionAr,
+        contact: {
+          title: values.contactTitleAr,
+        },
         columns: values.columns.reduce((acc, col) => {
           const colKey =
             col.titleEn
@@ -374,8 +283,8 @@ export function FooterTab() {
           };
           return acc;
         }, {} as Record<string, { title: string; links: Record<string, string> }>),
-        copyright: arTranslation?.copyright || "",
-        rights: arTranslation?.rights || "",
+        copyright: values.copyrightAr,
+        rights: values.rightsAr,
       };
 
       // Update translations
@@ -402,36 +311,6 @@ export function FooterTab() {
     }
   };
 
-  const onEnTranslationSubmit = async (values: FooterTranslationFormValues) => {
-    try {
-      await updateTranslationMutation.mutateAsync({
-        key: "footer",
-        data: {
-          locale: "en",
-          value: values,
-        },
-      });
-      toast.success(t("translationUpdateSuccess"));
-    } catch (error) {
-      // Error handled by mutation
-    }
-  };
-
-  const onArTranslationSubmit = async (values: FooterTranslationFormValues) => {
-    try {
-      await updateTranslationMutation.mutateAsync({
-        key: "footer",
-        data: {
-          locale: "ar",
-          value: values,
-        },
-      });
-      toast.success(t("translationUpdateSuccess"));
-    } catch (error) {
-      // Error handled by mutation
-    }
-  };
-
   if (settingsLoading || translationLoading) {
     return (
       <Card>
@@ -448,490 +327,277 @@ export function FooterTab() {
   }
 
   return (
-    <Tabs defaultValue="settings" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="settings">{t("settingsTab")}</TabsTrigger>
-        <TabsTrigger value="translation-en">
-          {t("translationTab")} (EN)
-        </TabsTrigger>
-        <TabsTrigger value="translation-ar">
-          {t("translationTab")} (AR)
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="settings">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("settingsTitle")}</CardTitle>
-            <CardDescription>{t("settingsDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmitSettings(onSettingsSubmit)}
-              className="space-y-6"
-            >
-              {/* Social Links */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold">
-                    {t("socialLinksLabel")}
-                  </Label>
-                  <Button type="button" onClick={addSocialLink} size="sm">
-                    <Plus className="mr-2 h-4 w-4" />
-                    {t("add")}
-                  </Button>
-                </div>
-                {socialLinks.map((_, index) => (
-                  <div key={index} className="p-3 border rounded-lg space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label>
-                        {t("socialLink")} {index + 1}
-                      </Label>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeSocialLink(index)}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <IconPicker
-                        value={socialLinks[index]?.icon || ""}
-                        onSelect={(iconName) =>
-                          setSettingsValue(
-                            `socialLinks.${index}.icon`,
-                            iconName
-                          )
-                        }
-                      />
-                      <Input
-                        {...registerSettings(`socialLinks.${index}.href`)}
-                        placeholder={t("urlPlaceholder")}
-                      />
-                    </div>
-                  </div>
-                ))}
+    <Card>
+      <CardHeader>
+        <div>
+          <CardTitle>{t("settingsTitle")}</CardTitle>
+          <CardDescription>{t("settingsDescription")}</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Section Content - Description, Contact Title, Copyright, Rights */}
+          <div className="space-y-4 p-4 border rounded-lg">
+            <Label className="text-base font-semibold">
+              {t("translationTitle")}
+            </Label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("descriptionLabel")} (EN)</Label>
+                <Textarea {...register("descriptionEn")} rows={3} />
+                {errors.descriptionEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.descriptionEn.message}
+                  </p>
+                )}
               </div>
+              <div className="space-y-2">
+                <Label>{t("descriptionLabel")} (AR)</Label>
+                <Textarea {...register("descriptionAr")} rows={3} />
+                {errors.descriptionAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.descriptionAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("contactTitleLabel")} (EN)</Label>
+                <Input {...register("contactTitleEn")} />
+                {errors.contactTitleEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.contactTitleEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("contactTitleLabel")} (AR)</Label>
+                <Input {...register("contactTitleAr")} />
+                {errors.contactTitleAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.contactTitleAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("copyrightLabel")} (EN)</Label>
+                <Input {...register("copyrightEn")} />
+                {errors.copyrightEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.copyrightEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("copyrightLabel")} (AR)</Label>
+                <Input {...register("copyrightAr")} />
+                {errors.copyrightAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.copyrightAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>{t("rightsLabel")} (EN)</Label>
+                <Input {...register("rightsEn")} />
+                {errors.rightsEn && (
+                  <p className="text-sm text-destructive">
+                    {errors.rightsEn.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>{t("rightsLabel")} (AR)</Label>
+                <Input {...register("rightsAr")} />
+                {errors.rightsAr && (
+                  <p className="text-sm text-destructive">
+                    {errors.rightsAr.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
 
-              {/* Columns */}
-              <div className="space-y-3">
+          {/* Social Links */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-semibold">
+                {t("socialLinksLabel")}
+              </Label>
+              <Button type="button" onClick={addSocialLink} size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                {t("add")}
+              </Button>
+            </div>
+            {socialLinks.map((_, index) => (
+              <div key={index} className="p-3 border rounded-lg space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold">
-                    {t("columnsLabel")}
+                  <Label>
+                    {t("socialLink")} {index + 1}
                   </Label>
-                  <Button type="button" onClick={addColumn} size="sm">
-                    <Plus className="mr-2 h-4 w-4" />
-                    {t("addColumn")}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeSocialLink(index)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </div>
-                {columns.map((column, columnIndex) => (
-                  <div
-                    key={columnIndex}
-                    className="p-4 border rounded-lg space-y-3"
+                <div className="grid grid-cols-2 gap-2">
+                  <IconPicker
+                    value={socialLinks[index]?.icon || ""}
+                    onSelect={(iconName) =>
+                      setValue(`socialLinks.${index}.icon`, iconName)
+                    }
+                  />
+                  <Input
+                    {...register(`socialLinks.${index}.href`)}
+                    placeholder={t("urlPlaceholder")}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Columns */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-semibold">
+                {t("columnsLabel")}
+              </Label>
+              <Button type="button" onClick={addColumn} size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                {t("addColumn")}
+              </Button>
+            </div>
+            {columns.map((column, columnIndex) => (
+              <div
+                key={columnIndex}
+                className="p-4 border rounded-lg space-y-3"
+              >
+                <div className="flex items-center justify-end">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeColumn(columnIndex)}
                   >
-                    <div className="flex items-center justify-end">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeColumn(columnIndex)}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="space-y-2">
-                        <Label className="text-sm">Title (EN)</Label>
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
+                    <Label className="text-sm">Title (EN)</Label>
+                    <Input
+                      {...register(`columns.${columnIndex}.titleEn`)}
+                      placeholder="English title"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-sm">Title (AR)</Label>
+                    <Input
+                      {...register(`columns.${columnIndex}.titleAr`)}
+                      placeholder="Arabic title"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2 pl-4 border-l-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">{t("links")}</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addLinkItem(columnIndex)}
+                    >
+                      <Plus className="mr-2 h-3 w-3" />
+                      {t("addLink")}
+                    </Button>
+                  </div>
+                  {column.links.map((_, linkIndex) => (
+                    <div
+                      key={linkIndex}
+                      className="space-y-2 p-2 border rounded"
+                    >
+                      <div className="flex gap-2 items-center">
                         <Input
-                          {...registerSettings(
-                            `columns.${columnIndex}.titleEn`
+                          {...register(
+                            `columns.${columnIndex}.links.${linkIndex}.href`
                           )}
-                          placeholder="English title"
+                          placeholder={t("urlPlaceholder")}
+                          className="flex-1"
                         />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-sm">Title (AR)</Label>
-                        <Input
-                          {...registerSettings(
-                            `columns.${columnIndex}.titleAr`
-                          )}
-                          placeholder="Arabic title"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2 pl-4 border-l-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-sm">{t("links")}</Label>
                         <Button
                           type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => addLinkItem(columnIndex)}
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeLinkItem(columnIndex, linkIndex)}
                         >
-                          <Plus className="mr-2 h-3 w-3" />
-                          {t("addLink")}
+                          <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
-                      {column.links.map((_, linkIndex) => (
-                        <div
-                          key={linkIndex}
-                          className="space-y-2 p-2 border rounded"
-                        >
-                          <div className="flex gap-2 items-center">
-                            <Input
-                              {...registerSettings(
-                                `columns.${columnIndex}.links.${linkIndex}.href`
-                              )}
-                              placeholder={t("urlPlaceholder")}
-                              className="flex-1"
-                            />
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              onClick={() =>
-                                removeLinkItem(columnIndex, linkIndex)
-                              }
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <Input
-                              {...registerSettings(
-                                `columns.${columnIndex}.links.${linkIndex}.labelEn`
-                              )}
-                              placeholder="Label (EN)"
-                            />
-                            <Input
-                              {...registerSettings(
-                                `columns.${columnIndex}.links.${linkIndex}.labelAr`
-                              )}
-                              placeholder="Label (AR)"
-                            />
-                          </div>
-                        </div>
-                      ))}
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input
+                          {...register(
+                            `columns.${columnIndex}.links.${linkIndex}.labelEn`
+                          )}
+                          placeholder="Label (EN)"
+                        />
+                        <Input
+                          {...register(
+                            `columns.${columnIndex}.links.${linkIndex}.labelAr`
+                          )}
+                          placeholder="Label (AR)"
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Contact */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">
-                  {t("contactLabel")}
-                </Label>
-                <div className="space-y-2">
-                  <Input
-                    {...registerSettings("contact.email")}
-                    type="email"
-                    placeholder={t("emailPlaceholder")}
-                  />
-                  <Input
-                    {...registerSettings("contact.phone")}
-                    placeholder={t("phonePlaceholder")}
-                  />
-                  <Input
-                    {...registerSettings("contact.location")}
-                    placeholder={t("locationPlaceholder")}
-                  />
+                  ))}
                 </div>
               </div>
+            ))}
+          </div>
 
-              <Button type="submit" disabled={updateSettingsMutation.isPending}>
-                {updateSettingsMutation.isPending
-                  ? t("saving")
-                  : t("saveButton")}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </TabsContent>
+          {/* Contact */}
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">
+              {t("contactLabel")}
+            </Label>
+            <div className="space-y-2">
+              <Input
+                {...register("contact.email")}
+                type="email"
+                placeholder={t("emailPlaceholder")}
+              />
+              <Input
+                {...register("contact.phone")}
+                placeholder={t("phonePlaceholder")}
+              />
+              <Input
+                {...register("contact.location")}
+                placeholder={t("locationPlaceholder")}
+              />
+            </div>
+          </div>
 
-      <TabsContent value="translation-en">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("translationTitle")} (EN)</CardTitle>
-            <CardDescription>{t("translationDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmitEnTranslation(onEnTranslationSubmit)}
-              className="space-y-4"
-            >
-              <div className="space-y-2">
-                <Label htmlFor="description-en">{t("descriptionLabel")}</Label>
-                <Textarea
-                  id="description-en"
-                  {...registerEnTranslation("description")}
-                  rows={3}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.description && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.description.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="contactTitle-en">
-                  {t("contactTitleLabel")}
-                </Label>
-                <Input
-                  id="contactTitle-en"
-                  {...registerEnTranslation("contact.title")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-              </div>
-
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">
-                  {t("columnsTranslations")}
-                </Label>
-                {columns.map((column, colIdx) => {
-                  // Generate column key from titleEn
-                  const colKey =
-                    column.titleEn
-                      .toLowerCase()
-                      .replace(/\s+/g, "_")
-                      .replace(/[^a-z0-9_]/g, "") || `column_${colIdx}`;
-                  const columnTranslation = (enTranslationColumns[colKey] as
-                    | { title: string; links: Record<string, string> }
-                    | undefined) || { title: "", links: {} };
-                  return (
-                    <div
-                      key={colIdx}
-                      className="p-4 border rounded-lg space-y-3"
-                    >
-                      <div className="space-y-2">
-                        <Label htmlFor={`column-title-en-${colIdx}`}>
-                          {t("columnTitleLabel")}
-                        </Label>
-                        <Input
-                          id={`column-title-en-${colIdx}`}
-                          {...registerEnTranslation(`columns.${colKey}.title`)}
-                          defaultValue={columnTranslation.title}
-                          disabled={updateTranslationMutation.isPending}
-                        />
-                      </div>
-                      <div className="space-y-2 pl-4 border-l-2">
-                        <Label className="text-sm">{t("linksLabels")}</Label>
-                        {column.links.map((link, linkIdx) => {
-                          // Generate key from labelEn
-                          const linkKey =
-                            link.labelEn
-                              .toLowerCase()
-                              .replace(/\s+/g, "_")
-                              .replace(/[^a-z0-9_]/g, "") || `link_${linkIdx}`;
-                          return (
-                            <div key={linkIdx} className="space-y-2">
-                              <Label htmlFor={`link-en-${colIdx}-${linkIdx}`}>
-                                {link.href}
-                              </Label>
-                              <Input
-                                id={`link-en-${colIdx}-${linkIdx}`}
-                                {...registerEnTranslation(
-                                  `columns.${colKey}.links.${linkKey}`
-                                )}
-                                defaultValue={
-                                  columnTranslation.links[linkKey] || ""
-                                }
-                                disabled={updateTranslationMutation.isPending}
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="copyright-en">{t("copyrightLabel")}</Label>
-                <Input
-                  id="copyright-en"
-                  {...registerEnTranslation("copyright")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.copyright && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.copyright.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="rights-en">{t("rightsLabel")}</Label>
-                <Input
-                  id="rights-en"
-                  {...registerEnTranslation("rights")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {enTranslationErrors.rights && (
-                  <p className="text-sm text-destructive">
-                    {enTranslationErrors.rights.message}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={updateTranslationMutation.isPending}
-              >
-                {updateTranslationMutation.isPending
-                  ? t("saving")
-                  : t("saveButton")}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-
-      <TabsContent value="translation-ar">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("translationTitle")} (AR)</CardTitle>
-            <CardDescription>{t("translationDescription")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              onSubmit={handleSubmitArTranslation(onArTranslationSubmit)}
-              className="space-y-4"
-            >
-              <div className="space-y-2">
-                <Label htmlFor="description-ar">{t("descriptionLabel")}</Label>
-                <Textarea
-                  id="description-ar"
-                  {...registerArTranslation("description")}
-                  rows={3}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.description && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.description.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="contactTitle-ar">
-                  {t("contactTitleLabel")}
-                </Label>
-                <Input
-                  id="contactTitle-ar"
-                  {...registerArTranslation("contact.title")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-              </div>
-
-              <div className="space-y-4">
-                <Label className="text-base font-semibold">
-                  {t("columnsTranslations")}
-                </Label>
-                {columns.map((column, colIdx) => {
-                  // Generate column key from titleEn
-                  const colKey =
-                    column.titleEn
-                      .toLowerCase()
-                      .replace(/\s+/g, "_")
-                      .replace(/[^a-z0-9_]/g, "") || `column_${colIdx}`;
-                  const columnTranslation = (arTranslationColumns[colKey] as
-                    | { title: string; links: Record<string, string> }
-                    | undefined) || { title: "", links: {} };
-                  return (
-                    <div
-                      key={colIdx}
-                      className="p-4 border rounded-lg space-y-3"
-                    >
-                      <div className="space-y-2">
-                        <Label htmlFor={`column-title-ar-${colIdx}`}>
-                          {t("columnTitleLabel")}
-                        </Label>
-                        <Input
-                          id={`column-title-ar-${colIdx}`}
-                          {...registerArTranslation(`columns.${colKey}.title`)}
-                          defaultValue={columnTranslation.title}
-                          disabled={updateTranslationMutation.isPending}
-                        />
-                      </div>
-                      <div className="space-y-2 pl-4 border-l-2">
-                        <Label className="text-sm">{t("linksLabels")}</Label>
-                        {column.links.map((link, linkIdx) => {
-                          // Generate key from labelEn
-                          const linkKey =
-                            link.labelEn
-                              .toLowerCase()
-                              .replace(/\s+/g, "_")
-                              .replace(/[^a-z0-9_]/g, "") || `link_${linkIdx}`;
-                          return (
-                            <div key={linkIdx} className="space-y-2">
-                              <Label htmlFor={`link-ar-${colIdx}-${linkIdx}`}>
-                                {link.href}
-                              </Label>
-                              <Input
-                                id={`link-ar-${colIdx}-${linkIdx}`}
-                                {...registerArTranslation(
-                                  `columns.${colKey}.links.${linkKey}`
-                                )}
-                                defaultValue={
-                                  columnTranslation.links[linkKey] || ""
-                                }
-                                disabled={updateTranslationMutation.isPending}
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="copyright-ar">{t("copyrightLabel")}</Label>
-                <Input
-                  id="copyright-ar"
-                  {...registerArTranslation("copyright")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.copyright && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.copyright.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="rights-ar">{t("rightsLabel")}</Label>
-                <Input
-                  id="rights-ar"
-                  {...registerArTranslation("rights")}
-                  disabled={updateTranslationMutation.isPending}
-                />
-                {arTranslationErrors.rights && (
-                  <p className="text-sm text-destructive">
-                    {arTranslationErrors.rights.message}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={updateTranslationMutation.isPending}
-              >
-                {updateTranslationMutation.isPending
-                  ? t("saving")
-                  : t("saveButton")}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
+          <Button
+            type="submit"
+            disabled={
+              updateSettingsMutation.isPending ||
+              updateTranslationMutation.isPending
+            }
+          >
+            {updateSettingsMutation.isPending || updateTranslationMutation.isPending
+              ? t("saving")
+              : t("saveButton")}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

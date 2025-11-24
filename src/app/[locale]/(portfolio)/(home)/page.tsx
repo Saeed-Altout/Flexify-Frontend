@@ -30,8 +30,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function HomePage() {
   return (
     <main id="main-content">
+      {/* Section 1: Hero */}
       <HeroSection />
+      
+      {/* Section 2: Statistics */}
       <StatisticsSection />
+      
+      {/* Section 3: About */}
       <AboutSection />
       <ServicesSection />
       <FeaturedProjectsSection />

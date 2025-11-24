@@ -3,6 +3,7 @@
 import { useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 import { useSiteSettingQuery } from "@/modules/site-settings/site-settings-hook";
 import { getIconComponent } from "@/utils/dynamic-icon-loader";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -98,10 +99,12 @@ export function AboutSection() {
                 <p>{parseText(aboutTranslation.description2)}</p>
               )}
             </div>
-            {aboutTranslation.cta && (
+            {aboutTranslation.cta && aboutValue?.ctaLink && (
               <div className="mt-8">
-                <Button size="lg" variant="outline" className="rounded-lg">
-                  {aboutTranslation.cta}
+                <Button size="lg" variant="outline" className="rounded-lg" asChild>
+                  <Link href={aboutValue.ctaLink}>
+                    {aboutTranslation.cta}
+                  </Link>
                 </Button>
               </div>
             )}

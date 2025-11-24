@@ -123,7 +123,7 @@ export function HeroSection() {
       )}
 
       {/* CTA Button */}
-      {heroTranslation.cta && (
+      {heroTranslation.cta && heroValue?.ctaLink && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -135,7 +135,7 @@ export function HeroSection() {
             asChild
             className="bg-foreground text-background hover:bg-foreground/90 rounded-lg px-8 py-6 text-base font-medium"
           >
-            <Link href={heroValue?.ctaLink || "/projects"}>
+            <Link href={heroValue.ctaLink}>
               {heroTranslation.cta}
             </Link>
           </Button>
