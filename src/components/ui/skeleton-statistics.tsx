@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 
 export function SkeletonStatistics() {
   return (
@@ -38,4 +37,3 @@ export function SkeletonStatistics() {
     </section>
   );
 }
-
