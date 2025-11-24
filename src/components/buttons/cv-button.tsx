@@ -1,19 +1,32 @@
 import { Button } from "@/components/ui/button";
-import { CV_URL } from "@/constants/site.constants";
 import { IconFileDownload } from "@tabler/icons-react";
 
-export function CVButton({ ...props }: React.ComponentProps<typeof Button>) {
+export function CVButton({
+  cvUrl,
+  fileName,
+  label = "Download CV",
+  ...props
+}: React.ComponentProps<typeof Button> & {
+  cvUrl?: string;
+  fileName?: string;
+  label?: string;
+}) {
   const onDownload = () => {
+    if (!cvUrl) return;
     const link = document.createElement("a");
-    link.href = CV_URL;
-    link.download = "Saeed-Altout-CV.pdf";
+    link.href = cvUrl;
+    link.download = fileName || "CV.pdf";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
     link.click();
   };
+
+  if (!cvUrl) return null;
 
   return (
     <Button variant="ghost" {...props} onClick={onDownload}>
       <IconFileDownload />
-      Download CV
+      {label}
     </Button>
   );
 }

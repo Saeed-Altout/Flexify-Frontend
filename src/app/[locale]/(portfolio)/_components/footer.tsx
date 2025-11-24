@@ -1,56 +1,84 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/common/logo";
 import { Separator } from "@/components/ui/separator";
-import {
-  IconBrandGithub,
-  IconBrandLinkedin,
-  IconBrandTwitter,
-  IconMail,
-} from "@tabler/icons-react";
-import { GITHUB_REPO_URL } from "@/constants/site.constants";
+import { useSiteSettingQuery } from "@/modules/site-settings/site-settings-hook";
+import { getLucideIcon } from "@/constants/lucide-icons";
+import { Skeleton } from "@/components/ui/skeleton";
+import type {
+  IFooterSettings,
+  IFooterTranslation,
+} from "@/modules/site-settings/site-settings-type";
 
 export function Footer() {
-  const t = useTranslations("portfolio.footer");
+  const locale = useLocale();
+  const { data: settingsData, isLoading: settingsLoading } =
+    useSiteSettingQuery("footer");
+  const { data: translationData, isLoading: translationLoading } =
+    useSiteSettingQuery("footer", locale);
+
+  const footerSettings = settingsData?.data?.data;
+  const footerValue = footerSettings?.value as IFooterSettings | undefined;
+  const footerTranslation = translationData?.data?.data?.translations?.[0]
+    ?.value as IFooterTranslation | undefined;
 
   const currentYear = new Date().getFullYear();
 
-  const quickLinks = [
-    { href: "/", label: t("links.home") },
-    { href: "/about", label: t("links.about") },
-    { href: "/projects", label: t("links.projects") },
-    { href: "/contact", label: t("links.contact") },
-  ];
+  // Use fallback values if translation is missing
+  const translation = footerTranslation || {
+    description: "",
+    contact: { title: "" },
+    columns: {},
+    copyright: "",
+    rights: "",
+  };
 
-  const resources = [
-    { href: "/blog", label: t("resources.blog") },
-    { href: "#", label: t("resources.other") },
-  ];
+  const socialLinks = (footerValue?.socialLinks || [])
+    .map((link) => {
+      const IconComponent = getLucideIcon(link.icon);
+      return {
+        ...link,
+        icon: IconComponent,
+        label: link.icon, // Use icon name as label
+      };
+    })
+    .filter((link) => link.icon !== null);
 
-  const socialLinks = [
-    {
-      icon: IconBrandGithub,
-      href: GITHUB_REPO_URL,
-      label: "GitHub",
-    },
-    {
-      icon: IconBrandLinkedin,
-      href: "#",
-      label: "LinkedIn",
-    },
-    {
-      icon: IconBrandTwitter,
-      href: "#",
-      label: "Twitter",
-    },
-    {
-      icon: IconMail,
-      href: "mailto:your.email@example.com",
-      label: "Email",
-    },
-  ];
+  const columns = (footerValue?.columns || []).map((column) => {
+    const columnTranslation = translation.columns?.[column.key];
+    return {
+      title: columnTranslation?.title || column.key,
+      links: column.links.map((link) => ({
+        href: link.href,
+        label: columnTranslation?.links?.[link.key] || link.key,
+      })),
+    };
+  });
+
+  if (settingsLoading || translationLoading) {
+    return (
+      <footer className="border-t border-border bg-muted/30">
+        <div className="container py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
+  // Show footer even if data is missing (with fallbacks)
+  if (!footerValue) {
+    return null; // Only hide if settings don't exist at all
+  }
 
   return (
     <footer className="border-t border-border bg-muted/30">
@@ -59,105 +87,106 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-4">
             <Logo className="text-lg" />
-            <p className="text-sm text-muted-foreground">
-              {t("description")}
-            </p>
+            {translation.description && (
+              <p className="text-sm text-muted-foreground">
+                {translation.description}
+              </p>
+            )}
             {/* Social Links */}
-            <div className="flex items-center gap-3">
-              {socialLinks.map((social) => {
-                const IconComponent = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
-                    aria-label={social.label}
-                  >
-                    <IconComponent className="w-4 h-4" />
-                  </a>
-                );
-              })}
+            {socialLinks.length > 0 && (
+              <div className="flex items-center gap-3">
+                {socialLinks.map((social) => {
+                  if (!social.icon) return null;
+                  const IconComponent = social.icon;
+                  return (
+                    <a
+                      key={social.label}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
+                      aria-label={social.label}
+                    >
+                      <IconComponent className="w-4 h-4" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Dynamic Columns */}
+          {columns.map((column, index) => (
+            <div key={index}>
+              {column.title && (
+                <h3 className="font-semibold mb-4 text-foreground">
+                  {column.title}
+                </h3>
+              )}
+              <ul className="space-y-2">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          {/* Quick Links Column */}
-          <div>
-            <h3 className="font-semibold mb-4 text-foreground">
-              {t("quickLinks")}
-            </h3>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Resources Column */}
-          <div>
-            <h3 className="font-semibold mb-4 text-foreground">
-              {t("resources.title")}
-            </h3>
-            <ul className="space-y-2">
-              {resources.map((resource) => (
-                <li key={resource.href}>
-                  <Link
-                    href={resource.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {resource.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          ))}
 
           {/* Contact Column */}
-          <div>
-            <h3 className="font-semibold mb-4 text-foreground">
-              {t("contact.title")}
-            </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>
-                <a
-                  href="mailto:your.email@example.com"
-                  className="hover:text-foreground transition-colors"
-                >
-                  {t("contact.email")}
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+1234567890"
-                  className="hover:text-foreground transition-colors"
-                >
-                  {t("contact.phone")}
-                </a>
-              </li>
-              <li>{t("contact.location")}</li>
-            </ul>
-          </div>
+          {footerValue.contact && (
+            <div>
+              {translation.contact?.title && (
+                <h3 className="font-semibold mb-4 text-foreground">
+                  {translation.contact.title}
+                </h3>
+              )}
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {footerValue.contact.email && (
+                  <li>
+                    <a
+                      href={`mailto:${footerValue.contact.email}`}
+                      className="hover:text-foreground transition-colors"
+                    >
+                      {footerValue.contact.email}
+                    </a>
+                  </li>
+                )}
+                {footerValue.contact.phone && (
+                  <li>
+                    <a
+                      href={`tel:${footerValue.contact.phone}`}
+                      className="hover:text-foreground transition-colors"
+                    >
+                      {footerValue.contact.phone}
+                    </a>
+                  </li>
+                )}
+                {footerValue.contact.location && (
+                  <li>{footerValue.contact.location}</li>
+                )}
+              </ul>
+            </div>
+          )}
         </div>
 
         <Separator className="my-6" />
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>
-            © {currentYear} {t("copyright")}
-          </p>
-          <p>{t("rights")}</p>
+          {translation.copyright && (
+            <p>
+              © {currentYear} {translation.copyright}
+            </p>
+          )}
+          {translation.rights && <p>{translation.rights}</p>}
         </div>
       </div>
     </footer>
   );
 }
-

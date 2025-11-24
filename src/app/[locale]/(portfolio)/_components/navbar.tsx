@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Link, usePathname } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   NavigationMenu,
@@ -20,31 +20,53 @@ import {
 } from "@/components/ui/sheet";
 import { Logo } from "@/components/common/logo";
 import { GithubButton } from "@/components/buttons/github-button";
-import { GITHUB_FOLLOWERS, GITHUB_REPO_URL } from "@/constants/site.constants";
 import { ModeToggleButton } from "@/components/buttons/mode-toggle-button";
 import { Separator } from "@/components/ui/separator";
 import { CVButton } from "@/components/buttons/cv-button";
 import { MenuButton } from "@/components/buttons/menu-button";
 import { cn } from "@/lib/utils";
-import {
-  IconHome,
-  IconBriefcase,
-  IconMail,
-  IconCode,
-} from "@tabler/icons-react";
+import { useNavbarLinksQuery } from "@/modules/site-settings/site-settings-hook";
+import { useSiteSettingQuery } from "@/modules/site-settings/site-settings-hook";
+import { getIconComponent } from "@/utils/dynamic-icon-loader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function Navbar() {
   const isMobile = useIsMobile();
   const pathname = usePathname();
-  const tLinks = useTranslations("portfolio.footer.links");
+  const locale = useLocale();
   const tNav = useTranslations("portfolio.navbar");
 
-  const navItems = [
-    { href: "/", label: tLinks("home"), icon: IconHome },
-    { href: "/projects", label: tLinks("projects"), icon: IconBriefcase },
-    { href: "/services", label: tNav("services"), icon: IconCode },
-    { href: "/contact", label: tLinks("contact"), icon: IconMail },
-  ];
+  const { data: navbarLinksData, isLoading: navbarLinksLoading } =
+    useNavbarLinksQuery(locale);
+  const { data: githubData, isLoading: githubLoading } =
+    useSiteSettingQuery("github");
+  const { data: cvData, isLoading: cvLoading } = useSiteSettingQuery("cv");
+
+  const navbarLinks = navbarLinksData?.data?.data || [];
+  const githubSettings = githubData?.data?.data?.value as
+    | { repoUrl: string; followers: number }
+    | undefined;
+  const cvSettings = cvData?.data?.data?.value as
+    | { url: string; fileName: string }
+    | undefined;
+  const cvTranslation = cvData?.data?.data?.translations?.find(
+    (t: { locale: string }) => t.locale === locale
+  )?.value as { label: string } | undefined;
+
+  const navItems = navbarLinks
+    .filter((link) => link.isActive)
+    .sort((a, b) => a.orderIndex - b.orderIndex)
+    .map((link) => {
+      const translation = link.translations?.find(
+        (t: { locale: string }) => t.locale === locale
+      );
+      const IconComponent = link.icon ? getIconComponent(link.icon) : null;
+      return {
+        href: link.href,
+        label: translation?.label || link.href,
+        icon: IconComponent,
+      };
+    });
 
   const isActive = (href: string) => {
     if (href === "/") {
@@ -61,33 +83,54 @@ export function Navbar() {
           {!isMobile && (
             <NavigationMenu>
               <NavigationMenuList className="gap-1">
-                {navItems.map((item) => (
-                  <NavigationMenuItem key={item.href}>
-                    <NavigationMenuLink
-                      asChild
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        isActive(item.href) &&
-                          "bg-accent text-accent-foreground"
-                      )}
-                    >
-                      <Link href={item.href}>{item.label}</Link>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
-                ))}
+                {navbarLinksLoading ? (
+                  <div className="flex gap-2">
+                    <Skeleton className="h-10 w-20" />
+                    <Skeleton className="h-10 w-24" />
+                    <Skeleton className="h-10 w-20" />
+                  </div>
+                ) : (
+                  navItems.map((item) => (
+                    <NavigationMenuItem key={item.href}>
+                      <NavigationMenuLink
+                        asChild
+                        className={cn(
+                          navigationMenuTriggerStyle(),
+                          isActive(item.href) &&
+                            "bg-accent text-accent-foreground"
+                        )}
+                      >
+                        <Link href={item.href}>{item.label}</Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  ))
+                )}
               </NavigationMenuList>
             </NavigationMenu>
           )}
         </div>
 
         <div className="flex items-center gap-2">
-          <CVButton className="hidden sm:flex" />
+          {cvLoading ? (
+            <Skeleton className="h-9 w-24 hidden sm:block" />
+          ) : cvSettings && cvTranslation ? (
+            <CVButton
+              className="hidden sm:flex"
+              cvUrl={cvSettings.url}
+              fileName={cvSettings.fileName}
+              label={cvTranslation.label}
+            />
+          ) : null}
           <Separator orientation="vertical" className="h-6 hidden lg:block" />
-          <GithubButton
-            followers={GITHUB_FOLLOWERS}
-            repoUrl={GITHUB_REPO_URL}
-            className="hidden lg:flex"
-          />
+          {githubLoading ? (
+            <Skeleton className="h-9 w-20 hidden lg:block" />
+          ) : githubSettings ? (
+            <GithubButton
+              followers={githubSettings.followers}
+              repoUrl={githubSettings.repoUrl}
+              className="hidden lg:flex"
+            />
+          ) : null}
           <Separator orientation="vertical" className="h-6 hidden lg:block" />
           <ModeToggleButton className="hidden lg:flex" />
 
@@ -102,32 +145,50 @@ export function Navbar() {
                   <SheetTitle>{tNav("navigation")}</SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col gap-4 mt-8">
-                  {navItems.map((item) => {
-                    const IconComponent = item.icon;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={cn(
-                          "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                          isActive(item.href)
-                            ? "bg-accent text-accent-foreground font-medium"
-                            : "hover:bg-accent/50"
-                        )}
-                      >
-                        <IconComponent className="w-5 h-5" />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
+                  {navbarLinksLoading ? (
+                    <div className="space-y-2">
+                      <Skeleton className="h-10 w-full" />
+                      <Skeleton className="h-10 w-full" />
+                      <Skeleton className="h-10 w-full" />
+                    </div>
+                  ) : (
+                    navItems.map((item) => {
+                      const IconComponent = item.icon;
+                      if (!IconComponent) return null;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={cn(
+                            "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                            isActive(item.href)
+                              ? "bg-accent text-accent-foreground font-medium"
+                              : "hover:bg-accent/50"
+                          )}
+                        >
+                          <IconComponent className="w-5 h-5" />
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })
+                  )}
                   <Separator className="my-2" />
                   <div className="flex flex-col gap-2">
-                    <CVButton className="w-full justify-start" />
-                    <GithubButton
-                      followers={GITHUB_FOLLOWERS}
-                      repoUrl={GITHUB_REPO_URL}
-                      className="w-full justify-start"
-                    />
+                    {cvSettings && cvTranslation ? (
+                      <CVButton
+                        className="w-full justify-start"
+                        cvUrl={cvSettings.url}
+                        fileName={cvSettings.fileName}
+                        label={cvTranslation.label}
+                      />
+                    ) : null}
+                    {githubSettings ? (
+                      <GithubButton
+                        followers={githubSettings.followers}
+                        repoUrl={githubSettings.repoUrl}
+                        className="w-full justify-start"
+                      />
+                    ) : null}
                     <ModeToggleButton className="w-full justify-start" />
                   </div>
                 </nav>
