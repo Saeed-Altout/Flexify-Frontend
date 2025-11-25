@@ -482,7 +482,8 @@ declare const messages: {
                     "altTextPlaceholder":"Describe this image...",
                     "cancel":"Cancel",
                     "save":"Save",
-                    "uploadHint":"Click or drag images to upload (max 10MB each)"
+                    "uploadHint":"Click or drag images to upload (max 10MB each)",
+                    "editButton":"Edit Images"
                 },
                 "startDate":{
                     "label":"Start Date"
@@ -492,7 +493,8 @@ declare const messages: {
                 },
                 "translations":{
                     "english":"English Translation",
-                    "arabic":"Arabic Translation"
+                    "arabic":"Arabic Translation",
+                    "description":"Enter project content in both languages"
                 },
                 "title":{
                     "label":"Title",

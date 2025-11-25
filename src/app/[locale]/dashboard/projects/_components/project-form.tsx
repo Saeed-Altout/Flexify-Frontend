@@ -41,7 +41,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   Card,
   CardContent,
@@ -50,7 +55,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
+import { Loader2, Images } from "lucide-react";
 
 interface ProjectFormProps {
   project?: IProject;
@@ -223,19 +228,13 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="basic">{t("tabs.basic")}</TabsTrigger>
-            <TabsTrigger value="translations">
-              {t("tabs.translations")}
-            </TabsTrigger>
-            <TabsTrigger value="relations">{t("tabs.relations")}</TabsTrigger>
-            <TabsTrigger value="links">{t("tabs.links")}</TabsTrigger>
-            <TabsTrigger value="settings">{t("tabs.settings")}</TabsTrigger>
-          </TabsList>
-
-          {/* Basic Info Tab */}
-          <TabsContent value="basic" className="space-y-4">
+        <Accordion type="single" collapsible className="w-full space-y-2">
+          {/* Basic Info Accordion */}
+          <AccordionItem value="basic" className="border rounded-lg px-4">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">
+              {t("tabs.basic")}
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 pb-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t("basicInfo.title")}</CardTitle>
@@ -262,7 +261,20 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                 />
 
                 <FormItem>
-                  <FormLabel>{t("thumbnail.label")}</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>{t("thumbnail.label")}</FormLabel>
+                    {mode === "edit" && project?.id && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => router.push(`/dashboard/projects/${project.id}/images`)}
+                      >
+                        <Images className="mr-2 h-4 w-4" />
+                        {t("images.editButton") || "Edit Images"}
+                      </Button>
+                    )}
+                  </div>
                   <FormControl>
                     <ThumbnailUpload
                       currentThumbnail={project?.thumbnailUrl}
@@ -318,173 +330,187 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+            </AccordionContent>
+          </AccordionItem>
 
-          {/* Translations Tab */}
-          <TabsContent value="translations" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("translations.english")}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="titleEn"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("title.label")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t("title.placeholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+          {/* Translations Accordion */}
+          <AccordionItem value="translations" className="border rounded-lg px-4">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">
+              {t("tabs.translations")}
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 pb-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("tabs.translations")}</CardTitle>
+                  <CardDescription>
+                    {t("translations.description") || "Enter project content in both languages"}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Title */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="titleEn"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("title.label")} (EN)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={t("title.placeholder")}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="titleAr"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("title.label")} (AR)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={t("title.placeholder")}
+                              {...field}
+                              dir="rtl"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <FormField
-                  control={form.control}
-                  name="shortDescriptionEn"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("shortDescription.label")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t("shortDescription.placeholder")}
-                          {...field}
-                          rows={2}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  {/* Short Description */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="shortDescriptionEn"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("shortDescription.label")} (EN)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("shortDescription.placeholder")}
+                              {...field}
+                              rows={2}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="shortDescriptionAr"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("shortDescription.label")} (AR)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("shortDescription.placeholder")}
+                              {...field}
+                              rows={2}
+                              dir="rtl"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <FormField
-                  control={form.control}
-                  name="descriptionEn"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("description.label")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t("description.placeholder")}
-                          {...field}
-                          rows={4}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  {/* Description */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="descriptionEn"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("description.label")} (EN)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("description.placeholder")}
+                              {...field}
+                              rows={4}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="descriptionAr"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("description.label")} (AR)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("description.placeholder")}
+                              {...field}
+                              rows={4}
+                              dir="rtl"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <FormField
-                  control={form.control}
-                  name="contentEn"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("content.label")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t("content.placeholder")}
-                          {...field}
-                          rows={8}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
+                  {/* Content */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="contentEn"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("content.label")} (EN)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("content.placeholder")}
+                              {...field}
+                              rows={8}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="contentAr"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t("content.label")} (AR)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={t("content.placeholder")}
+                              {...field}
+                              rows={8}
+                              dir="rtl"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>{t("translations.arabic")}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="titleAr"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("title.label")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t("title.placeholder")}
-                          {...field}
-                          dir="rtl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="shortDescriptionAr"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("shortDescription.label")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t("shortDescription.placeholder")}
-                          {...field}
-                          rows={2}
-                          dir="rtl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="descriptionAr"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("description.label")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t("description.placeholder")}
-                          {...field}
-                          rows={4}
-                          dir="rtl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="contentAr"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("content.label")}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={t("content.placeholder")}
-                          {...field}
-                          rows={8}
-                          dir="rtl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Relations Tab */}
-          <TabsContent value="relations" className="space-y-4">
+          {/* Relations Accordion */}
+          <AccordionItem value="relations" className="border rounded-lg px-4">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">
+              {t("tabs.relations")}
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 pb-6 space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>{t("technologies.title")}</CardTitle>
@@ -564,10 +590,15 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                 />
               </CardContent>
             </Card>
-          </TabsContent>
+            </AccordionContent>
+          </AccordionItem>
 
-          {/* Links Tab */}
-          <TabsContent value="links" className="space-y-4">
+          {/* Links Accordion */}
+          <AccordionItem value="links" className="border rounded-lg px-4">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">
+              {t("tabs.links")}
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 pb-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t("links.title")}</CardTitle>
@@ -577,10 +608,15 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                 <ProjectLinksManager links={links} onChange={setLinks} />
               </CardContent>
             </Card>
-          </TabsContent>
+            </AccordionContent>
+          </AccordionItem>
 
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-4">
+          {/* Settings Accordion */}
+          <AccordionItem value="settings" className="border rounded-lg px-4">
+            <AccordionTrigger className="text-base font-semibold hover:no-underline">
+              {t("tabs.settings")}
+            </AccordionTrigger>
+            <AccordionContent className="pt-4 pb-6">
             <Card>
               <CardHeader>
                 <CardTitle>{t("settings.title")}</CardTitle>
@@ -703,8 +739,9 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                 />
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         <div className="flex justify-end gap-4">
           <Button
