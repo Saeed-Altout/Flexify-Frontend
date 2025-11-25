@@ -993,18 +993,33 @@
                 "featured":"مميز"
             },
             "form":{
+                "basicInfo":{
+                    "title":"المعلومات الأساسية",
+                    "description":"أدخل التفاصيل الأساسية للخدمة"
+                },
+                "translations":{
+                    "title":"الترجمات",
+                    "description":"أدخل محتوى الخدمة باللغتين"
+                },
+                "settings":{
+                    "title":"الإعدادات",
+                    "description":"تكوين إعدادات الخدمة"
+                },
                 "slugLabel":"الرابط",
                 "slugPlaceholder":"رابط-الخدمة",
                 "iconLabel":"الأيقونة",
                 "iconPlaceholder":"أيقونة أو نص",
                 "imageUrlLabel":"رابط الصورة",
                 "imageUrlPlaceholder":"https://example.com/image.jpg",
+                "imageUrlDescription":"رفع صورة للخدمة",
                 "colorLabel":"اللون",
                 "colorPlaceholder":"#000000",
                 "orderIndexLabel":"ترتيب الفهرس",
                 "orderIndexPlaceholder":"0",
                 "isActiveLabel":"نشط",
+                "isActiveDescription":"الخدمة نشطة ومرئية",
                 "isFeaturedLabel":"مميز",
+                "isFeaturedDescription":"إبراز هذه الخدمة بشكل بارز",
                 "nameLabel":"الاسم",
                 "namePlaceholder":"اسم الخدمة",
                 "shortDescriptionLabel":"وصف مختصر",
@@ -1544,6 +1559,7 @@
         "projectDetails": {
             "notFound": "المشروع غير موجود",
             "backToProjects": "العودة إلى المشاريع",
+            "back": "رجوع",
             "featured": "مميز",
             "share": "مشاركة",
             "description": "الوصف",

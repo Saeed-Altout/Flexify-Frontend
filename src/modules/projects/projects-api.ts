@@ -140,6 +140,13 @@ export const toggleInteraction = async (
   return response.data;
 };
 
+export const incrementView = async (projectId: string): Promise<IProjectResponse> => {
+  const response = await apiClient.post<IProjectResponse>(
+    `/projects/${projectId}/view`
+  );
+  return response.data;
+};
+
 // ========================================
 // COMMENTS
 // ========================================

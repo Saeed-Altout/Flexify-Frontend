@@ -1,10 +1,14 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useProjectBySlugQuery, useToggleInteractionMutation } from "@/modules/projects/projects-hook";
+import {
+  useProjectBySlugQuery,
+  useToggleInteractionMutation,
+  useIncrementViewMutation,
+} from "@/modules/projects/projects-hook";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,14 +37,30 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
   const resolvedParams = use(params);
   const t = useTranslations("portfolio.projectDetails");
   const locale = useLocale();
+  const hasIncrementedView = useRef(false);
 
   const { data, isLoading } = useProjectBySlugQuery(resolvedParams.slug);
   const toggleInteraction = useToggleInteractionMutation();
+  const incrementView = useIncrementViewMutation();
   const user = useAuthStore((state) => state.user);
 
   const project = data?.data?.data?.project;
   const userInteraction = data?.data?.data?.userInteraction;
   const translation = project?.translations?.find((t) => t.locale === locale);
+
+  // Increment view count only once per session
+  useEffect(() => {
+    if (project?.id && !hasIncrementedView.current) {
+      const viewKey = `project_view_${project.id}`;
+      const hasViewed = sessionStorage.getItem(viewKey);
+
+      if (!hasViewed) {
+        incrementView.mutate(project.id);
+        sessionStorage.setItem(viewKey, "true");
+        hasIncrementedView.current = true;
+      }
+    }
+  }, [project?.id, incrementView]);
 
   if (isLoading) {
     return (
@@ -109,12 +129,18 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="mb-6"
+        className="mb-4 sm:mb-6"
       >
-        <Button variant="ghost" asChild>
+        <Button
+          variant="ghost"
+          asChild
+          size="sm"
+          className="text-xs sm:text-sm"
+        >
           <Link href="/projects">
-            <IconArrowLeft className="w-4 h-4 mr-2" />
-            {t("backToProjects")}
+            <IconArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">{t("backToProjects")}</span>
+            <span className="sm:hidden">{t("back")}</span>
           </Link>
         </Button>
       </motion.div>
@@ -126,7 +152,7 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
         className="relative mb-8 rounded-lg overflow-hidden"
       >
         {project.thumbnailUrl ? (
-          <div className="relative h-[400px] md:h-[500px] lg:h-[600px]">
+          <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px]">
             <Image
               src={project.thumbnailUrl}
               alt={translation.title}
@@ -135,69 +161,77 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
               priority
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/60 to-transparent" />
           </div>
         ) : (
-          <div className="h-[400px] md:h-[500px] lg:h-[600px] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-            <IconCalendar className="w-24 h-24 text-muted-foreground/50" />
+          <div className="h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
+            <IconCalendar className="w-16 h-16 sm:w-24 sm:h-24 text-muted-foreground/50" />
           </div>
         )}
 
         {/* Hero Content Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8 lg:p-12">
           <div className="max-w-4xl">
-            <div className="flex flex-wrap items-center gap-2 mb-4">
+            {/* Badges */}
+            <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
               {project.isFeatured && (
-                <Badge className="bg-primary text-primary-foreground">
+                <Badge className="bg-primary text-primary-foreground text-xs sm:text-sm">
                   {t("featured")}
                 </Badge>
               )}
-              <Badge variant="outline">
+              <Badge variant="outline" className="text-xs sm:text-sm">
                 {project.projectType.replace("_", " ")}
               </Badge>
-              {project.categories?.map((category) => (
-                <Badge key={category.id} variant="secondary">
+              {project.categories?.slice(0, 3).map((category) => (
+                <Badge
+                  key={category.id}
+                  variant="secondary"
+                  className="text-xs sm:text-sm"
+                >
                   {category.name}
                 </Badge>
               ))}
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
-              {translation.title}
-            </h1>
-            {translation.shortDescription && (
-              <p className="text-lg md:text-xl text-muted-foreground mb-6">
-                {translation.shortDescription}
-              </p>
-            )}
-            <div className="flex flex-wrap items-center gap-4">
+
+            {/* Actions */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4">
               <Button
                 variant={userInteraction?.hasLiked ? "default" : "outline"}
                 size="sm"
                 onClick={handleLike}
                 disabled={toggleInteraction.isPending}
+                className="text-xs sm:text-sm"
               >
                 <IconHeart
                   className={cn(
-                    "w-4 h-4 mr-2",
+                    "w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2",
                     userInteraction?.hasLiked && "fill-current"
                   )}
                 />
                 {project.likeCount}
               </Button>
-              <Button variant="outline" size="sm" onClick={handleShare}>
-                <IconShare className="w-4 h-4 mr-2" />
-                {t("share")}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleShare}
+                className="text-xs sm:text-sm"
+              >
+                <IconShare className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">{t("share")}</span>
               </Button>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground ml-auto">
                 <div className="flex items-center gap-1">
-                  <IconEye className="w-4 h-4" />
+                  <IconEye className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{project.viewCount}</span>
                 </div>
                 {project.startDate && (
                   <div className="flex items-center gap-1">
-                    <IconCalendar className="w-4 h-4" />
-                    <span>
+                    <IconCalendar className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden sm:inline">
                       {format(new Date(project.startDate), "MMM yyyy")}
+                    </span>
+                    <span className="sm:hidden">
+                      {format(new Date(project.startDate), "MMM yy")}
                     </span>
                   </div>
                 )}
@@ -208,41 +242,53 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
       </motion.div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Main Content Column */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Description */}
-          {translation.description && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card>
-                <CardContent className="p-6">
-                  <h2 className="text-2xl font-bold mb-4">{t("description")}</h2>
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
+          {/* Title, Description, and Short Description */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card>
+              <CardContent
+                className="p-4 sm:p-6"
+                dir={locale === "ar" ? "rtl" : "ltr"}
+              >
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+                  {translation.title}
+                </h1>
+
+                {translation.shortDescription && (
+                  <p className="text-base sm:text-lg text-muted-foreground mb-4">
+                    {translation.shortDescription}
+                  </p>
+                )}
+
+                {translation.description && (
                   <div
-                    className="prose prose-sm max-w-none dark:prose-invert"
+                    className="prose prose-sm sm:prose-base max-w-none dark:prose-invert prose-headings:scroll-mt-20"
                     dangerouslySetInnerHTML={{
                       __html: translation.description,
                     }}
                   />
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Full Content */}
           {translation.content && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.2 }}
             >
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div
-                    className="prose prose-sm max-w-none dark:prose-invert"
+                    className="prose prose-sm sm:prose-base max-w-none dark:prose-invert prose-headings:scroll-mt-20"
                     dangerouslySetInnerHTML={{
                       __html: translation.content,
                     }}
@@ -257,10 +303,10 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.3 }}
             >
               <Card>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <ProjectGallery
                     images={project.images}
                     title={t("gallery")}
@@ -275,14 +321,14 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.4 }}
           >
             <ProjectComments projectId={project.id} />
           </motion.div>
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Technologies */}
           {project.technologies && project.technologies.length > 0 && (
             <motion.div
@@ -291,11 +337,17 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
               transition={{ delay: 0.2 }}
             >
               <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">{t("technologies")}</h3>
+                <CardContent className="p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                    {t("technologies")}
+                  </h3>
                   <div className="flex flex-wrap gap-2">
                     {project.technologies.map((tech) => (
-                      <Badge key={tech.id} variant="secondary">
+                      <Badge
+                        key={tech.id}
+                        variant="secondary"
+                        className="text-xs sm:text-sm"
+                      >
                         {tech.name}
                       </Badge>
                     ))}
@@ -313,8 +365,10 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
               transition={{ delay: 0.3 }}
             >
               <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">{t("links")}</h3>
+                <CardContent className="p-4 sm:p-6">
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                    {t("links")}
+                  </h3>
                   <div className="space-y-2">
                     {project.links.map((link) => {
                       const IconComponent = getLinkIcon(link.linkType);
@@ -322,7 +376,8 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
                         <Button
                           key={link.id}
                           variant="outline"
-                          className="w-full justify-start"
+                          className="w-full justify-start text-xs sm:text-sm"
+                          size="sm"
                           asChild
                         >
                           <a
@@ -330,8 +385,10 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <IconComponent className="w-4 h-4 mr-2" />
-                            {link.label || link.linkType.replace("_", " ")}
+                            <IconComponent className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                            <span className="truncate">
+                              {link.label || link.linkType.replace("_", " ")}
+                            </span>
                           </a>
                         </Button>
                       );
@@ -349,34 +406,54 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
             transition={{ delay: 0.4 }}
           >
             <Card>
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4">{t("info")}</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t("status")}:</span>
-                    <Badge variant="outline">{project.status}</Badge>
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
+                  {t("info")}
+                </h3>
+                <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">
+                      {t("status")}:
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      {project.status}
+                    </Badge>
                   </div>
                   {project.startDate && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("startDate")}:</span>
-                      <span>
-                        {format(new Date(project.startDate), "MMM dd, yyyy")}
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        {t("startDate")}:
+                      </span>
+                      <span className="text-right">
+                        <span className="hidden sm:inline">
+                          {format(new Date(project.startDate), "MMM dd, yyyy")}
+                        </span>
+                        <span className="sm:hidden">
+                          {format(new Date(project.startDate), "MMM dd")}
+                        </span>
                       </span>
                     </div>
                   )}
                   {project.endDate && (
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t("endDate")}:</span>
-                      <span>
-                        {format(new Date(project.endDate), "MMM dd, yyyy")}
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        {t("endDate")}:
+                      </span>
+                      <span className="text-right">
+                        <span className="hidden sm:inline">
+                          {format(new Date(project.endDate), "MMM dd, yyyy")}
+                        </span>
+                        <span className="sm:hidden">
+                          {format(new Date(project.endDate), "MMM dd")}
+                        </span>
                       </span>
                     </div>
                   )}
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">{t("views")}:</span>
                     <span>{project.viewCount}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">{t("likes")}:</span>
                     <span>{project.likeCount}</span>
                   </div>
@@ -389,4 +466,3 @@ export function ProjectDetailsClient({ params }: ProjectDetailsClientProps) {
     </main>
   );
 }
-

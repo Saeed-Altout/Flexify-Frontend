@@ -24,10 +24,11 @@ export function StatisticsSection() {
     | undefined;
   const statisticsTranslation = translationData?.data?.data?.translations?.[0]
     ?.value as IStatisticsTranslation | undefined;
-  
+
   // Use API translation if available, otherwise use frontend translation keys as fallback
   const sectionTitle = statisticsTranslation?.title || t("title");
-  const sectionDescription = statisticsTranslation?.description || t("description");
+  const sectionDescription =
+    statisticsTranslation?.description || t("description");
 
   if (settingsLoading || translationLoading) {
     return (
@@ -85,6 +86,7 @@ export function StatisticsSection() {
               // Use API translation label if available, otherwise use frontend translation or fallback to stat.id
               const label =
                 statisticsTranslation?.items?.[stat.id]?.label ||
+                // @ts-expect-error - Dynamic translation key based on stat.id
                 t(`items.${stat.id}.label`) ||
                 stat.id;
 

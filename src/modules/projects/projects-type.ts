@@ -236,6 +236,21 @@ export type IProjectCommentsResponse = IApiResponse<{
   data: { comments: IProjectComment[] };
 }>;
 
+export type ICommentsListResponse = IApiResponse<{
+  data: IProjectComment[];
+  meta: IPaginationMeta;
+}>;
+
+export type IQueryCommentParams = {
+  search?: string;
+  isApproved?: boolean;
+  projectId?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: "created_at" | "updated_at";
+  sortOrder?: "asc" | "desc";
+};
+
 export type IUploadImageResponse = IApiResponse<{
   data: { imageUrl: string };
 }>;

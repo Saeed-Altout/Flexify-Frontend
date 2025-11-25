@@ -136,7 +136,7 @@ export function HeroTab() {
         badge: values.badgeEn,
         title: values.titleEn,
         description: values.descriptionEn,
-        cta: values.ctaEn || undefined,
+        cta: values.ctaEn || "",
       };
 
       await updateTranslationMutation.mutateAsync({
@@ -152,7 +152,7 @@ export function HeroTab() {
         badge: values.badgeAr,
         title: values.titleAr,
         description: values.descriptionAr,
-        cta: values.ctaAr || undefined,
+        cta: values.ctaAr || "",
       };
 
       await updateTranslationMutation.mutateAsync({

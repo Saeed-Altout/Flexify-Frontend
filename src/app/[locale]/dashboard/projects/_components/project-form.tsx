@@ -55,6 +55,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Loader2, Images } from "lucide-react";
 
 interface ProjectFormProps {
@@ -471,10 +472,11 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                         <FormItem>
                           <FormLabel>{t("content.label")} (EN)</FormLabel>
                           <FormControl>
-                            <Textarea
+                            <RichTextEditor
+                              content={field.value || ""}
+                              onChange={field.onChange}
                               placeholder={t("content.placeholder")}
-                              {...field}
-                              rows={8}
+                              disabled={isLoading}
                             />
                           </FormControl>
                           <FormMessage />
@@ -488,11 +490,11 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                         <FormItem>
                           <FormLabel>{t("content.label")} (AR)</FormLabel>
                           <FormControl>
-                            <Textarea
+                            <RichTextEditor
+                              content={field.value || ""}
+                              onChange={field.onChange}
                               placeholder={t("content.placeholder")}
-                              {...field}
-                              rows={8}
-                              dir="rtl"
+                              disabled={isLoading}
                             />
                           </FormControl>
                           <FormMessage />

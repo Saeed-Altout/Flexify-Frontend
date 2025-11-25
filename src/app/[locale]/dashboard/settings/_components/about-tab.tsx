@@ -170,7 +170,7 @@ export function AboutTab() {
         title: values.titleEn,
         description1: values.description1En,
         description2: values.description2En,
-        cta: values.ctaEn,
+        cta: values.ctaEn || "",
         highlights: values.highlights.reduce(
           (acc, highlight) => {
             acc[highlight.id] = {
@@ -196,7 +196,7 @@ export function AboutTab() {
         title: values.titleAr,
         description1: values.description1Ar,
         description2: values.description2Ar,
-        cta: values.ctaAr,
+        cta: values.ctaAr || "",
         highlights: values.highlights.reduce(
           (acc, highlight) => {
             acc[highlight.id] = {

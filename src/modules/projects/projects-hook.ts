@@ -21,6 +21,7 @@ import {
   getProjectComments,
   createComment,
   deleteComment,
+  incrementView,
   getTechnologies,
   getTechnologiesByCategory,
   getCategories,
@@ -243,6 +244,23 @@ export const useToggleInteractionMutation = () => {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.message || t("interactionError"));
       }
+    },
+  });
+};
+
+export const useIncrementViewMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["incrementView"],
+    mutationFn: (projectId: string) => incrementView(projectId),
+    onSuccess: (_, projectId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["projects", projectId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["projects", "slug"],
+      });
     },
   });
 };

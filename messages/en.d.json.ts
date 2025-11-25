@@ -996,18 +996,33 @@ declare const messages: {
                 "featured":"Featured"
             },
             "form":{
+                "basicInfo":{
+                    "title":"Basic Information",
+                    "description":"Enter the basic details of your service"
+                },
+                "translations":{
+                    "title":"Translations",
+                    "description":"Enter service content in both languages"
+                },
+                "settings":{
+                    "title":"Settings",
+                    "description":"Configure service settings"
+                },
                 "slugLabel":"Slug",
                 "slugPlaceholder":"service-slug",
                 "iconLabel":"Icon",
                 "iconPlaceholder":"Icon emoji or text",
                 "imageUrlLabel":"Image URL",
                 "imageUrlPlaceholder":"https://example.com/image.jpg",
+                "imageUrlDescription":"Upload a service image",
                 "colorLabel":"Color",
                 "colorPlaceholder":"#000000",
                 "orderIndexLabel":"Order Index",
                 "orderIndexPlaceholder":"0",
                 "isActiveLabel":"Active",
+                "isActiveDescription":"Service is active and visible",
                 "isFeaturedLabel":"Featured",
+                "isFeaturedDescription":"Feature this service prominently",
                 "nameLabel":"Name",
                 "namePlaceholder":"Service name",
                 "shortDescriptionLabel":"Short Description",
@@ -1547,6 +1562,7 @@ declare const messages: {
         "projectDetails": {
             "notFound": "Project not found",
             "backToProjects": "Back to Projects",
+            "back": "Back",
             "featured": "Featured",
             "share": "Share",
             "description": "Description",
