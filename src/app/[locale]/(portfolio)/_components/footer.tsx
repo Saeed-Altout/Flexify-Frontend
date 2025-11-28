@@ -1,12 +1,14 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/common/logo";
 import { Separator } from "@/components/ui/separator";
 import { useSiteSettingQuery } from "@/modules/site-settings/site-settings-hook";
 import { getLucideIcon } from "@/constants/lucide-icons";
 import { Skeleton } from "@/components/ui/skeleton";
+import { IconBrandWhatsapp, IconBrandTelegram } from "@tabler/icons-react";
 import type {
   IFooterSettings,
   IFooterTranslation,
@@ -14,10 +16,15 @@ import type {
 
 export function Footer() {
   const locale = useLocale();
+  const t = useTranslations("portfolio.contact");
   const { data: settingsData, isLoading: settingsLoading } =
     useSiteSettingQuery("footer");
   const { data: translationData, isLoading: translationLoading } =
     useSiteSettingQuery("footer", locale);
+
+  // Contact URLs
+  const whatsappUrl = `https://wa.me/963940043810`;
+  const telegramUrl = `https://t.me/saeedaltoutdev`;
 
   const footerSettings = settingsData?.data?.data;
   const footerValue = footerSettings?.value as IFooterSettings | undefined;
@@ -146,12 +153,12 @@ export function Footer() {
                   {translation.contact.title}
                 </h3>
               )}
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-muted-foreground mb-4">
                 {footerValue.contact.email && (
                   <li>
                     <a
                       href={`mailto:${footerValue.contact.email}`}
-                      className="hover:text-foreground transition-colors"
+                      className="hover:text-foreground transition-colors break-all"
                     >
                       {footerValue.contact.email}
                     </a>
@@ -160,7 +167,7 @@ export function Footer() {
                 {footerValue.contact.phone && (
                   <li>
                     <a
-                      href={`tel:${footerValue.contact.phone}`}
+                      href={`tel:${footerValue.contact.phone.replace(/\s/g, "")}`}
                       className="hover:text-foreground transition-colors"
                     >
                       {footerValue.contact.phone}
@@ -171,6 +178,29 @@ export function Footer() {
                   <li>{footerValue.contact.location}</li>
                 )}
               </ul>
+              {/* Quick Access Buttons */}
+              <div className="flex items-center gap-2 mt-4">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
+                  aria-label={t("quickAccess.whatsapp")}
+                  title={t("quickAccess.whatsapp")}
+                >
+                  <IconBrandWhatsapp className="w-4 h-4" />
+                </a>
+                <a
+                  href={telegramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors border border-blue-500/20"
+                  aria-label={t("quickAccess.telegram")}
+                  title={t("quickAccess.telegram")}
+                >
+                  <IconBrandTelegram className="w-4 h-4" />
+                </a>
+              </div>
             </div>
           )}
         </div>

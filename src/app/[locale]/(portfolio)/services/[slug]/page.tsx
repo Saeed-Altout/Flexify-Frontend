@@ -5,6 +5,7 @@ import { generateSeoMetadata, generateServiceStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/structured-data";
 import { getServiceBySlugServer } from "@/lib/server-api";
 import { getBaseUrl, getOgImageUrl } from "@/lib/seo";
+import type { IServiceTranslation } from "@/modules/services/services-type";
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string; locale: string }>;
@@ -18,17 +19,18 @@ export async function generateMetadata({
 
   // Fetch service data for metadata
   const service = await getServiceBySlugServer(slug, locale);
-  const translation = service?.translations?.find((t) => t.locale === locale);
+  const translation = service?.translations?.find(
+    (t: IServiceTranslation) => t.locale === locale
+  );
 
   const title =
-    translation?.title || service?.title || t("title", { slug }) || "Service";
+    translation?.name || t("title", { slug }) || "Service";
   const description =
     translation?.description ||
-    service?.description ||
     t("description") ||
     "Professional web development service";
 
-  const image = service?.image_url;
+  const image = service?.imageUrl;
   const ogImage = image ? getOgImageUrl(image) : getOgImageUrl();
 
   return generateSeoMetadata({
@@ -56,13 +58,15 @@ export default async function ServiceDetailPage({
 
   // Fetch service for structured data
   const service = await getServiceBySlugServer(slug, locale);
-  const translation = service?.translations?.find((t) => t.locale === locale);
+  const translation = service?.translations?.find(
+    (t: IServiceTranslation) => t.locale === locale
+  );
 
   let structuredData = null;
   if (service && translation) {
     structuredData = generateServiceStructuredData({
-      name: translation.title || service.title,
-      description: translation.description || service.description,
+      name: translation.name,
+      description: translation.description || "",
       url: `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}services/${slug}`,
       provider: {
         name: "Flexify",

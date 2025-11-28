@@ -5,6 +5,11 @@ import { generateSeoMetadata, generateProjectStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/structured-data";
 import { getProjectBySlugServer } from "@/lib/server-api";
 import { getBaseUrl, getOgImageUrl } from "@/lib/seo";
+import type {
+  IProjectTranslation,
+  ITechnology,
+  ICategory,
+} from "@/modules/projects/projects-type";
 
 export async function generateMetadata({
   params,
@@ -16,27 +21,27 @@ export async function generateMetadata({
 
   // Fetch project data for metadata
   const project = await getProjectBySlugServer(slug, locale);
-  const translation = project?.translations?.find((t) => t.locale === locale);
+  const translation = project?.translations?.find(
+    (t: IProjectTranslation) => t.locale === locale
+  );
 
-  const title = translation?.title || project?.title || t("title") || "Project";
+  const title = translation?.title || project?.title || "Project";
   const description =
-    translation?.short_description ||
+    translation?.shortDescription ||
     translation?.description ||
     project?.description ||
     t("description") ||
     "Explore this project";
 
   const thumbnail = project?.thumbnail_url;
-  const ogImage = thumbnail
-    ? getOgImageUrl(thumbnail)
-    : getOgImageUrl();
+  const ogImage = thumbnail ? getOgImageUrl(thumbnail) : getOgImageUrl();
 
   return generateSeoMetadata({
     title,
     description,
     keywords: [
-      ...(project?.technologies?.map((t: any) => t.name) || []),
-      ...(project?.categories?.map((c: any) => c.name) || []),
+      ...(project?.technologies?.map((tech: ITechnology) => tech.name) || []),
+      ...(project?.categories?.map((cat: ICategory) => cat.name) || []),
       "Project",
       "Portfolio",
       "Web Development",
@@ -60,14 +65,16 @@ export default async function ProjectDetailsPage({
 
   // Fetch project for structured data
   const project = await getProjectBySlugServer(slug, locale);
-  const translation = project?.translations?.find((t) => t.locale === locale);
+  const translation = project?.translations?.find(
+    (t: IProjectTranslation) => t.locale === locale
+  );
 
   let structuredData = null;
   if (project && translation) {
     structuredData = generateProjectStructuredData({
       name: translation.title || project.title,
       description:
-        translation.short_description ||
+        translation.shortDescription ||
         translation.description ||
         project.description,
       url: `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}projects/${slug}`,
@@ -86,4 +93,3 @@ export default async function ProjectDetailsPage({
     </>
   );
 }
-

@@ -1589,16 +1589,29 @@
             "info": {
                 "email": {
                     "label": "البريد الإلكتروني",
-                    "value": "your.email@example.com"
+                    "value": "saeedaltout25@gmail.com"
                 },
                 "phone": {
                     "label": "الهاتف",
-                    "value": "+1 (555) 123-4567"
+                    "value": "+963940043810"
                 },
                 "location": {
                     "label": "الموقع",
-                    "value": "مدينتك، بلدك"
+                    "value": "دمشق، سوريا"
+                },
+                "whatsapp": {
+                    "label": "واتساب",
+                    "value": "تواصل عبر واتساب"
+                },
+                "telegram": {
+                    "label": "تيليجرام",
+                    "value": "تواصل عبر تيليجرام"
                 }
+            },
+            "quickAccess": {
+                "title": "وصول سريع",
+                "whatsapp": "تواصل عبر واتساب",
+                "telegram": "تواصل عبر تيليجرام"
             },
             "form": {
                 "name": {
@@ -1671,12 +1684,63 @@
             },
             "contact": {
                 "title": "تواصل معي",
-                "email": "your.email@example.com",
-                "phone": "+1 (555) 123-4567",
-                "location": "مدينتك، بلدك"
+                "email": "saeedaltout25@gmail.com",
+                "phone": "+963940043810",
+                "location": "دمشق، سوريا"
             },
             "copyright": "جميع الحقوق محفوظة.",
             "rights": "مبني باستخدام Next.js و NestJS و TypeScript"
+        },
+        "seo": {
+            "default": {
+                "title": "Flexify - معرض أعمال مطور واجهة أمامية",
+                "description": "مطور واجهة أمامية يبني تطبيقات ويب حديثة باستخدام Next.js و TypeScript وتقنيات متطورة. خبير في React وتصميم UI/UX وبنية الواجهة الأمامية.",
+                "keywords": [
+                    "مطور واجهة أمامية",
+                    "Next.js",
+                    "TypeScript",
+                    "React",
+                    "معرض أعمال",
+                    "تطوير الويب",
+                    "مهندس برمجيات",
+                    "مطور واجهة",
+                    "مهندس واجهة أمامية",
+                    "JavaScript",
+                    "CSS",
+                    "HTML"
+                ],
+                "siteName": "معرض أعمال Flexify"
+            },
+            "projects": {
+                "keywords": [
+                    "مشاريع",
+                    "معرض أعمال",
+                    "مشاريع تطوير الويب",
+                    "مشاريع Next.js",
+                    "مشاريع React",
+                    "مشاريع واجهة أمامية"
+                ]
+            },
+            "services": {
+                "keywords": [
+                    "خدمات",
+                    "خدمات تطوير الويب",
+                    "تطوير واجهة أمامية",
+                    "تطوير Next.js",
+                    "تطوير React",
+                    "تطوير UI/UX",
+                    "استشارة"
+                ]
+            },
+            "contact": {
+                "keywords": [
+                    "تواصل",
+                    "تواصل معي",
+                    "توظيف مطور",
+                    "خدمات تطوير الويب",
+                    "استشارة"
+                ]
+            }
         }
     }
 }

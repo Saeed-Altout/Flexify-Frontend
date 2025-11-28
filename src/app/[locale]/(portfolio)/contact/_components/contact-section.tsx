@@ -6,7 +6,14 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { IconMail, IconPhone, IconMapPin, IconSend } from "@tabler/icons-react";
+import {
+  IconMail,
+  IconPhone,
+  IconMapPin,
+  IconSend,
+  IconBrandWhatsapp,
+  IconBrandTelegram,
+} from "@tabler/icons-react";
 import {
   Form,
   FormControl,
@@ -107,9 +114,15 @@ export function ContactSection() {
     const key = `info.${id}.value` as
       | "info.email.value"
       | "info.phone.value"
-      | "info.location.value";
+      | "info.location.value"
+      | "info.whatsapp.value"
+      | "info.telegram.value";
     return t(key);
   };
+
+  // Contact URLs
+  const whatsappUrl = `https://wa.me/963940043810`;
+  const telegramUrl = `https://t.me/saeedaltoutdev`;
 
   return (
     <section className="py-16 px-4">
@@ -139,6 +152,10 @@ export function ContactSection() {
           >
             {contactInfo.map((info, index) => {
               const IconComponent = info.icon;
+              const isEmail = info.id === "email";
+              const isPhone = info.id === "phone";
+              const value = getContactValue(info.id);
+
               return (
                 <motion.div
                   key={info.id}
@@ -152,13 +169,29 @@ export function ContactSection() {
                         <div className="p-3 rounded-lg bg-primary/10 text-primary">
                           <IconComponent className="w-5 h-5" />
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <h3 className="font-semibold mb-1 text-foreground">
                             {getContactLabel(info.id)}
                           </h3>
-                          <p className="text-sm text-muted-foreground">
-                            {getContactValue(info.id)}
-                          </p>
+                          {isEmail ? (
+                            <a
+                              href={`mailto:${value}`}
+                              className="text-sm text-muted-foreground hover:text-primary transition-colors break-all"
+                            >
+                              {value}
+                            </a>
+                          ) : isPhone ? (
+                            <a
+                              href={`tel:${value.replace(/\s/g, "")}`}
+                              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                            >
+                              {value}
+                            </a>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              {value}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </CardContent>
@@ -166,6 +199,60 @@ export function ContactSection() {
                 </motion.div>
               );
             })}
+
+            {/* Quick Access Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="space-y-3"
+            >
+              <h3 className="font-semibold text-foreground mb-3">
+                {t("quickAccess.title")}
+              </h3>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Card className="hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer border-green-500/20 hover:border-green-500/40">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400">
+                        <IconBrandWhatsapp className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-foreground">
+                          {t("quickAccess.whatsapp")}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
+              <a
+                href={telegramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Card className="hover:shadow-lg transition-all hover:scale-[1.02] cursor-pointer border-blue-500/20 hover:border-blue-500/40">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                        <IconBrandTelegram className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-foreground">
+                          {t("quickAccess.telegram")}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </a>
+            </motion.div>
           </motion.div>
 
           {/* Contact Form */}

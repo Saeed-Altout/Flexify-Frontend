@@ -10,19 +10,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("portfolio.contact");
+  const seoT = await getTranslations("portfolio.seo.contact");
 
   return generateSeoMetadata({
     title: t("title") || "Contact",
     description:
       t("description") ||
       "Get in touch with me for your next web development project.",
-    keywords: [
-      "Contact",
-      "Get in Touch",
-      "Hire Developer",
-      "Web Development Services",
-      "Consultation",
-    ],
+    keywords: seoT.raw("keywords") as string[],
     path: "/contact",
     locale,
     type: "website",

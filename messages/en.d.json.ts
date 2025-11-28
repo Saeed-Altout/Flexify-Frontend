@@ -1592,16 +1592,29 @@ declare const messages: {
             "info": {
                 "email": {
                     "label": "Email",
-                    "value": "your.email@example.com"
+                    "value": "saeedaltout25@gmail.com"
                 },
                 "phone": {
                     "label": "Phone",
-                    "value": "+1 (555) 123-4567"
+                    "value": "+963940043810"
                 },
                 "location": {
                     "label": "Location",
-                    "value": "Your City, Country"
+                    "value": "Damascus, Syria"
+                },
+                "whatsapp": {
+                    "label": "WhatsApp",
+                    "value": "Chat on WhatsApp"
+                },
+                "telegram": {
+                    "label": "Telegram",
+                    "value": "Message on Telegram"
                 }
+            },
+            "quickAccess": {
+                "title": "Quick Access",
+                "whatsapp": "Chat on WhatsApp",
+                "telegram": "Message on Telegram"
             },
             "form": {
                 "name": {
@@ -1674,12 +1687,63 @@ declare const messages: {
             },
             "contact": {
                 "title": "Contact",
-                "email": "your.email@example.com",
-                "phone": "+1 (555) 123-4567",
-                "location": "Your City, Country"
+                "email": "saeedaltout25@gmail.com",
+                "phone": "+963940043810",
+                "location": "Damascus, Syria"
             },
             "copyright": "All rights reserved.",
             "rights": "Built with Next.js, NestJS & TypeScript"
+        },
+        "seo": {
+            "default": {
+                "title": "Flexify - Frontend Developer Portfolio",
+                "description": "Frontend Developer building modern web applications with Next.js, TypeScript, and cutting-edge technologies. Expert in React, UI/UX design, and frontend architecture.",
+                "keywords": [
+                    "Frontend Developer",
+                    "Next.js",
+                    "TypeScript",
+                    "React",
+                    "Portfolio",
+                    "Web Development",
+                    "Software Engineer",
+                    "UI Developer",
+                    "Frontend Engineer",
+                    "JavaScript",
+                    "CSS",
+                    "HTML"
+                ],
+                "siteName": "Flexify Portfolio"
+            },
+            "projects": {
+                "keywords": [
+                    "Projects",
+                    "Portfolio",
+                    "Web Development Projects",
+                    "Next.js Projects",
+                    "React Projects",
+                    "Frontend Projects"
+                ]
+            },
+            "services": {
+                "keywords": [
+                    "Services",
+                    "Web Development Services",
+                    "Frontend Development",
+                    "Next.js Development",
+                    "React Development",
+                    "UI/UX Development",
+                    "Consultation"
+                ]
+            },
+            "contact": {
+                "keywords": [
+                    "Contact",
+                    "Get in Touch",
+                    "Hire Developer",
+                    "Web Development Services",
+                    "Consultation"
+                ]
+            }
         }
     }
 };

@@ -10,7 +10,6 @@ import { CTASection } from "./_components/cta-section";
 import { generateSeoMetadata, generatePersonStructuredData, generatePortfolioStructuredData } from "@/lib/seo";
 import { StructuredData } from "@/components/seo/structured-data";
 import { getBaseUrl } from "@/lib/seo";
-import { routing } from "@/i18n/routing";
 
 export async function generateMetadata({
   params,
@@ -20,19 +19,12 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations("portfolio.home.hero");
 
+  const seoT = await getTranslations("portfolio.seo.default");
+
   return generateSeoMetadata({
     title: t("title"),
     description: t("description"),
-    keywords: [
-      "Full Stack Developer",
-      "Next.js Developer",
-      "NestJS Developer",
-      "TypeScript",
-      "React",
-      "Web Development",
-      "Portfolio",
-      "Software Engineer",
-    ],
+    keywords: seoT.raw("keywords") as string[],
     path: "/",
     locale,
     type: "website",
@@ -48,10 +40,13 @@ export default async function HomePage({
   const baseUrl = getBaseUrl();
   const t = await getTranslations("portfolio.home.hero");
 
+  const seoT = await getTranslations("portfolio.seo.default");
+  const siteName = seoT("siteName");
+
   // Generate structured data for Person/Portfolio
   const personStructuredData = generatePersonStructuredData({
     name: "Flexify",
-    jobTitle: "Full Stack Developer",
+    jobTitle: t("badge") || "Frontend Developer",
     description: t("description"),
     url: baseUrl,
     image: `${baseUrl}/og.jpeg`,
@@ -62,7 +57,7 @@ export default async function HomePage({
   });
 
   const portfolioStructuredData = generatePortfolioStructuredData({
-    name: "Flexify Portfolio",
+    name: siteName,
     description: t("description"),
     url: baseUrl,
   });
