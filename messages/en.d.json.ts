@@ -1436,7 +1436,7 @@ declare const messages: {
             "hero": {
                 "badge": "Frontend Developer",
                 "title": "Frontend Developer",
-                "description": "Building modern web applications with **Next.js**, **TypeScript**, **React**, and cutting-edge frontend technologies. Creating beautiful, responsive, and performant user interfaces.",
+                "description": "Passionate Frontend Developer crafting modern, user-friendly web experiences with Next.js, TypeScript, and React. Specializing in creating beautiful, responsive interfaces and smooth user interactions that make a difference.",
                 "cta": "Get Started - It's free"
             },
             "statistics": {
@@ -1697,7 +1697,7 @@ declare const messages: {
         "seo": {
             "default": {
                 "title": "Flexify - Frontend Developer Portfolio",
-                "description": "Frontend Developer building modern web applications with Next.js, TypeScript, and cutting-edge technologies. Expert in React, UI/UX design, and frontend architecture.",
+                "description": "Frontend Developer passionate about creating exceptional web experiences. Expert in Next.js, TypeScript, and React, with a focus on beautiful UI/UX design, performance optimization, and modern frontend architecture.",
                 "keywords": [
                     "Frontend Developer",
                     "Next.js",

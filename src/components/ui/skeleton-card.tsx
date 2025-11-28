@@ -30,13 +30,21 @@ export function SkeletonCard({
 
   if (variant === "service") {
     return (
-      <div className={cn("bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow h-full cursor-pointer", className)}>
-        {/* Image or Icon Skeleton */}
-        <Skeleton className="h-32 w-full rounded-lg mb-4" />
+      <div
+        className={cn(
+          "bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow h-full flex flex-col",
+          className
+        )}
+      >
+        {/* Icon/Tag Badge Skeleton */}
+        <div className="mb-4">
+          <Skeleton className="h-8 w-10 rounded" />
+        </div>
         {/* Title Skeleton */}
-        <Skeleton className="h-6 w-3/4 mb-2" />
+        <Skeleton className="h-7 w-3/4 mb-3" />
         {/* Description Skeleton */}
-        <div className="space-y-2">
+        <div className="space-y-2 flex-grow">
+          <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-5/6" />
           <Skeleton className="h-4 w-4/5" />
@@ -74,4 +82,3 @@ export function SkeletonCard({
     </div>
   );
 }
-

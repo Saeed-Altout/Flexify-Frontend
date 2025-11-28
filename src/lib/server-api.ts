@@ -36,32 +36,3 @@ export async function getProjectBySlugServer(
   }
 }
 
-/**
- * Fetch service by slug (server-side)
- */
-export async function getServiceBySlugServer(
-  slug: string,
-  locale: string = "en"
-) {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/services/slug/${slug}?locale=${locale}`,
-      {
-        next: { revalidate: 3600 }, // Revalidate every hour
-        headers: {
-          "Accept-Language": locale,
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    return data.data?.service || null;
-  } catch (error) {
-    console.error("Error fetching service:", error);
-    return null;
-  }
-}

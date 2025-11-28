@@ -58,24 +58,3 @@ export const deleteService = async (id: string): Promise<void> => {
   await apiClient.delete(`/services/${id}`);
 };
 
-export type IUploadImageResponse = IApiResponse<{ imageUrl: string }>;
-
-export const uploadServiceImage = async (
-  serviceId: string,
-  file: File
-): Promise<IUploadImageResponse> => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const response = await apiClient.post<IUploadImageResponse>(
-    `/services/${serviceId}/image`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  );
-  return response.data;
-};
-

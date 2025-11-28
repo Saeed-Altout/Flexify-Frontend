@@ -6,7 +6,6 @@ import {
   createService,
   updateService,
   deleteService,
-  uploadServiceImage,
 } from "./services-api";
 import { IQueryServiceParams } from "./services-type";
 import { toast } from "sonner";
@@ -81,20 +80,4 @@ export const useDeleteServiceMutation = () => {
   });
 };
 
-export const useUploadServiceImageMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: ({ serviceId, file }: { serviceId: string; file: File }) =>
-      uploadServiceImage(serviceId, file),
-    onSuccess: (response, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["services"] });
-      queryClient.invalidateQueries({ queryKey: ["service", variables.serviceId] });
-      toast.success(response.message || "Image uploaded successfully");
-    },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Failed to upload image");
-    },
-  });
-};
 

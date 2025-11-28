@@ -6,10 +6,6 @@ export type IServiceTranslation = {
   locale: string;
   name: string;
   description: string | null;
-  shortDescription: string | null;
-  content: string | null;
-  metaTitle: string | null;
-  metaDescription: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -18,7 +14,6 @@ export type IService = {
   id: string;
   slug: string;
   icon: string | null;
-  imageUrl: string | null;
   orderIndex: number;
   isFeatured: boolean;
   isActive: boolean;
@@ -31,16 +26,11 @@ export type ICreateServiceTranslationRequest = {
   locale: string;
   name: string;
   description?: string;
-  shortDescription?: string;
-  content?: string;
-  metaTitle?: string;
-  metaDescription?: string;
 };
 
 export type ICreateServiceRequest = {
   slug: string;
   icon?: string;
-  imageUrl?: string;
   orderIndex?: number;
   isFeatured?: boolean;
   isActive?: boolean;

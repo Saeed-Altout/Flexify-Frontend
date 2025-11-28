@@ -81,13 +81,6 @@ export default function manifest(): MetadataRoute.Manifest {
         icons: [{ src: "/icon-192x192.png", sizes: "192x192" }],
       },
       {
-        name: "Services",
-        short_name: "Services",
-        description: "View my services",
-        url: "/services",
-        icons: [{ src: "/icon-192x192.png", sizes: "192x192" }],
-      },
-      {
         name: "Contact",
         short_name: "Contact",
         description: "Get in touch",

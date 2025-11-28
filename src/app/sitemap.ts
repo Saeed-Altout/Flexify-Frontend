@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const currentDate = new Date().toISOString();
 
   // Static routes for each locale
-  const staticRoutes = ["", "/projects", "/services", "/contact"];
+  const staticRoutes = ["", "/projects", "/contact"];
 
   // Generate sitemap entries for static routes
   const staticEntries: MetadataRoute.Sitemap = [];

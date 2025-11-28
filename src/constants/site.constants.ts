@@ -11,7 +11,7 @@ export const CV_URL = "/Saeed-Altout-CV.pdf";
 export interface NavbarLink {
   href: string;
   icon?: string; // Icon name from Lucide Icons
-  translationKey: "home" | "projects" | "services" | "contact"; // Key in portfolio.navbar translations
+  translationKey: "home" | "projects" | "contact"; // Key in portfolio.navbar translations
 }
 
 export const NAVBAR_LINKS = [
@@ -24,11 +24,6 @@ export const NAVBAR_LINKS = [
     href: "/projects",
     icon: "Folder",
     translationKey: "projects",
-  },
-  {
-    href: "/services",
-    icon: "Briefcase",
-    translationKey: "services",
   },
   {
     href: "/contact",

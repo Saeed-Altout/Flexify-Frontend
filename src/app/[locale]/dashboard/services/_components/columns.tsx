@@ -6,7 +6,6 @@ import { useTranslations, useLocale } from "next-intl";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { DataTableActions } from "./data-table-actions";
-import Image from "next/image";
 import { getIconComponent } from "@/utils/icon-utils";
 
 export const useColumns = (): ColumnDef<IService>[] => {
@@ -14,46 +13,6 @@ export const useColumns = (): ColumnDef<IService>[] => {
   const locale = useLocale();
 
   return [
-    {
-      accessorKey: "imageUrl",
-      header: t("image"),
-      cell: ({ row }) => {
-        const imageUrl = row.original.imageUrl;
-        const translation = row.original.translations?.find(
-          (t) => t.locale === locale
-        );
-        const fallbackTranslation = row.original.translations?.[0];
-        const name =
-          translation?.name || fallbackTranslation?.name || row.original.slug;
-
-        const getInitials = (name: string): string => {
-          if (!name) return "??";
-          const words = name.trim().split(/\s+/);
-          if (words.length >= 2) {
-            // Multiple words: take first char of first two words
-            return (words[0][0] + words[1][0]).toUpperCase();
-          } else {
-            // Single word: take first two characters
-            return name.slice(0, 2).toUpperCase();
-          }
-        };
-        const initials = getInitials(name);
-
-        return imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={name}
-            width={60}
-            height={40}
-            className="rounded object-cover size-10"
-          />
-        ) : (
-          <div className="flex h-10 w-15 items-center justify-center rounded bg-muted text-xs font-medium">
-            {initials}
-          </div>
-        );
-      },
-    },
     {
       accessorKey: "name",
       header: t("name"),

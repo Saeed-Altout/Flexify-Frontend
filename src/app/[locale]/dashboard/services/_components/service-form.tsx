@@ -9,10 +9,8 @@ import { useState } from "react";
 import {
   useCreateServiceMutation,
   useUpdateServiceMutation,
-  useUploadServiceImageMutation,
 } from "@/modules/services/services-hook";
 import { IService } from "@/modules/services/services-type";
-import { ThumbnailUpload } from "../../projects/_components/thumbnail-upload";
 
 import {
   Form,
@@ -41,7 +39,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { IconPicker } from "@/components/ui/icon-picker";
-import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { Loader2 } from "lucide-react";
 
 interface ServiceFormProps {
@@ -55,23 +52,14 @@ const serviceFormSchema = z.object({
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Invalid slug format"),
   icon: z.string().optional(),
-  imageUrl: z.string().optional(),
   orderIndex: z.number().int().min(0).optional(),
   isFeatured: z.boolean().optional(),
   isActive: z.boolean().optional(),
   // Translations
   nameEn: z.string().min(1, "English name is required"),
   descriptionEn: z.string().optional(),
-  shortDescriptionEn: z.string().max(500).optional(),
-  contentEn: z.string().optional(),
-  metaTitleEn: z.string().max(255).optional(),
-  metaDescriptionEn: z.string().max(500).optional(),
   nameAr: z.string().min(1, "Arabic name is required"),
   descriptionAr: z.string().optional(),
-  shortDescriptionAr: z.string().max(500).optional(),
-  contentAr: z.string().optional(),
-  metaTitleAr: z.string().max(255).optional(),
-  metaDescriptionAr: z.string().max(500).optional(),
 });
 
 type ServiceFormValues = z.infer<typeof serviceFormSchema>;
@@ -82,12 +70,6 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
 
   const createMutation = useCreateServiceMutation();
   const updateMutation = useUpdateServiceMutation();
-  const uploadImageMutation = useUploadServiceImageMutation();
-
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    service?.imageUrl || null
-  );
 
   // Get translations for initial state
   const existingTranslations = service?.translations || [];
@@ -99,22 +81,13 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
     defaultValues: {
       slug: service?.slug || "",
       icon: service?.icon || "",
-      imageUrl: service?.imageUrl || "",
       orderIndex: service?.orderIndex || 0,
       isFeatured: service?.isFeatured || false,
       isActive: service?.isActive !== undefined ? service.isActive : true,
       nameEn: enTranslation?.name || "",
       descriptionEn: enTranslation?.description || "",
-      shortDescriptionEn: enTranslation?.shortDescription || "",
-      contentEn: enTranslation?.content || "",
-      metaTitleEn: enTranslation?.metaTitle || "",
-      metaDescriptionEn: enTranslation?.metaDescription || "",
       nameAr: arTranslation?.name || "",
       descriptionAr: arTranslation?.description || "",
-      shortDescriptionAr: arTranslation?.shortDescription || "",
-      contentAr: arTranslation?.content || "",
-      metaTitleAr: arTranslation?.metaTitle || "",
-      metaDescriptionAr: arTranslation?.metaDescription || "",
     },
   });
 
@@ -125,19 +98,11 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
         locale: "en",
         name: values.nameEn,
         description: values.descriptionEn,
-        shortDescription: values.shortDescriptionEn,
-        content: values.contentEn,
-        metaTitle: values.metaTitleEn,
-        metaDescription: values.metaDescriptionEn,
       },
       {
         locale: "ar",
         name: values.nameAr,
         description: values.descriptionAr,
-        shortDescription: values.shortDescriptionAr,
-        content: values.contentAr,
-        metaTitle: values.metaTitleAr,
-        metaDescription: values.metaDescriptionAr,
       },
     ];
 
@@ -150,45 +115,23 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
     };
 
     if (mode === "create") {
-      // Create service first
-      const result = await createMutation.mutateAsync({
+      await createMutation.mutateAsync({
         slug: values.slug,
         ...baseData,
       });
-      const serviceId = result.data?.data?.id;
-
-      // Upload image if file was selected
-      if (imageFile && serviceId) {
-        await uploadImageMutation.mutateAsync({
-          serviceId,
-          file: imageFile,
-        });
-      }
-
       router.push("/dashboard/services");
     } else if (service) {
-      // Update service first
       await updateMutation.mutateAsync({
         id: service.id,
         data: baseData,
       });
-
-      // Upload image if file was selected
-      if (imageFile) {
-        await uploadImageMutation.mutateAsync({
-          serviceId: service.id,
-          file: imageFile,
-        });
-      }
-
       router.push("/dashboard/services");
     }
   };
 
   const isLoading =
     createMutation.isPending ||
-    updateMutation.isPending ||
-    uploadImageMutation.isPending;
+    updateMutation.isPending;
 
   return (
     <Form {...form}>
@@ -265,33 +208,6 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                       )}
                     />
                   </div>
-
-                  <FormItem>
-                    <FormLabel>{t("imageUrlLabel") || "Service Image"}</FormLabel>
-                    <FormControl>
-                      <ThumbnailUpload
-                        currentThumbnail={service?.imageUrl}
-                        onFileSelect={(file) => {
-                          setImageFile(file);
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setImagePreview(reader.result as string);
-                          };
-                          reader.readAsDataURL(file);
-                        }}
-                        onRemove={() => {
-                          setImageFile(null);
-                          setImagePreview(null);
-                        }}
-                        isUploading={uploadImageMutation.isPending}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {t("imageUrlDescription") || "Upload a service image"}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
                 </CardContent>
               </Card>
             </AccordionContent>
@@ -350,47 +266,6 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                     />
                   </div>
 
-                  {/* Short Description */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="shortDescriptionEn"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("shortDescriptionLabel")} (EN)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder={t("shortDescriptionPlaceholder")}
-                              disabled={isLoading}
-                              rows={3}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="shortDescriptionAr"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("shortDescriptionLabel")} (AR)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder={t("shortDescriptionPlaceholder")}
-                              disabled={isLoading}
-                              rows={3}
-                              dir="rtl"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
                   {/* Description */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
@@ -423,126 +298,6 @@ export function ServiceForm({ service, mode }: ServiceFormProps) {
                               placeholder={t("descriptionPlaceholder")}
                               disabled={isLoading}
                               rows={4}
-                              dir="rtl"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="contentEn"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contentLabel")} (EN)</FormLabel>
-                          <FormControl>
-                            <RichTextEditor
-                              content={field.value || ""}
-                              onChange={field.onChange}
-                              placeholder={t("contentPlaceholder")}
-                              disabled={isLoading}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="contentAr"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("contentLabel")} (AR)</FormLabel>
-                          <FormControl>
-                            <RichTextEditor
-                              content={field.value || ""}
-                              onChange={field.onChange}
-                              placeholder={t("contentPlaceholder")}
-                              disabled={isLoading}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* Meta Title */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="metaTitleEn"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("metaTitleLabel")} (EN)</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder={t("metaTitlePlaceholder")}
-                              disabled={isLoading}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="metaTitleAr"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("metaTitleLabel")} (AR)</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder={t("metaTitlePlaceholder")}
-                              disabled={isLoading}
-                              dir="rtl"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* Meta Description */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="metaDescriptionEn"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("metaDescriptionLabel")} (EN)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder={t("metaDescriptionPlaceholder")}
-                              disabled={isLoading}
-                              rows={3}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="metaDescriptionAr"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t("metaDescriptionLabel")} (AR)</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...field}
-                              placeholder={t("metaDescriptionPlaceholder")}
-                              disabled={isLoading}
-                              rows={3}
                               dir="rtl"
                             />
                           </FormControl>
