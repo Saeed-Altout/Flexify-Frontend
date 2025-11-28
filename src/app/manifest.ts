@@ -1,9 +1,6 @@
 import { MetadataRoute } from "next";
-import { getBaseUrl } from "@/lib/seo";
 
 export default function manifest(): MetadataRoute.Manifest {
-  const baseUrl = getBaseUrl();
-
   return {
     name: "Flexify Portfolio - Frontend Developer",
     short_name: "Flexify",
@@ -17,7 +14,31 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     lang: "en",
     dir: "ltr",
-    categories: ["portfolio", "developer", "technology"],
+    categories: [
+      "portfolio",
+      "developer",
+      "technology",
+      "web development",
+      "frontend development",
+      "backend development",
+      "full stack development",
+      "web design",
+      "ui/ux design",
+      "responsive design",
+      "performance optimization",
+      "seo",
+      "accessibility",
+      "web development services",
+      "frontend development services",
+      "backend development services",
+      "full stack development services",
+      "web design services",
+      "ui/ux design services",
+      "responsive design services",
+      "performance optimization services",
+      "seo services",
+      "accessibility services",
+    ],
     icons: [
       {
         src: "/icon-192x192.png",
