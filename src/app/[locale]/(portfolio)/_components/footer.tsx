@@ -100,26 +100,45 @@ export function Footer() {
               </p>
             )}
             {/* Social Links */}
-            {socialLinks.length > 0 && (
-              <div className="flex items-center gap-3">
-                {socialLinks.map((social) => {
-                  if (!social.icon) return null;
-                  const IconComponent = social.icon;
-                  return (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
-                      aria-label={social.label}
-                    >
-                      <IconComponent className="w-4 h-4" />
-                    </a>
-                  );
-                })}
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              {socialLinks.map((social) => {
+                if (!social.icon) return null;
+                const IconComponent = social.icon;
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
+                    aria-label={social.label}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                  </a>
+                );
+              })}
+              {/* WhatsApp and Telegram Icons */}
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
+                aria-label={t("quickAccess.whatsapp")}
+                title={t("quickAccess.whatsapp")}
+              >
+                <IconBrandWhatsapp className="w-4 h-4" />
+              </a>
+              <a
+                href={telegramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg bg-background border border-border hover:bg-accent hover:text-accent-foreground transition-colors"
+                aria-label={t("quickAccess.telegram")}
+                title={t("quickAccess.telegram")}
+              >
+                <IconBrandTelegram className="w-4 h-4" />
+              </a>
+            </div>
           </div>
 
           {/* Dynamic Columns */}
@@ -178,29 +197,6 @@ export function Footer() {
                   <li>{footerValue.contact.location}</li>
                 )}
               </ul>
-              {/* Quick Access Buttons */}
-              <div className="flex items-center gap-2 mt-4">
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 transition-colors border border-green-500/20"
-                  aria-label={t("quickAccess.whatsapp")}
-                  title={t("quickAccess.whatsapp")}
-                >
-                  <IconBrandWhatsapp className="w-4 h-4" />
-                </a>
-                <a
-                  href={telegramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 transition-colors border border-blue-500/20"
-                  aria-label={t("quickAccess.telegram")}
-                  title={t("quickAccess.telegram")}
-                >
-                  <IconBrandTelegram className="w-4 h-4" />
-                </a>
-              </div>
             </div>
           )}
         </div>

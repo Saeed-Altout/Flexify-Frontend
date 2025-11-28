@@ -76,12 +76,14 @@ export function generateSeoMetadata({
   modifiedTime?: string;
   authors?: string[];
 }): Metadata {
+  const baseUrl = getBaseUrl();
   const canonicalUrl = getCanonicalUrl(path, locale);
   const alternateUrls = getAlternateUrls(path);
   const ogImage = getOgImageUrl(image);
   const siteName = "Flexify Portfolio";
 
   const metadata: Metadata = {
+    metadataBase: new URL(baseUrl),
     title,
     description,
     keywords: keywords || [],
@@ -106,6 +108,7 @@ export function generateSeoMetadata({
           width: 1200,
           height: 630,
           alt: title,
+          type: "image/jpeg",
         },
       ],
       ...(publishedTime && { publishedTime }),

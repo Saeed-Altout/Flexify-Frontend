@@ -1434,9 +1434,9 @@ declare const messages: {
         },
         "home": {
             "hero": {
-                "badge": "Full Stack Developer",
-                "title": "Full Stack Developer",
-                "description": "Building modern web applications with **Next.js**, **NestJS**, **TypeScript**, **Prisma**, **MySQL**, and **Supabase**. Creating scalable solutions from frontend to backend.",
+                "badge": "Frontend Developer",
+                "title": "Frontend Developer",
+                "description": "Building modern web applications with **Next.js**, **TypeScript**, **React**, and cutting-edge frontend technologies. Creating beautiful, responsive, and performant user interfaces.",
                 "cta": "Get Started - It's free"
             },
             "statistics": {
@@ -1459,8 +1459,8 @@ declare const messages: {
             },
             "about": {
                 "title": "About Me",
-                "description1": "I'm a passionate **Full Stack Developer** with a love for creating innovative web solutions. My journey in software development has been driven by curiosity and a commitment to building applications that make a difference.",
-                "description2": "I specialize in modern web technologies, focusing on creating scalable, maintainable, and user-friendly applications. From **frontend interfaces** to **backend APIs**, I bring ideas to life with clean code and best practices.",
+                "description1": "I'm a passionate **Frontend Developer** with a love for creating innovative web solutions. My journey in software development has been driven by curiosity and a commitment to building applications that make a difference.",
+                "description2": "I specialize in modern frontend technologies, focusing on creating beautiful, responsive, and user-friendly interfaces. From **UI/UX design** to **interactive experiences**, I bring ideas to life with clean code and best practices.",
                 "cta": "Learn More",
                 "highlights": {
                     "code": {
@@ -1672,7 +1672,7 @@ declare const messages: {
             }
         },
         "footer": {
-            "description": "Full Stack Developer building modern web applications with cutting-edge technologies.",
+            "description": "Frontend Developer building modern web applications with cutting-edge technologies.",
             "quickLinks": "Quick Links",
             "links": {
                 "home": "Home",
