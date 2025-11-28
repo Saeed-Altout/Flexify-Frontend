@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ServiceDetailClient } from "./_components/service-detail-client";
-import { generateSeoMetadata, generateServiceStructuredData } from "@/lib/seo";
+import {
+  generateSeoMetadata,
+  generateServiceStructuredData,
+  generateProfessionalServiceStructuredData,
+  generateBreadcrumbStructuredData,
+} from "@/lib/seo";
 import { StructuredData } from "@/components/seo/structured-data";
 import { getServiceBySlugServer } from "@/lib/server-api";
 import { getBaseUrl, getOgImageUrl } from "@/lib/seo";
@@ -62,23 +67,49 @@ export default async function ServiceDetailPage({
     (t: IServiceTranslation) => t.locale === locale
   );
 
-  let structuredData = null;
+  const structuredDataArray = [];
+  
   if (service && translation) {
-    structuredData = generateServiceStructuredData({
-      name: translation.name,
-      description: translation.description || "",
-      url: `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}services/${slug}`,
-      provider: {
-        name: "Flexify",
-        url: baseUrl,
-      },
-      serviceType: "WebDevelopment",
-    });
+    const serviceUrl = `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}services/${slug}`;
+    const t = await getTranslations("portfolio");
+    
+    // Professional Service structured data (more comprehensive)
+    structuredDataArray.push(
+      generateProfessionalServiceStructuredData({
+        name: translation.name,
+        description: translation.description || "",
+        url: serviceUrl,
+        provider: {
+          name: "Saeed Altout",
+          url: baseUrl,
+          jobTitle: "Frontend Developer",
+        },
+        areaServed: "SY",
+        serviceType: "WebDevelopment",
+      })
+    );
+
+    // Breadcrumb structured data
+    structuredDataArray.push(
+      generateBreadcrumbStructuredData([
+        { name: t("navbar.home") || "Home", url: baseUrl },
+        {
+          name: t("navbar.services") || "Services",
+          url: `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}services`,
+        },
+        {
+          name: translation.name,
+          url: serviceUrl,
+        },
+      ])
+    );
   }
 
   return (
     <>
-      {structuredData && <StructuredData data={structuredData} />}
+      {structuredDataArray.length > 0 && (
+        <StructuredData data={structuredDataArray} />
+      )}
       <ServiceDetailClient slug={slug} />
     </>
   );

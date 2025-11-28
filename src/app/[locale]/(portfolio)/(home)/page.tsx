@@ -7,7 +7,12 @@ import { ServicesSection } from "./_components/services-section";
 import { FeaturedProjectsSection } from "./_components/featured-projects-section";
 import { TestimonialsSection } from "./_components/testimonials-section";
 import { CTASection } from "./_components/cta-section";
-import { generateSeoMetadata, generatePersonStructuredData, generatePortfolioStructuredData } from "@/lib/seo";
+import {
+  generateSeoMetadata,
+  generateComprehensivePortfolioStructuredData,
+  generateWebSiteStructuredData,
+  generateOrganizationStructuredData,
+} from "@/lib/seo";
 import { StructuredData } from "@/components/seo/structured-data";
 import { getBaseUrl } from "@/lib/seo";
 
@@ -43,28 +48,85 @@ export default async function HomePage({
   const seoT = await getTranslations("portfolio.seo.default");
   const siteName = seoT("siteName");
 
-  // Generate structured data for Person/Portfolio
-  const personStructuredData = generatePersonStructuredData({
-    name: "Flexify",
-    jobTitle: t("badge") || "Frontend Developer",
-    description: t("description"),
+  // Generate comprehensive structured data
+  const comprehensiveStructuredData =
+    generateComprehensivePortfolioStructuredData({
+      person: {
+        name: "Saeed Altout",
+        jobTitle: t("badge") || "Frontend Developer",
+        description: t("description"),
+        url: baseUrl,
+        image: `${baseUrl}/og.jpeg`,
+        email: "saeedaltout25@gmail.com",
+        telephone: "+963940043810",
+        address: {
+          addressCountry: "SY",
+          addressLocality: "Damascus",
+          addressRegion: "Damascus",
+        },
+        sameAs: [
+          "https://github.com/Saeed-Altout",
+          "https://t.me/saeedaltoutdev",
+          `https://wa.me/963940043810`,
+        ],
+      },
+      organization: {
+        name: "Flexify",
+        url: baseUrl,
+        logo: `${baseUrl}/logo-light.svg`,
+        description: t("description"),
+      },
+      website: {
+        name: siteName,
+        url: baseUrl,
+        description: t("description"),
+      },
+    });
+
+  // Generate WebSite structured data with search action
+  const websiteStructuredData = generateWebSiteStructuredData({
+    name: siteName,
     url: baseUrl,
-    image: `${baseUrl}/og.jpeg`,
-    sameAs: [
-      "https://github.com/Saeed-Altout",
-      // Add more social media links if available
-    ],
+    description: t("description"),
+    publisher: {
+      "@type": "Organization",
+      name: "Flexify",
+      logo: `${baseUrl}/logo-light.svg`,
+    },
   });
 
-  const portfolioStructuredData = generatePortfolioStructuredData({
-    name: siteName,
-    description: t("description"),
+  // Generate Organization structured data
+  const organizationStructuredData = generateOrganizationStructuredData({
+    name: "Flexify",
     url: baseUrl,
+    logo: `${baseUrl}/logo-light.svg`,
+    description: t("description"),
+    contactPoint: {
+      email: "saeedaltout25@gmail.com",
+      telephone: "+963940043810",
+      contactType: "Customer Service",
+      areaServed: "SY",
+    },
+    sameAs: [
+      "https://github.com/Saeed-Altout",
+      "https://t.me/saeedaltoutdev",
+    ],
+    address: {
+      addressCountry: "SY",
+      addressLocality: "Damascus",
+      addressRegion: "Damascus",
+    },
   });
 
   return (
     <>
-      <StructuredData data={[personStructuredData, portfolioStructuredData]} />
+      <StructuredData
+        data={[
+          ...comprehensiveStructuredData,
+          websiteStructuredData,
+          organizationStructuredData,
+        ]}
+      />
       <main id="main-content">
         {/* Section 1: Hero */}
         <HeroSection />

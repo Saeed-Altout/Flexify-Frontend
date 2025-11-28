@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ProjectDetailsClient } from "./_components/project-details-client";
-import { generateSeoMetadata, generateProjectStructuredData } from "@/lib/seo";
+import {
+  generateSeoMetadata,
+  generateProjectStructuredData,
+  generateBreadcrumbStructuredData,
+} from "@/lib/seo";
 import { StructuredData } from "@/components/seo/structured-data";
 import { getProjectBySlugServer } from "@/lib/server-api";
 import { getBaseUrl, getOgImageUrl } from "@/lib/seo";
@@ -69,26 +73,59 @@ export default async function ProjectDetailsPage({
     (t: IProjectTranslation) => t.locale === locale
   );
 
-  let structuredData = null;
+  const structuredDataArray = [];
+
   if (project && translation) {
-    structuredData = generateProjectStructuredData({
-      name: translation.title || project.title,
-      description:
-        translation.shortDescription ||
-        translation.description ||
-        project.description,
-      url: `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}projects/${slug}`,
-      image: project.thumbnail_url
-        ? getOgImageUrl(project.thumbnail_url)
-        : undefined,
-      applicationCategory: "WebApplication",
-      operatingSystem: "Web",
-    });
+    const projectUrl = `${baseUrl}/${
+      locale !== "en" ? `${locale}/` : ""
+    }projects/${slug}`;
+
+    // Project structured data
+    structuredDataArray.push(
+      generateProjectStructuredData({
+        name: translation.title || project.title,
+        description:
+          translation.shortDescription ||
+          translation.description ||
+          project.description,
+        url: projectUrl,
+        image: project.thumbnail_url
+          ? getOgImageUrl(project.thumbnail_url)
+          : undefined,
+        applicationCategory: "WebApplication",
+        operatingSystem: "Web",
+        aggregateRating:
+          project.likeCount > 0
+            ? {
+                ratingValue: 5,
+                ratingCount: project.likeCount,
+              }
+            : undefined,
+      })
+    );
+
+    // Breadcrumb structured data
+    const t = await getTranslations("portfolio");
+    structuredDataArray.push(
+      generateBreadcrumbStructuredData([
+        { name: t("navbar.home") || "Home", url: baseUrl },
+        {
+          name: t("navbar.projects") || "Projects",
+          url: `${baseUrl}/${locale !== "en" ? `${locale}/` : ""}projects`,
+        },
+        {
+          name: translation.title || project.title,
+          url: projectUrl,
+        },
+      ])
+    );
   }
 
   return (
     <>
-      {structuredData && <StructuredData data={structuredData} />}
+      {structuredDataArray.length > 0 && (
+        <StructuredData data={structuredDataArray} />
+      )}
       <ProjectDetailsClient params={Promise.resolve({ slug })} />
     </>
   );

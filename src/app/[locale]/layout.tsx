@@ -16,6 +16,8 @@ import { getDir } from "@/utils/get-dir";
 import { generateSeoMetadata } from "@/lib/seo";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import { PWARegister } from "@/components/pwa/pwa-register";
+import { PWAInstallPrompt } from "@/components/pwa/pwa-install-prompt";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -76,8 +78,11 @@ export default async function LocaleLayout({
                 defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
+                themes={["light", "dark", "neutral", "system"]}
               >
                 {children}
+                <PWARegister />
+                <PWAInstallPrompt />
                 <SpeedInsights />
                 <Analytics />
                 <Toaster position="top-center" />
