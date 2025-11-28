@@ -4,11 +4,8 @@ import { useEffect } from "react";
 
 export function PWARegister() {
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      "serviceWorker" in navigator &&
-      process.env.NODE_ENV === "production"
-    ) {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      // Register service worker in both dev and production
       navigator.serviceWorker
         .register("/sw.js")
         .then((registration) => {

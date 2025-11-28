@@ -34,10 +34,12 @@ export function PWAInstallPrompt() {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Show prompt after a delay
-      setTimeout(() => {
-        setShowPrompt(true);
-      }, 3000);
+      // Show prompt after a delay (only if not dismissed in this session)
+      if (!sessionStorage.getItem("pwa-prompt-dismissed")) {
+        setTimeout(() => {
+          setShowPrompt(true);
+        }, 3000);
+      }
     };
 
     window.addEventListener(
