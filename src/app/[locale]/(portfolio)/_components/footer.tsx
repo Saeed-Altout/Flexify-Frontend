@@ -3,7 +3,7 @@
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Logo } from "@/components/common/logo";
+import { AnimatedLogo } from "@/components/common/animated-logo";
 import { Separator } from "@/components/ui/separator";
 import { useSiteSettingQuery } from "@/modules/site-settings/site-settings-hook";
 import { getLucideIcon } from "@/constants/lucide-icons";
@@ -93,7 +93,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div className="space-y-4">
-            <Logo className="text-lg" />
+            <AnimatedLogo loop />
             {translation.description && (
               <p className="text-sm text-muted-foreground">
                 {translation.description}

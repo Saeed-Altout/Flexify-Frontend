@@ -6,6 +6,7 @@ import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 import { Routes } from "@/constants/routes";
 import { useAuthStore } from "@/stores/use-auth-store";
 import { AxiosError } from "axios";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -19,21 +20,21 @@ export function ProtectedRoute({
   redirectTo = Routes.home,
 }: ProtectedRouteProps) {
   const router = useRouter();
-  const { 
-    accessToken, 
+  const {
+    accessToken,
     refreshToken,
-    user: storeUser, 
+    user: storeUser,
     isInitialized,
     setIsInitialized,
-    clearAuth 
+    clearAuth
   } = useAuthStore();
-  
-  const { 
-    data: queryUser, 
-    isLoading, 
-    isError, 
-    error, 
-    isRefetching 
+
+  const {
+    data: queryUser,
+    isLoading,
+    isError,
+    error,
+    isRefetching
   } = useCurrentUserQuery();
 
   // Use user from query (fresh) or store (persisted)
@@ -84,16 +85,16 @@ export function ProtectedRoute({
       }
     }
   }, [
-    user, 
-    isLoading, 
-    isError, 
-    error, 
-    accessToken, 
+    user,
+    isLoading,
+    isError,
+    error,
+    accessToken,
     refreshToken,
-    isInitialized, 
-    allowedRoles, 
-    redirectTo, 
-    router, 
+    isInitialized,
+    allowedRoles,
+    redirectTo,
+    router,
     storeUser,
     clearAuth
   ]);
@@ -102,17 +103,14 @@ export function ProtectedRoute({
   // Only show loading if:
   // 1. Query is actively loading/refetching AND we don't have user from store
   // Don't show loading if we have user from store (after login) - we can render immediately
-  const shouldShowLoading = 
-    (isLoading || isRefetching) && 
+  const shouldShowLoading =
+    (isLoading || isRefetching) &&
     !storeUser; // Only show loading if we don't have user from store
 
   if (shouldShowLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
+        <Spinner size="md" />
       </div>
     );
   }

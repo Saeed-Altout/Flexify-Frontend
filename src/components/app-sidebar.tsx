@@ -21,12 +21,11 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useLocale, useTranslations } from "next-intl";
 import { getSide } from "@/utils/get-side";
-import { Logo } from "./common/logo";
+import { AnimatedLogo } from "@/components/common/animated-logo";
 import { useCurrentUserQuery } from "@/modules/auth/auth-hook";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -37,15 +36,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const userInfo = user
     ? {
-        name: `${user.firstName} ${user.lastName}`.trim() || user.email,
-        email: user.email,
-        avatar: user.avatarUrl || "",
-      }
+      name: `${user.firstName} ${user.lastName}`.trim() || user.email,
+      email: user.email,
+      avatar: user.avatarUrl || "",
+    }
     : {
-        name: "User",
-        email: "",
-        avatar: "",
-      };
+      name: "User",
+      email: "",
+      avatar: "",
+    };
 
   const navMain = [
     {
@@ -105,12 +104,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
-              <Logo />
-            </SidebarMenuButton>
+            <AnimatedLogo loop duration={1.5} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

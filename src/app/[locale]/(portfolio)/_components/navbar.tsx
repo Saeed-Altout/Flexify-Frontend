@@ -17,7 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Logo } from "@/components/common/logo";
+import { AnimatedLogo } from "@/components/common/animated-logo";
 import { GithubButton } from "@/components/buttons/github-button";
 import { ModeToggleButton } from "@/components/buttons/mode-toggle-button";
 import { Separator } from "@/components/ui/separator";
@@ -75,7 +75,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Logo className="me-2" />
+          <AnimatedLogo className="me-2" loop />
           {!isMobile && (
             <NavigationMenu>
               <NavigationMenuList className="gap-1 hidden md:flex!">
@@ -86,7 +86,7 @@ export function Navbar() {
                       className={cn(
                         navigationMenuTriggerStyle(),
                         isActive(item.href) &&
-                          "bg-accent text-accent-foreground"
+                        "bg-accent text-accent-foreground"
                       )}
                     >
                       <Link href={item.href}>{item.label}</Link>
