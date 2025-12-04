@@ -107,10 +107,7 @@ export default async function HomePage({
       contactType: "Customer Service",
       areaServed: "SY",
     },
-    sameAs: [
-      "https://github.com/Saeed-Altout",
-      "https://t.me/saeedaltoutdev",
-    ],
+    sameAs: ["https://github.com/Saeed-Altout", "https://t.me/saeedaltoutdev"],
     address: {
       addressCountry: "SY",
       addressLocality: "Damascus",
@@ -128,13 +125,8 @@ export default async function HomePage({
         ]}
       />
       <main id="main-content">
-        {/* Section 1: Hero */}
         <HeroSection />
-        
-        {/* Section 2: Statistics */}
         <StatisticsSection />
-        
-        {/* Section 3: About */}
         <AboutSection />
         <ServicesSection />
         <FeaturedProjectsSection />

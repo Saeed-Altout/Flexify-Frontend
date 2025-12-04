@@ -93,7 +93,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand Column */}
           <div className="space-y-4">
-            <AnimatedLogo loop />
+            <AnimatedLogo />
             {translation.description && (
               <p className="text-sm text-muted-foreground">
                 {translation.description}
@@ -186,7 +186,10 @@ export function Footer() {
                 {footerValue.contact.phone && (
                   <li>
                     <a
-                      href={`tel:${footerValue.contact.phone.replace(/\s/g, "")}`}
+                      href={`tel:${footerValue.contact.phone.replace(
+                        /\s/g,
+                        ""
+                      )}`}
                       className="hover:text-foreground transition-colors"
                     >
                       {footerValue.contact.phone}
